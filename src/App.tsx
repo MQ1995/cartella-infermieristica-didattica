@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2 } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
@@ -16,6 +16,8 @@ type TabId = 'general' | 'assessment' | 'scales' | 'careplan';
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
   const [isSaved, setIsSaved] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmed, setDeleteConfirmed] = useState(false);
 
   const methods = useForm<NursingAssessment>({
     defaultValues: defaultValues,
@@ -52,6 +54,14 @@ function App() {
     
     saveAs(blob, `assessment-${studentPart}-${patientPart}.json`);
     setIsSaved(true);
+  };
+
+  const handleDeleteAll = () => {
+    methods.reset(defaultValues);
+    localStorage.removeItem('nursing-assessment-draft');
+    setIsSaved(true);
+    setShowDeleteModal(false);
+    setDeleteConfirmed(false);
   };
 
   const handleImportJson = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,8 +119,14 @@ function App() {
                 )}
               </button>
 
-
-              
+              <button
+                type="button"
+                onClick={() => { setShowDeleteModal(true); setDeleteConfirmed(false); }}
+                className="bg-emerald-800/60 hover:bg-rose-900/60 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-colors border border-white/10 text-white/70 hover:text-rose-200"
+              >
+                <Trash2 size={16} />
+                Cancella tutto
+              </button>
             </div>
           </div>
         </header>
@@ -163,6 +179,53 @@ function App() {
           </div>
         </main>
       </div>
+      {/* Delete confirmation modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-rose-100 p-2 rounded-full">
+                <Trash2 className="text-rose-600" size={22} />
+              </div>
+              <h2 className="text-lg font-bold text-slate-800">Cancella tutti i dati</h2>
+            </div>
+            <p className="text-slate-600 mb-2">
+              Questa azione eliminerà <strong>permanentemente</strong> tutti i dati inseriti, inclusi tutti i modelli, le scale e il piano assistenziale.
+            </p>
+            <p className="text-slate-600 mb-6">
+              Non sarà possibile recuperare i dati cancellati. Hai già salvato un backup?
+            </p>
+            <label className="flex items-start gap-3 mb-6 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={deleteConfirmed}
+                onChange={(e) => setDeleteConfirmed(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-rose-600"
+              />
+              <span className="text-sm text-slate-700">
+                Ho capito che questa azione è <strong>irreversibile</strong> e voglio cancellare tutto.
+              </span>
+            </label>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
+              >
+                Annulla
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteAll}
+                disabled={!deleteConfirmed}
+                className="px-4 py-2 rounded-lg bg-rose-600 text-white text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-rose-700"
+              >
+                Sì, cancella tutto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </FormProvider>
   );
 }

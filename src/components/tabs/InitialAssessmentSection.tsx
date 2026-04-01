@@ -20,12 +20,19 @@ export default function InitialAssessmentSection() {
         <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
           Accertamento infermieristico iniziale
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-          <Input name="careStartDate" label="Giornate di presa in carico — da" type="date" />
-          <Input name="careEndDate" label="A" type="date" />
-          <div className="md:col-span-2">
-            <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Giornate di presa in carico</label>
+            <div className="flex gap-2 items-center">
+              <div className="flex-1">
+                <Input name="careStartDate" label="Da" type="date" />
+              </div>
+              <div className="flex-1">
+                <Input name="careEndDate" label="A" type="date" />
+              </div>
+            </div>
           </div>
+          <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
         </div>
       </section>
 
