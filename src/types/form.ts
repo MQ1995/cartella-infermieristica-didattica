@@ -413,6 +413,36 @@ export interface NursingAssessment {
     outputOtherNote: string;
   }>;
 
+  // Gestione presidi
+  devices: Array<{
+    deviceType: string;
+    present: boolean;
+    placementDate: string;
+    renewalDate: string;
+    dressingType: string;
+    notes: string;
+  }>;
+
+  // Lesioni cutanee / medicazioni
+  woundCare: Array<{
+    etiology: string;
+    location: string;
+    dimensions: string;
+    tissueType: string[];
+    exudatePresent: string;
+    exudateQuantity: string;
+    exudateQuality: string;
+    margins: string;
+    perilesionalSkin: string;
+    dressingUsed: string;
+    cleansing: string;
+    products: string;
+    fixation: string;
+    executionDate: string;
+    renewalDate: string;
+    notes: string;
+  }>;
+
   // Monitoraggio parametri vitali
   vitalSigns: Array<{
     date: string;
@@ -770,6 +800,8 @@ export const defaultValues: NursingAssessment = {
 
   medications: [],
   dailyAssessments: [],
+  devices: [],
+  woundCare: [],
   dischargeUnresolvedProblems: '',
   dischargeObjectives: '',
   dischargePlannedActions: '',
