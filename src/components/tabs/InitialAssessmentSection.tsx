@@ -18,7 +18,20 @@ export default function InitialAssessmentSection() {
     <div className="space-y-8">
       <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
         <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-          Dati Persona Assistita e Ricovero
+          Accertamento infermieristico iniziale
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <Input name="careStartDate" label="Giornate di presa in carico — da" type="date" />
+          <Input name="careEndDate" label="A" type="date" />
+          <div className="md:col-span-2">
+            <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
+          Dati persona assistita e ricovero
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Select
@@ -35,7 +48,7 @@ export default function InitialAssessmentSection() {
           <Input name="patientLanguage" label="Lingua parlata" />
           <Select
             name="maritalStatus"
-            label="Stato Civile"
+            label="Stato civile"
             options={[
               { label: 'Nubile/Celibe', value: 'Celibe' },
               { label: 'Coniugato/a', value: 'Coniugato' },
@@ -89,7 +102,7 @@ export default function InitialAssessmentSection() {
             onClick={() => append({ date: '', pathology: '' })}
             className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
           >
-            <Plus size={16} /> Aggiungi Riga
+            <Plus size={16} /> Aggiungi riga
           </button>
         </div>
 

@@ -73,7 +73,7 @@ function App() {
   };
 
   const tabs = [
-    { id: 'general', label: 'Dati Generali', icon: <ClipboardList size={18} /> },
+    { id: 'general', label: 'Dati Tirocinio e Studente', icon: <ClipboardList size={18} /> },
     { id: 'assessment', label: 'Accertamento', icon: <Stethoscope size={18} /> },
     { id: 'scales', label: 'Scale Valutazione', icon: <Activity size={18} /> },
     { id: 'careplan', label: 'Piano Assistenza', icon: <BedDouble size={18} /> },
@@ -87,7 +87,7 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Stethoscope className="h-6 w-6" />
-              <h1 className="text-xl font-bold tracking-tight">Cartella Infermieristica</h1>
+              <h1 className="text-xl font-bold tracking-tight">Piano di assistenza infermieristica ad uso didattico</h1>
             </div>
             
             <div className="flex flex-wrap items-center gap-3">

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ClipboardList, Heart, Utensils, Toilet, Dumbbell, BedDouble, Brain, MirrorRound, Users, VenusAndMars, Anchor, Church } from 'lucide-react';
 import InitialAssessmentSection from './InitialAssessmentSection';
 import Model1 from './models/Model1';
 import Model2 from './models/Model2';
@@ -20,42 +21,35 @@ export default function AssessmentTab() {
   const [activeSubTab, setActiveSubTab] = useState<SubTabId>('initial');
 
   const tabs = [
-    { id: 'initial', label: 'Dati Iniziali' },
-    { id: 'model1', label: '1. Salute' },
-    { id: 'model2', label: '2. Nutrizione' },
-    { id: 'model3', label: '3. Eliminazione' },
-    { id: 'model4', label: '4. Attività' },
-    { id: 'model5', label: '5. Riposo' },
-    { id: 'model6', label: '6. Cognitivo' },
-    { id: 'model7', label: '7. Percezione/Sé' },
-    { id: 'model8', label: '8. Ruoli' },
-    { id: 'model9', label: '9. Sessualità' },
-    { id: 'model10', label: '10. Coping' },
-    { id: 'model11', label: '11. Valori' },
-
-
+    { id: 'initial',  label: 'Dati Iniziali',                        icon: <ClipboardList size={14} /> },
+    { id: 'model1',  label: '1. Percezione e Gestione della Salute', icon: <Heart size={14} /> },
+    { id: 'model2',  label: '2. Nutrizione e Metabolismo',           icon: <Utensils size={14} /> },
+    { id: 'model3',  label: '3. Eliminazione',                       icon: <Toilet size={14} /> },
+    { id: 'model4',  label: '4. Attività ed Esercizio Fisico',       icon: <Dumbbell size={14} /> },
+    { id: 'model5',  label: '5. Riposo e Sonno',                     icon: <BedDouble size={14} /> },
+    { id: 'model6',  label: '6. Cognitivo e Percettivo',             icon: <Brain size={14} /> },
+    { id: 'model7',  label: '7. Percezione e Concetto di Sé',        icon: <MirrorRound size={14} /> },
+    { id: 'model8',  label: '8. Ruoli e Relazioni',                  icon: <Users size={14} /> },
+    { id: 'model9',  label: '9. Sessualità e Riproduzione',          icon: <VenusAndMars size={14} /> },
+    { id: 'model10', label: '10. Coping e Tolleranza allo Stress',   icon: <Anchor size={14} /> },
+    { id: 'model11', label: '11. Valori e Convinzioni',              icon: <Church size={14} /> },
   ] as const;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="text-center pb-6 border-b border-slate-200">
-        <h2 className="text-2xl font-bold text-slate-800">Accertamento Infermieristico</h2>
-        <p className="text-slate-500">Modelli di Gordon</p>
-      </div>
-
       <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2 print:hidden">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={(e) => { e.preventDefault(); setActiveSubTab(tab.id); }}
-            className={`px-4 py-2 rounded-t-lg font-medium text-sm transition-colors border-b-2 ${
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-t-lg font-medium text-sm transition-colors border-b-2 ${
               activeSubTab === tab.id
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-600'
                 : 'text-slate-500 border-transparent hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
-            {tab.label}
+            {tab.icon}{tab.label}
           </button>
         ))}
       </div>

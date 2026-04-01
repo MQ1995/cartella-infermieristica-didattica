@@ -15,6 +15,9 @@ export interface NursingAssessment {
   patientAge: string;
   nationality: string;
   patientLanguage: string;
+  careStartDate: string;
+  careEndDate: string;
+  assessmentStartDate: string;
   maritalStatus: string;
   referencePerson: string;
   admissionDate: string;
@@ -371,6 +374,9 @@ export const defaultValues: NursingAssessment = {
   patientAge: '',
   nationality: '',
   patientLanguage: '',
+  careStartDate: '',
+  careEndDate: '',
+  assessmentStartDate: '',
   maritalStatus: '',
   referencePerson: '',
   admissionDate: '',
