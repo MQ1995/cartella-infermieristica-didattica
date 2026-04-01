@@ -5,8 +5,11 @@ import Model3 from './models/Model3';
 import Model4 from './models/Model4';
 import Model5 from './models/Model5';
 import Model6 from './models/Model6';
+import Model7 from './models/Model7';
+import Model8 from './models/Model8';
 
-type SubTabId = 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6';
+
+type SubTabId = 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6' | 'model7' | 'model8';
 
 export default function AssessmentTab() {
   const [activeSubTab, setActiveSubTab] = useState<SubTabId>('model1');
@@ -18,6 +21,9 @@ export default function AssessmentTab() {
     { id: 'model4', label: '4. Attività' },
     { id: 'model5', label: '5. Riposo' },
     { id: 'model6', label: '6. Cognitivo' },
+    { id: 'model7', label: '7. Percezione/Sé' },
+    { id: 'model8', label: '8. Ruoli' },
+
   ] as const;
 
   return (
@@ -62,6 +68,13 @@ export default function AssessmentTab() {
         </div>
         <div className={activeSubTab === 'model6' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model6 />
+        </div>
+        <div className={activeSubTab === 'model7' ? 'block' : 'hidden print:block print:break-after-page'}>
+          <Model7 />
+        </div>
+        <div className={activeSubTab === 'model8' ? 'block' : 'hidden print:block print:break-after-page'}>
+          <Model8 />
+
         </div>
       </div>
     </div>

@@ -286,6 +286,32 @@ export interface NursingAssessment {
   model6Notes: string;
   model6Status: string;
 
+  // MODEL 7
+  selfDescription: string;
+  eyeContact: string;
+  voicePatterns: string;
+  interviewAttitude: string;
+  interviewAttitudeOther: string;
+  model7Notes: string;
+  model7Status: string;
+
+  // MODEL 8
+  maritalStatusRoles: string;
+  educationLevel: string;
+  occupationalRole: string;
+  occupationalActivityType: string;
+  occupationalPrevious: string;
+  occupationalDesired: string;
+  occupationalEnrolled: string;
+  livingSituation: string;
+  livingSituationOther: string;
+  familyStructure: string;
+  significantRelationships: string;
+  supportSystem: string[];
+  supportSystemOther: string;
+  model8Notes: string;
+  model8Status: string;
+
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
 }
@@ -563,6 +589,30 @@ export const defaultValues: NursingAssessment = {
   painTreatment: '',
   model6Notes: '',
   model6Status: '',
+
+  selfDescription: '',
+  eyeContact: '',
+  voicePatterns: '',
+  interviewAttitude: '',
+  interviewAttitudeOther: '',
+  model7Notes: '',
+  model7Status: '',
+
+  maritalStatusRoles: '',
+  educationLevel: '',
+  occupationalRole: '',
+  occupationalActivityType: '',
+  occupationalPrevious: '',
+  occupationalDesired: '',
+  occupationalEnrolled: '',
+  livingSituation: '',
+  livingSituationOther: '',
+  familyStructure: '',
+  significantRelationships: '',
+  supportSystem: [],
+  supportSystemOther: '',
+  model8Notes: '',
+  model8Status: '',
 
   carePlans: []
 };
