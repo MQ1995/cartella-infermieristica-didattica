@@ -1,3 +1,4 @@
+import { LockableSection } from '../../ui/LockableSection';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Select } from '../../ui/Select';
@@ -17,10 +18,7 @@ export default function Model3() {
   const bowelAlterationsTypes: string[] = Array.isArray(watch('bowelAlterationsTypes')) ? watch('bowelAlterationsTypes') : [];
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-        3. Modello di Eliminazione
-      </h3>
+    <LockableSection title="3. Modello di Eliminazione">
       
       <div className="space-y-8">
         {/* ELIMINAZIONE URINARIA */}
@@ -423,6 +421,6 @@ export default function Model3() {
           </div>
         </div>
       </div>
-    </section>
+    </LockableSection>
   );
 }

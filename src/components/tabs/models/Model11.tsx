@@ -1,3 +1,4 @@
+import { LockableSection } from '../../ui/LockableSection';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
@@ -10,11 +11,8 @@ export default function Model11() {
   const religiousAssistance = watch('religiousAssistance');
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2 flex items-center justify-between">
-        <span>11. Modello di Valori e Convinzioni</span>
-        <span className="text-xs font-normal text-slate-500 bg-white px-2 py-1 rounded border border-slate-200">(compilare solo se pertinente)</span>
-      </h3>
+    <LockableSection title="11. Modello di Valori e Convinzioni
+        (compilare solo se pertinente)">
       
       <div className="space-y-6">
         <Textarea 
@@ -97,6 +95,6 @@ export default function Model11() {
         </div>
 
       </div>
-    </section>
+    </LockableSection>
   );
 }

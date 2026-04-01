@@ -2,6 +2,7 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Textarea } from '../ui/Textarea';
+import { LockableSection } from '../ui/LockableSection';
 
 export default function CarePlanTab() {
   const { control } = useFormContext();
@@ -10,23 +11,25 @@ export default function CarePlanTab() {
     name: 'carePlans'
   });
 
+  const addProblem = () => append({ problem: '', objective: '', plannedInterventions: '', implementedInterventions: '', evaluation: '' });
+
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-emerald-700">Pianificazione Assistenziale</h3>
-        <button
-          type="button"
-          onClick={() => append({ problem: '', objective: '', plannedInterventions: '', implementedInterventions: '', evaluation: '' })}
-          className="bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-emerald-700 transition-colors shadow-sm print:hidden"
-        >
-          <Plus size={18} />
-          Aggiungi Problema
-        </button>
-      </div>
+      <LockableSection
+        title="Pianificazione Assistenziale"
+        headerAction={
+          <button
+            type="button"
+            onClick={addProblem}
+            className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-sm hover:bg-emerald-700 transition-colors shadow-sm"
+          >
+            <Plus size={16} /> Aggiungi Problema
+          </button>
+        }
+      >
 
       {fields.length === 0 ? (
-        <div className="text-center py-16 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 print:hidden">
+        <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-slate-200 print:hidden">
           <div className="text-slate-400 mb-4 flex justify-center">
             <Plus size={48} />
           </div>
@@ -36,7 +39,7 @@ export default function CarePlanTab() {
           </p>
           <button
             type="button"
-            onClick={() => append({ problem: '', objective: '', plannedInterventions: '', implementedInterventions: '', evaluation: '' })}
+            onClick={addProblem}
             className="bg-white text-emerald-600 border border-emerald-200 px-4 py-2 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm"
           >
             Inizia Pianificazione
@@ -101,6 +104,7 @@ export default function CarePlanTab() {
           ))}
         </div>
       )}
+      </LockableSection>
     </div>
   );
 }

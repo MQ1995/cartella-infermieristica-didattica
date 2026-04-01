@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useFormContext } from 'react-hook-form';
 import { Select } from '../ui/Select';
+import { LockableSection } from '../ui/LockableSection';
 
 export default function ScalesTab() {
   const { watch, setValue } = useFormContext();
@@ -57,15 +58,10 @@ export default function ScalesTab() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      <div className="text-center pb-6 border-b border-slate-200">
-        <h2 className="text-2xl font-bold text-slate-800">Scale di Valutazione</h2>
-        <p className="text-slate-500">Rischio LDP (Braden) e Rischio Cadute (Conley)</p>
-      </div>
 
-      {/* Scala Braden */}
-      <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <div className="flex justify-between items-center mb-6 border-b border-emerald-100 pb-2">
-          <h3 className="text-lg font-semibold text-emerald-700">Scala Braden (Rischio Lesioni da Pressione)</h3>
+      <LockableSection
+        title="Scala Braden (Rischio Lesioni da Pressione)"
+        headerRight={
           <div className="text-right">
             <div className="text-sm text-slate-500">Punteggio Totale</div>
             <div className={`text-2xl font-bold ${bradenScore <= 12 ? 'text-rose-600' : 'text-emerald-600'}`}>
@@ -73,7 +69,8 @@ export default function ScalesTab() {
             </div>
             <div className="text-xs font-medium uppercase tracking-wider">{pressureUlcerRisk}</div>
           </div>
-        </div>
+        }
+      >
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
           <Select 
@@ -136,12 +133,11 @@ export default function ScalesTab() {
             ]} 
           />
         </div>
-      </section>
+      </LockableSection>
 
-      {/* Scala Conley */}
-      <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <div className="flex justify-between items-center mb-6 border-b border-emerald-100 pb-2">
-          <h3 className="text-lg font-semibold text-emerald-700">Scala Conley (Rischio Cadute)</h3>
+      <LockableSection
+        title="Scala Conley (Rischio Cadute)"
+        headerRight={
           <div className="text-right">
             <div className="text-sm text-slate-500">Punteggio Totale</div>
             <div className={`text-2xl font-bold ${fallRisk ? 'text-rose-600' : 'text-emerald-600'}`}>
@@ -151,7 +147,8 @@ export default function ScalesTab() {
               {fallRisk ? 'A Rischio (>= 2)' : 'Non a Rischio'}
             </div>
           </div>
-        </div>
+        }
+      >
 
         <div className="space-y-4 bg-white p-4 rounded-lg border border-slate-200">
           <h4 className="font-medium text-slate-800 border-b border-slate-100 pb-2 mb-3">Precedenti Cadute</h4>
@@ -206,7 +203,7 @@ export default function ScalesTab() {
             </div>
           </div>
         </div>
-      </section>
+      </LockableSection>
     </div>
   );
 }

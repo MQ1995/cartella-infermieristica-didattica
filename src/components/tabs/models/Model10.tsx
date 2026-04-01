@@ -1,3 +1,4 @@
+import { LockableSection } from '../../ui/LockableSection';
 import { useFormContext } from 'react-hook-form';
 import { Textarea } from '../../ui/Textarea';
 import { Input } from '../../ui/Input';
@@ -6,10 +7,7 @@ export default function Model10() {
   const { register } = useFormContext();
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-        10. Modello di Coping e Tolleranza allo Stress
-      </h3>
+    <LockableSection title="10. Modello di Coping e Tolleranza allo Stress">
       
       <div className="space-y-6">
         <Textarea 
@@ -73,6 +71,6 @@ export default function Model10() {
         </div>
 
       </div>
-    </section>
+    </LockableSection>
   );
 }

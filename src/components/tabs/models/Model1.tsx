@@ -4,6 +4,7 @@ import { Textarea } from '../../ui/Textarea';
 import { Checkbox } from '../../ui/Checkbox';
 import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../../ui/ConfirmDeleteButton';
+import { LockableSection } from '../../ui/LockableSection';
 
 export default function Model1() {
   const { control, watch, register } = useFormContext();
@@ -19,10 +20,7 @@ export default function Model1() {
   });
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-        1. Modello di Percezione e Gestione della Salute
-      </h3>
+    <LockableSection title="1. Modello di Percezione e Gestione della Salute">
       
       <div className="space-y-4">
         <Textarea 
@@ -181,6 +179,6 @@ export default function Model1() {
           </div>
         </div>
       </div>
-    </section>
+    </LockableSection>
   );
 }

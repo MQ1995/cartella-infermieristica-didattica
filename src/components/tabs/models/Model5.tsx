@@ -1,3 +1,4 @@
+import { LockableSection } from '../../ui/LockableSection';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
@@ -11,10 +12,7 @@ export default function Model5() {
   const sleepMeds = watch('sleepMeds');
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-        5. Modello di Riposo e di Sonno
-      </h3>
+    <LockableSection title="5. Modello di Riposo e di Sonno">
       
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -110,6 +108,6 @@ export default function Model5() {
         </div>
 
       </div>
-    </section>
+    </LockableSection>
   );
 }

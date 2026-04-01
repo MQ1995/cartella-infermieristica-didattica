@@ -1,3 +1,4 @@
+import { LockableSection } from '../../ui/LockableSection';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
@@ -15,10 +16,7 @@ export default function Model6() {
   const pain = watch('pain');
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-        6. Modello Cognitivo e Percettivo
-      </h3>
+    <LockableSection title="6. Modello Cognitivo e Percettivo">
       
       <div className="space-y-8">
         <div>
@@ -295,6 +293,6 @@ export default function Model6() {
         </div>
 
       </div>
-    </section>
+    </LockableSection>
   );
 }

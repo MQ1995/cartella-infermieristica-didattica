@@ -1,3 +1,4 @@
+import { LockableSection } from '../../ui/LockableSection';
 import { useFormContext } from 'react-hook-form';
 import { Select } from '../../ui/Select';
 import { Textarea } from '../../ui/Textarea';
@@ -8,10 +9,7 @@ export default function Model7() {
   const interviewAttitude = watch('interviewAttitude');
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
-      <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
-        7. Modello di Percezione e Concetto del Sé
-      </h3>
+    <LockableSection title="7. Modello di Percezione e Concetto del Sé">
       
       <div className="space-y-6">
         <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2">Dati Soggettivi</h4>
@@ -102,6 +100,6 @@ export default function Model7() {
         </div>
 
       </div>
-    </section>
+    </LockableSection>
   );
 }
