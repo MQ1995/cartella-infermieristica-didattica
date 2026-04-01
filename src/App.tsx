@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2 } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
@@ -10,8 +10,9 @@ import GeneralInfoTab from './components/tabs/GeneralInfoTab';
 import AssessmentTab from './components/tabs/AssessmentTab';
 import ScalesTab from './components/tabs/ScalesTab';
 import CarePlanTab from './components/tabs/CarePlanTab';
+import MonitoringSection from './components/tabs/MonitoringSection';
 
-type TabId = 'general' | 'assessment' | 'scales' | 'careplan';
+type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'careplan';
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
@@ -83,10 +84,11 @@ function App() {
   };
 
   const tabs = [
-    { id: 'general', label: 'Dati Tirocinio e Studente', icon: <ClipboardList size={18} /> },
-    { id: 'assessment', label: 'Accertamento', icon: <Stethoscope size={18} /> },
-    { id: 'scales', label: 'Scale Valutazione', icon: <Activity size={18} /> },
-    { id: 'careplan', label: 'Piano Assistenza', icon: <BedDouble size={18} /> },
+    { id: 'general',     label: 'Dati Tirocinio e Studente', icon: <ClipboardList size={18} /> },
+    { id: 'assessment',  label: 'Accertamento',               icon: <Stethoscope size={18} /> },
+    { id: 'scales',      label: 'Scale Valutazione',          icon: <Activity size={18} /> },
+    { id: 'monitoring',  label: 'Monitoraggio',               icon: <HeartPulse size={18} /> },
+    { id: 'careplan',    label: 'Piano Assistenza',            icon: <BedDouble size={18} /> },
   ] as const;
 
   return (
@@ -94,38 +96,43 @@ function App() {
       <div className="min-h-screen flex flex-col bg-slate-50">
         {/* Header */}
         <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-50 print:hidden">
-          <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Stethoscope className="h-6 w-6" />
-              <h1 className="text-xl font-bold tracking-tight">Piano di assistenza infermieristica ad uso didattico</h1>
+          <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
+            <div className="flex items-center gap-2 min-w-0">
+              <Stethoscope className="h-6 w-6 flex-shrink-0" />
+              <h1 className="text-base sm:text-xl font-bold tracking-tight truncate">
+                <span className="hidden sm:inline">Piano di assistenza infermieristica ad uso didattico</span>
+                <span className="sm:hidden">Piano assistenza</span>
+              </h1>
             </div>
-            
-            <div className="flex flex-wrap items-center gap-3">
-              <label className="cursor-pointer bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50">
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <label className="cursor-pointer bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50">
                 <FolderOpen size={16} />
-                Carica
+                <span className="hidden sm:inline">Carica Backup</span>
                 <input type="file" accept=".json" className="hidden" onChange={handleImportJson} />
               </label>
-              
-              <button 
+
+              <button
                 type="button"
                 onClick={handleExportJson}
-                className="bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium shadow-sm transition-colors relative border border-emerald-500/50"
+                className="bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors relative border border-emerald-500/50"
               >
                 <Save size={16} />
-                Salva Backup
+                <span className="hidden sm:inline">Salva Backup</span>
                 {!isSaved && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-400 rounded-full shadow-sm"></span>
                 )}
               </button>
 
+              <div className="w-px h-6 bg-white/20 mx-1" />
+
               <button
                 type="button"
                 onClick={() => { setShowDeleteModal(true); setDeleteConfirmed(false); }}
-                className="bg-emerald-800/60 hover:bg-rose-900/60 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-colors border border-white/10 text-white/70 hover:text-rose-200"
+                className="bg-emerald-800/60 hover:bg-rose-900/60 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium transition-colors border border-white/10 text-white/70 hover:text-rose-200"
               >
                 <Trash2 size={16} />
-                Cancella tutto
+                <span className="hidden sm:inline">Cancella tutto</span>
               </button>
             </div>
           </div>
@@ -171,6 +178,9 @@ function App() {
               </div>
               <div className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <ScalesTab />
+              </div>
+              <div className={activeTab === 'monitoring' ? 'block' : 'hidden print:block print:break-after-page'}>
+                <MonitoringSection />
               </div>
               <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
                 <CarePlanTab />

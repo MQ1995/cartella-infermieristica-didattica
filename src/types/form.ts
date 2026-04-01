@@ -24,6 +24,7 @@ export interface NursingAssessment {
   admissionType: string;
   admissionTransferFrom: string;
   origin: string;
+  originOther: string;
   arrivalMode: string;
   medicalDiagnosis: string;
   admissionReason: string;
@@ -357,6 +358,21 @@ export interface NursingAssessment {
 
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
+
+  // Monitoraggio parametri vitali
+  vitalSigns: Array<{
+    date: string;
+    time: string;
+    bloodPressure: string;
+    heartRate: string;
+    temperature: string;
+    respiratoryRate: string;
+    spo2: string;
+    o2Therapy: string;
+    pain: string;
+    glycemia: string;
+    notes: string;
+  }>;
 }
 
 export const defaultValues: NursingAssessment = {
@@ -383,6 +399,7 @@ export const defaultValues: NursingAssessment = {
   admissionType: '',
   admissionTransferFrom: '',
   origin: '',
+  originOther: '',
   arrivalMode: '',
   medicalDiagnosis: '',
   admissionReason: '',
@@ -697,5 +714,6 @@ export const defaultValues: NursingAssessment = {
   model11Notes: '',
   model11Status: '',
 
-  carePlans: []
+  carePlans: [],
+  vitalSigns: []
 };
