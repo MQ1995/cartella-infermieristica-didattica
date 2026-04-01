@@ -11,11 +11,10 @@ export interface NursingAssessment {
   coordinator: string;
   tutor: string;
   
-  // Patient Info
   patientGender: string;
   patientAge: string;
   nationality: string;
-  language: string;
+  patientLanguage: string;
   maritalStatus: string;
   referencePerson: string;
   admissionDate: string;
@@ -235,18 +234,57 @@ export interface NursingAssessment {
   model4Notes: string;
   model4Status: string;
 
-  // Sleep
+  // MODEL 5
   sleepHours: string;
-  sleepRested: boolean;
+  sleepRested: string;
+  sleepRestedNotes: string;
+  sleepFallAsleepDiff: string;
+  sleepFallAsleepDiffNotes: string;
+  sleepMaintainDiff: string;
+  sleepMaintainDiffNotes: string;
   sleepMeds: string;
+  sleepMedsDetails: string;
+  sleepObservation: string;
+  model5Notes: string;
+  model5Status: string;
+
+  // MODEL 6
   consciousness: string;
+  avpuScore: string;
+  gcsScore: string;
+  otherNeurologicalEvaluations: string[];
+  rassScore: string;
   orientation: string;
-  pain: boolean;
+  disorientationTypes: string[];
+  disorientationDuration: string;
+  collaboration: string;
+  collaborationDetails: string;
+  collaborationFamilyDetails: string;
+  collaborationPartialDetails: string;
+  collaborationOtherDetails: string;
+  spokenLanguage: string;
+  speech: string;
+  aphasiaType: string;
+  comprehension: string;
+  attitude: string;
+  attitudeOther: string;
+  memory: string;
+  memoryAlterationDetails: string;
+  concentration: string;
+  concentrationAlterationDetails: string;
+  vision: string;
+  visionAlterationDetails: string;
+  hearing: string;
+  hearingAlterationDetails: string;
+  pain: string;
+  painLocation: string;
+  painTime: string;
+  painQuality: string;
+  painFactors: string;
   painNrs: string;
-  selfDescription: string;
-  maritalRole: string;
-  stressFactors: string;
-  religiousRestrictions: string;
+  painTreatment: string;
+  model6Notes: string;
+  model6Status: string;
 
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
@@ -266,7 +304,7 @@ export const defaultValues: NursingAssessment = {
   patientGender: '',
   patientAge: '',
   nationality: '',
-  language: '',
+  patientLanguage: '',
   maritalStatus: '',
   referencePerson: '',
   admissionDate: '',
@@ -477,15 +515,54 @@ export const defaultValues: NursingAssessment = {
   model4Status: '',
 
   sleepHours: '',
-  sleepRested: true,
+  sleepRested: '',
+  sleepRestedNotes: '',
+  sleepFallAsleepDiff: '',
+  sleepFallAsleepDiffNotes: '',
+  sleepMaintainDiff: '',
+  sleepMaintainDiffNotes: '',
   sleepMeds: '',
+  sleepMedsDetails: '',
+  sleepObservation: '',
+  model5Notes: '',
+  model5Status: '',
+
   consciousness: '',
+  avpuScore: '',
+  gcsScore: '',
+  otherNeurologicalEvaluations: [],
+  rassScore: '',
   orientation: '',
-  pain: false,
+  disorientationTypes: [],
+  disorientationDuration: '',
+  collaboration: '',
+  collaborationDetails: '',
+  collaborationFamilyDetails: '',
+  collaborationPartialDetails: '',
+  collaborationOtherDetails: '',
+  spokenLanguage: '',
+  speech: '',
+  aphasiaType: '',
+  comprehension: '',
+  attitude: '',
+  attitudeOther: '',
+  memory: '',
+  memoryAlterationDetails: '',
+  concentration: '',
+  concentrationAlterationDetails: '',
+  vision: '',
+  visionAlterationDetails: '',
+  hearing: '',
+  hearingAlterationDetails: '',
+  pain: 'false',
+  painLocation: '',
+  painTime: '',
+  painQuality: '',
+  painFactors: '',
   painNrs: '',
-  selfDescription: '',
-  maritalRole: '',
-  stressFactors: '',
-  religiousRestrictions: '',
+  painTreatment: '',
+  model6Notes: '',
+  model6Status: '',
+
   carePlans: []
 };
