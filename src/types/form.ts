@@ -312,6 +312,45 @@ export interface NursingAssessment {
   model8Notes: string;
   model8Status: string;
 
+  // MODEL 9
+  lastMenstruation: string;
+  menarche: string;
+  menstrualProblems: string;
+  menopause: string;
+  menopauseProblems: string;
+  pregnancies: string;
+  contraceptives: string;
+  contraceptivesProblems: string;
+  breastExam: string;
+  breastExamReason: string;
+  screeningTests: string;
+  screeningTestsReason: string;
+  numberOfChildren: string;
+  testiclesExam: string;
+  testiclesExamReason: string;
+  model9Notes: string;
+  model9Status: string;
+
+  // MODEL 10
+  lifeChanges: string;
+  healthConcerns: string;
+  stressors: string;
+  copingBehaviors: string;
+  copingReferencePersons: string;
+  model10Notes: string;
+  model10Status: string;
+
+  // MODEL 11
+  lifeGoalsSatisfaction: string;
+  religiousConflicts: string;
+  religiousConflictsReason: string;
+  religiousRestrictionsModel11: string;
+  religiousRestrictionsDetails: string;
+  religiousAssistance: string;
+  religiousAssistanceDetails: string;
+  model11Notes: string;
+  model11Status: string;
+
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
 }
@@ -613,6 +652,42 @@ export const defaultValues: NursingAssessment = {
   supportSystemOther: '',
   model8Notes: '',
   model8Status: '',
+
+  lastMenstruation: '',
+  menarche: '',
+  menstrualProblems: '',
+  menopause: 'false',
+  menopauseProblems: '',
+  pregnancies: '',
+  contraceptives: 'false',
+  contraceptivesProblems: '',
+  breastExam: 'true',
+  breastExamReason: '',
+  screeningTests: 'true',
+  screeningTestsReason: '',
+  numberOfChildren: '',
+  testiclesExam: 'true',
+  testiclesExamReason: '',
+  model9Notes: '',
+  model9Status: '',
+
+  lifeChanges: '',
+  healthConcerns: '',
+  stressors: '',
+  copingBehaviors: '',
+  copingReferencePersons: '',
+  model10Notes: '',
+  model10Status: '',
+
+  lifeGoalsSatisfaction: '',
+  religiousConflicts: 'false',
+  religiousConflictsReason: '',
+  religiousRestrictionsModel11: 'false',
+  religiousRestrictionsDetails: '',
+  religiousAssistance: 'false',
+  religiousAssistanceDetails: '',
+  model11Notes: '',
+  model11Status: '',
 
   carePlans: []
 };
