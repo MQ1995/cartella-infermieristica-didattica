@@ -10,6 +10,7 @@ export default function Model1() {
   const alcoholConsumption = watch('alcoholConsumption');
   const smoking = watch('smoking');
   const allergies = watch('allergies');
+  const fallRisk = watch('fallRisk');
 
   const { fields: homeTherapyFields, append: appendTherapy, remove: removeTherapy } = useFieldArray({
     control,
@@ -122,8 +123,38 @@ export default function Model1() {
         </div>
 
         <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model1Notes" 
+          <div className="mb-4">
+            <h4 className="font-semibold text-slate-700 mb-3">Valutazione rischio caduta</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <Input
+                name="fallRiskScaleUsed"
+                label="Scala utilizzata"
+                placeholder="es. Conley, Morse..."
+              />
+              <div>
+                <span className="block text-sm font-medium text-slate-700 mb-1">Paziente a rischio caduta?</span>
+                <div className="flex items-center gap-4 h-[38px]">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-sm text-slate-700">
+                    <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('fallRisk')} />
+                    Sì
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer text-sm text-slate-700">
+                    <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('fallRisk')} />
+                    No
+                  </label>
+                </div>
+              </div>
+              {(fallRisk === true || fallRisk === 'true') && (
+                <Input
+                  name="conleyScore"
+                  label="Punteggio scala"
+                  type="number"
+                />
+              )}
+            </div>
+          </div>
+          <Textarea
+            name="model1Notes"
             label="Eventuali note aggiuntive sul Modello Di Percezione E Gestione Della Salute" 
             rows={3}
           />

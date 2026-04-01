@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble } from 'lucide-react';
 import { saveAs } from 'file-saver';
-import ExportButton from './components/pdf/ExportButton';
-import type { NursingAssessment } from "./types/form";
+import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
 
 // Import Tabs
@@ -21,8 +20,6 @@ function App() {
   const methods = useForm<NursingAssessment>({
     defaultValues: defaultValues,
   });
-
-  const formValues = methods.watch();
 
   // Load from local storage on mount
   useEffect(() => {
@@ -86,7 +83,7 @@ function App() {
     <FormProvider {...methods}>
       <div className="min-h-screen flex flex-col bg-slate-50">
         {/* Header */}
-        <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
+        <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-50 print:hidden">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Stethoscope className="h-6 w-6" />
@@ -112,8 +109,6 @@ function App() {
                 )}
               </button>
 
-              <div className="h-6 w-px bg-emerald-600 mx-1"></div>
-              <ExportButton data={formValues as NursingAssessment} />
 
               
             </div>
@@ -124,7 +119,7 @@ function App() {
         <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 flex flex-col md:flex-row gap-6">
           
           {/* Sidebar Nav */}
-          <aside className="w-full md:w-64 flex-shrink-0">
+          <aside className="w-full md:w-64 flex-shrink-0 print:hidden">
             <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 md:sticky md:top-24">
               {tabs.map((tab) => (
                 <button
@@ -148,16 +143,20 @@ function App() {
           {/* Form Content */}
           <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 min-h-[700px]">
             <form className="p-6 h-full" onSubmit={(e) => e.preventDefault()}>
-              <div className={activeTab === 'general' ? 'block' : 'hidden'}>
+              <div className="hidden print:block mb-6 pb-4 border-b-2 border-emerald-700">
+                <h1 className="text-2xl font-bold text-emerald-800">Cartella Infermieristica Didattica</h1>
+                <p className="text-slate-500 text-sm mt-1">Piano di assistenza infermieristica a uso didattico</p>
+              </div>
+              <div className={activeTab === 'general' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <GeneralInfoTab />
               </div>
-              <div className={activeTab === 'assessment' ? 'block' : 'hidden'}>
+              <div className={activeTab === 'assessment' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <AssessmentTab />
               </div>
-              <div className={activeTab === 'scales' ? 'block' : 'hidden'}>
+              <div className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <ScalesTab />
               </div>
-              <div className={activeTab === 'careplan' ? 'block' : 'hidden'}>
+              <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
                 <CarePlanTab />
               </div>
             </form>

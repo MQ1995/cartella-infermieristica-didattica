@@ -20,3 +20,14 @@
     color: #0f172a;
   }
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 20mm 15mm;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

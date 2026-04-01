@@ -44,6 +44,7 @@ export interface NursingAssessment {
   model1Status: string;
   conleyScore: number;
   fallRisk: boolean;
+  fallRiskScaleUsed: string;
 
   // MODEL 2
   eatingHabits: string;
@@ -398,6 +399,7 @@ export const defaultValues: NursingAssessment = {
   model1Status: '',
   conleyScore: 0,
   fallRisk: false,
+  fallRiskScaleUsed: '',
   
   eatingHabits: '',
   dietaryRestrictions: '',

@@ -7,7 +7,8 @@ export default function Model8() {
 
   const occupationalRole = watch('occupationalRole');
   const livingSituation = watch('livingSituation');
-  const supportSystem = watch('supportSystem');
+  const supportSystemRaw = watch('supportSystem');
+  const supportSystem: string[] = Array.isArray(supportSystemRaw) ? supportSystemRaw : [];
 
   return (
     <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">

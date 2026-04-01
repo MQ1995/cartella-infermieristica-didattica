@@ -13,6 +13,8 @@ export default function Model3() {
   const laxatives = watch('laxatives');
   const bowelStoma = watch('bowelStoma');
   const drains = watch('drains');
+  const otherUrinaryAlterations: string[] = Array.isArray(watch('otherUrinaryAlterations')) ? watch('otherUrinaryAlterations') : [];
+  const bowelAlterationsTypes: string[] = Array.isArray(watch('bowelAlterationsTypes')) ? watch('bowelAlterationsTypes') : [];
 
   return (
     <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
@@ -92,7 +94,7 @@ export default function Model3() {
                         <input type="checkbox" value="Pollachiuria" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('otherUrinaryAlterations')} />
                         Pollachiuria
                       </div>
-                      {watch('otherUrinaryAlterations')?.includes('Pollachiuria') && (
+                      {otherUrinaryAlterations.includes('Pollachiuria') && (
                         <Input name="pollakiuriaFrequency" label="n. minzioni/die" className="ml-5 text-xs" />
                       )}
                     </label>
@@ -239,7 +241,7 @@ export default function Model3() {
                       <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
                         <input type="checkbox" value="Incontinenza" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('bowelAlterationsTypes')} /> Incontinenza
                       </label>
-                      {watch('bowelAlterationsTypes')?.includes('Incontinenza') && (
+                      {bowelAlterationsTypes.includes('Incontinenza') && (
                         <div className="flex gap-4 ml-6">
                           <label className="flex items-center gap-1 cursor-pointer text-xs text-slate-500">
                             <input type="radio" value="Occasionale" className="text-emerald-600 focus:ring-emerald-500" {...register('bowelIncontinenceType')} /> Occasionale

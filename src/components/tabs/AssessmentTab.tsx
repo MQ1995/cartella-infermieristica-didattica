@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import InitialAssessmentSection from './InitialAssessmentSection';
 import Model1 from './models/Model1';
 import Model2 from './models/Model2';
 import Model3 from './models/Model3';
@@ -13,12 +14,13 @@ import Model11 from './models/Model11';
 
 
 
-type SubTabId = 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6' | 'model7' | 'model8' | 'model9' | 'model10' | 'model11';
+type SubTabId = 'initial' | 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6' | 'model7' | 'model8' | 'model9' | 'model10' | 'model11';
 
 export default function AssessmentTab() {
-  const [activeSubTab, setActiveSubTab] = useState<SubTabId>('model1');
+  const [activeSubTab, setActiveSubTab] = useState<SubTabId>('initial');
 
   const tabs = [
+    { id: 'initial', label: 'Dati Iniziali' },
     { id: 'model1', label: '1. Salute' },
     { id: 'model2', label: '2. Nutrizione' },
     { id: 'model3', label: '3. Eliminazione' },
@@ -59,6 +61,9 @@ export default function AssessmentTab() {
       </div>
 
       <div className="print:block">
+        <div className={activeSubTab === 'initial' ? 'block' : 'hidden print:block print:break-after-page'}>
+          <InitialAssessmentSection />
+        </div>
         <div className={activeSubTab === 'model1' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model1 />
         </div>
