@@ -5,11 +5,14 @@ import { Textarea } from '../ui/Textarea';
 import { Plus, Trash2 } from 'lucide-react';
 
 export default function GeneralInfoTab() {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'pastMedicalHistory'
   });
+
+  const admissionType = watch('admissionType');
+  const dataSource = watch('dataSource');
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -74,27 +77,30 @@ export default function GeneralInfoTab() {
             name="admissionType" 
             label="Tipo di ricovero" 
             options={[
-              { label: 'Programmato', value: 'Programmato' },
-              { label: 'Urgente', value: 'Urgente' },
+              { label: 'programmato', value: 'Programmato' },
+              { label: 'urgente', value: 'Urgente' },
               { label: 'TSO', value: 'TSO' },
-              { label: 'Trasferimento', value: 'Trasferimento' }
+              { label: 'trasferimento interno', value: 'Trasferimento interno' }
             ]} 
           />
-          <Input name="origin" label="Provenienza" placeholder="Casa, Altro ente..." />
+          {admissionType === 'Trasferimento interno' && (
+            <Input name="admissionTransferFrom" label="da (specificare)" placeholder="es. Pronto Soccorso" />
+          )}
+          <Input name="origin" label="Provenienza (casa / altro ente)" placeholder="es. casa" />
           <Select 
             name="arrivalMode" 
             label="Modalità di arrivo" 
             options={[
-              { label: 'A piedi', value: 'Piedi' },
-              { label: 'Sedia a rotelle', value: 'Carrozzina' },
-              { label: 'Barella', value: 'Barella' }
+              { label: 'a piedi', value: 'Piedi' },
+              { label: 'sedia a rotelle', value: 'Carrozzina' },
+              { label: 'barella', value: 'Barella' }
             ]} 
           />
         </div>
 
         <div className="space-y-4 mt-4">
           <Input name="medicalDiagnosis" label="Diagnosi medica di ingresso" className="w-full" />
-          <Textarea name="admissionReason" label="Motivo del ricovero (descrizione circostanze)" rows={3} />
+          <Textarea name="admissionReason" label="Motivo del ricovero (descrizione delle circostanze che hanno causato il ricovero)" rows={3} />
         </div>
       </section>
 
@@ -140,18 +146,20 @@ export default function GeneralInfoTab() {
           </div>
         )}
 
-        <div className="mt-6 pt-4 border-t border-slate-100">
+        <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-4 items-end">
           <Select 
             name="dataSource" 
-            label="I dati sono stati forniti da:" 
-            className="max-w-md"
+            label="I dati sono stati forniti:" 
+            className="w-full md:max-w-md"
             options={[
-              { label: 'Persona ricoverata', value: 'Paziente' },
-              { label: 'Parenti / Accompagnatori', value: 'Parenti' },
-              { label: 'Documentazione clinica precedente', value: 'Documentazione' },
-              { label: 'Altro', value: 'Altro' }
+              { label: 'dalla persona ricoverata', value: 'Paziente' },
+              { label: 'parenti/accompagnatori', value: 'Parenti' },
+              { label: 'altro (specificare)', value: 'Altro' }
             ]} 
           />
+          {dataSource === 'Altro' && (
+            <Input name="dataSourceOther" label="Specificare fonte" className="flex-1 min-w-[200px]" />
+          )}
         </div>
       </section>
     </div>

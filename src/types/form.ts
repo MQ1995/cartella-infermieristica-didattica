@@ -20,12 +20,14 @@ export interface NursingAssessment {
   referencePerson: string;
   admissionDate: string;
   admissionType: string;
+  admissionTransferFrom: string;
   origin: string;
   arrivalMode: string;
   medicalDiagnosis: string;
   admissionReason: string;
   pastMedicalHistory: Array<{ date: string; pathology: string }>;
   dataSource: string;
+  dataSourceOther: string;
   
   // 2. Accertamento (Gordon)
   // Health Perception
@@ -40,6 +42,8 @@ export interface NursingAssessment {
   allergyDetails: string;
   physicalAppearance: string;
   homeTherapy: Array<{ drug: string; reason: string; dose: string; schedule: string; route: string }>;
+  model1Notes: string;
+  model1Status: string;
   conleyScore: number;
   fallRisk: boolean;
 
@@ -149,12 +153,14 @@ export const defaultValues: NursingAssessment = {
   referencePerson: '',
   admissionDate: '',
   admissionType: '',
+  admissionTransferFrom: '',
   origin: '',
   arrivalMode: '',
   medicalDiagnosis: '',
   admissionReason: '',
   pastMedicalHistory: [],
   dataSource: '',
+  dataSourceOther: '',
   generalHealth: '',
   healthPromotion: '',
   preventiveActions: '',
@@ -166,6 +172,8 @@ export const defaultValues: NursingAssessment = {
   allergyDetails: '',
   physicalAppearance: '',
   homeTherapy: [],
+  model1Notes: '',
+  model1Status: '',
   conleyScore: 0,
   fallRisk: false,
   eatingHabits: '',

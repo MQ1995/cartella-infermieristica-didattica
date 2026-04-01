@@ -1,18 +1,21 @@
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Textarea } from '../ui/Textarea';
 import { Checkbox } from '../ui/Checkbox';
-
-// We'll create a dedicated BodyMap component
-import BodyMap from '../ui/BodyMap';
+import { Plus, Trash2 } from 'lucide-react';
 
 export default function AssessmentTab() {
-  const { watch } = useFormContext();
+  const { control, watch, register } = useFormContext();
   
   const alcoholConsumption = watch('alcoholConsumption');
   const smoking = watch('smoking');
   const allergies = watch('allergies');
+
+  const { fields: homeTherapyFields, append: appendTherapy, remove: removeTherapy } = useFieldArray({
+    control,
+    name: 'homeTherapy'
+  });
   
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -61,10 +64,94 @@ export default function AssessmentTab() {
               )}
             </div>
             <div>
-              <Checkbox name="allergies" label="Allergie note" />
+              <Checkbox name="allergies" label="Allergie note riferite" />
               {allergies && (
                 <Input name="allergyDetails" label="Specificare (farmaci, alimenti)" className="mt-2" />
               )}
+            </div>
+          </div>
+
+          <div className="pt-6 mt-6 border-t border-slate-200">
+            <h4 className="font-semibold text-slate-700 mb-4">Esame Fisico</h4>
+            <Textarea 
+              name="physicalAppearance" 
+              label="Aspetto generale di salute" 
+              rows={2}
+            />
+          </div>
+
+          <div className="pt-4">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="font-semibold text-slate-700">Terapia assunta a domicilio</h4>
+              <button
+                type="button"
+                onClick={() => appendTherapy({ drug: '', reason: '', dose: '', schedule: '', route: '' })}
+                className="text-sm bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-indigo-100 transition-colors print:hidden"
+              >
+                <Plus size={16} /> Aggiungi Farmaco
+              </button>
+            </div>
+            
+            {homeTherapyFields.length === 0 ? (
+              <div className="text-sm text-slate-500 italic p-4 bg-white border border-slate-200 rounded-lg text-center print:hidden">
+                Nessuna terapia inserita.
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="grid grid-cols-[1fr_1fr_100px_100px_100px_40px] gap-2 mb-2 font-medium text-slate-700 text-sm px-2 hidden md:grid">
+                  <div>Farmaco</div>
+                  <div>Motivo</div>
+                  <div>Dose/die</div>
+                  <div>Orari</div>
+                  <div>Via</div>
+                  <div className="print:hidden"></div>
+                </div>
+                {homeTherapyFields.map((field, index) => (
+                  <div key={field.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_100px_100px_100px_40px] gap-2 items-center bg-white border border-slate-200 p-2 rounded-md">
+                    <Input name={`homeTherapy.${index}.drug`} label="" placeholder="Farmaco" />
+                    <Input name={`homeTherapy.${index}.reason`} label="" placeholder="Motivo" />
+                    <Input name={`homeTherapy.${index}.dose`} label="" placeholder="Dose" />
+                    <Input name={`homeTherapy.${index}.schedule`} label="" placeholder="Orari" />
+                    <Input name={`homeTherapy.${index}.route`} label="" placeholder="Via" />
+                    <button
+                      type="button"
+                      onClick={() => removeTherapy(index)}
+                      className="text-rose-500 hover:text-rose-700 p-2 print:hidden flex justify-center w-full md:w-auto mt-2 md:mt-0"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="pt-6 mt-6 border-t border-slate-200">
+            <Textarea 
+              name="model1Notes" 
+              label="Eventuali note aggiuntive sul Modello Di Percezione E Gestione Della Salute" 
+              rows={3}
+            />
+            <div className="mt-4 flex gap-6 items-center">
+              <span className="text-sm font-semibold text-slate-700">MODELLO:</span>
+              <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input 
+                  type="radio" 
+                  value="FUNZIONALE" 
+                  className="text-indigo-600 focus:ring-indigo-500 w-4 h-4" 
+                  {...register('model1Status')}
+                />
+                FUNZIONALE
+              </label>
+              <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                <input 
+                  type="radio" 
+                  value="DISFUNZIONALE" 
+                  className="text-indigo-600 focus:ring-indigo-500 w-4 h-4" 
+                  {...register('model1Status')}
+                />
+                DISFUNZIONALE
+              </label>
             </div>
           </div>
         </div>
@@ -130,14 +217,7 @@ export default function AssessmentTab() {
           />
         </div>
 
-        {/* Mappa Corporea */}
-        <div className="mt-8">
-          <h4 className="font-semibold text-slate-700 mb-2">Stato dei Tessuti - Mappa Lesioni</h4>
-          <p className="text-sm text-slate-500 mb-4">
-            Clicca sulla sagoma per aggiungere una lesione da pressione, ferita chirurgica o stoma.
-          </p>
-          <BodyMap />
-        </div>
+        {/* Rimossa Mappa Corporea come richiesto */}
       </section>
 
       {/* 3. Eliminazione */}

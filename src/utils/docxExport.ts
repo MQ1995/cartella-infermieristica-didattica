@@ -60,7 +60,15 @@ export const generateDocx = async (data: NursingAssessment) => {
           }),
           new Paragraph({
             children: [
-              new TextRun({ text: "Motivo del ricovero: ", bold: true }),
+              new TextRun({ text: "Tipo di ricovero: ", bold: true }),
+              new TextRun(data.admissionType || ''),
+              ...(data.admissionType === 'Trasferimento interno' ? [new TextRun({ text: ` da ${data.admissionTransferFrom || ''}` })] : []),
+            ],
+            spacing: { before: 200 },
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({ text: "Motivo del ricovero (descrizione delle circostanze che hanno causato il ricovero): ", bold: true }),
               new TextRun(data.admissionReason || ''),
             ],
             spacing: { before: 200 },
