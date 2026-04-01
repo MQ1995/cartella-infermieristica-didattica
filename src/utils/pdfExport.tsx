@@ -1,23 +1,13 @@
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import type { NursingAssessment } from '../types/form';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
-
-// Define fonts
-Font.register({
-  family: 'Open Sans',
-  fonts: [
-    { src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf' },
-    { src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf', fontWeight: 600 },
-    { src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-700.ttf', fontWeight: 700 }
-  ]
-});
 
 // Styles
 const styles = StyleSheet.create({
   page: {
     padding: 30,
-    fontFamily: 'Open Sans',
+    fontFamily: 'Helvetica',
     fontSize: 10,
     color: '#1e293b',
     lineHeight: 1.5,
@@ -35,7 +25,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 700,
+    fontFamily: 'Helvetica-Bold',
     color: '#166A3D',
   },
   subtitle: {
@@ -47,7 +37,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: 700,
+    fontFamily: 'Helvetica-Bold',
     color: '#166A3D',
     backgroundColor: '#ecfdf5',
     padding: '4 8',
@@ -56,7 +46,7 @@ const styles = StyleSheet.create({
   },
   subSectionTitle: {
     fontSize: 11,
-    fontWeight: 600,
+    fontFamily: 'Helvetica-Bold',
     marginTop: 8,
     marginBottom: 4,
     color: '#334155',
@@ -75,7 +65,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   label: {
-    fontWeight: 600,
+    fontFamily: 'Helvetica-Bold',
     color: '#475569',
     marginRight: 4,
   },
@@ -118,14 +108,14 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   tableCellHeader: {
-    fontWeight: 600,
+    fontFamily: 'Helvetica-Bold',
     fontSize: 9,
   },
   tableCell: {
     fontSize: 9,
   },
   emptyNotice: {
-    fontStyle: 'italic',
+    fontFamily: 'Helvetica-Oblique',
     color: '#94a3b8',
   },
   modelEval: {
@@ -137,9 +127,17 @@ const styles = StyleSheet.create({
   }
 });
 
+// Safe text wrapper to prevent crashes with undefined/null
+const SafeText = ({ children, style }: { children: any, style?: any }) => {
+  if (children === null || children === undefined) return <Text style={style}>{''}</Text>;
+  return <Text style={style}>{String(children)}</Text>;
+};
+
 // Helper component for Label: Value
 const Field = ({ label, value }: { label: string, value: any }) => {
-  if (!value || value === '' || value === 'false' || (Array.isArray(value) && value.length === 0)) return null;
+  if (value === null || value === undefined || value === '' || value === 'false' || (Array.isArray(value) && value.length === 0)) {
+    return null;
+  }
   
   const displayValue = typeof value === 'boolean' || value === 'true' 
     ? 'Sì' 
@@ -149,8 +147,8 @@ const Field = ({ label, value }: { label: string, value: any }) => {
 
   return (
     <View style={styles.row}>
-      <Text style={styles.label}>{label}:</Text>
-      <Text style={styles.value}>{displayValue}</Text>
+      <SafeText style={styles.label}>{label}:</SafeText>
+      <SafeText style={styles.value}>{displayValue}</SafeText>
     </View>
   );
 };
@@ -158,7 +156,7 @@ const Field = ({ label, value }: { label: string, value: any }) => {
 // Main Document Component
 export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
   
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr: string | undefined) => {
     if (!dateStr) return '';
     try {
       return format(new Date(dateStr), 'dd/MM/yyyy', { locale: it });
@@ -167,7 +165,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
     }
   };
 
-  const formatDateTime = (dateStr: string) => {
+  const formatDateTime = (dateStr: string | undefined) => {
     if (!dateStr) return '';
     try {
       return format(new Date(dateStr), 'dd/MM/yyyy HH:mm', { locale: it });
@@ -176,19 +174,24 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
     }
   };
 
+  // Safe checks for arrays
+  const pastMedicalHistory = Array.isArray(data.pastMedicalHistory) ? data.pastMedicalHistory : [];
+  const homeTherapy = Array.isArray(data.homeTherapy) ? data.homeTherapy : [];
+  const carePlans = Array.isArray(data.carePlans) ? data.carePlans : [];
+
   return (
     <Document>
       {/* PAGE 1: Dati Generali */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>Cartella Infermieristica Didattica</Text>
-            <Text style={styles.subtitle}>A.A. {data.academicYear}</Text>
+            <SafeText style={styles.title}>Cartella Infermieristica Didattica</SafeText>
+            <SafeText style={styles.subtitle}>A.A. {data.academicYear || ''}</SafeText>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>1. Dati Studente e Tirocinio</Text>
+          <SafeText style={styles.sectionTitle}>1. Dati Studente e Tirocinio</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Studente" value={data.studentName} /></View>
             <View style={styles.col}><Field label="Matricola" value={data.studentId} /></View>
@@ -206,7 +209,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>2. Dati Persona Assistita e Ricovero</Text>
+          <SafeText style={styles.sectionTitle}>2. Dati Persona Assistita e Ricovero</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Sesso" value={data.patientGender} /></View>
             <View style={styles.col}><Field label="Età" value={data.patientAge} /></View>
@@ -226,45 +229,45 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
             <View style={styles.col}>
               <Field 
                 label="Tipo Ricovero" 
-                value={`${data.admissionType}${data.admissionType === 'Trasferimento interno' ? ` da ${data.admissionTransferFrom}` : ''}`} 
+                value={`${data.admissionType || ''}${data.admissionType === 'Trasferimento interno' && data.admissionTransferFrom ? ` da ${data.admissionTransferFrom}` : ''}`} 
               />
             </View>
           </View>
           
           <View style={[styles.textBlock, { marginTop: 10 }]}>
-            <Text style={styles.label}>Diagnosi Medica di Ingresso:</Text>
-            <Text style={styles.value}>{data.medicalDiagnosis || '-'}</Text>
+            <SafeText style={styles.label}>Diagnosi Medica di Ingresso:</SafeText>
+            <SafeText style={styles.value}>{data.medicalDiagnosis || '-'}</SafeText>
           </View>
           
           <View style={styles.textBlock}>
-            <Text style={styles.label}>Motivo del ricovero:</Text>
-            <Text style={styles.value}>{data.admissionReason || '-'}</Text>
+            <SafeText style={styles.label}>Motivo del ricovero:</SafeText>
+            <SafeText style={styles.value}>{data.admissionReason || '-'}</SafeText>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>3. Anamnesi Patologica Remota</Text>
-          {data.pastMedicalHistory && data.pastMedicalHistory.length > 0 ? (
+          <SafeText style={styles.sectionTitle}>3. Anamnesi Patologica Remota</SafeText>
+          {pastMedicalHistory.length > 0 ? (
             <View style={styles.table}>
               <View style={styles.tableRow}>
-                <View style={[styles.tableColHeader, { width: '30%' }]}><Text style={styles.tableCellHeader}>Data / Anno</Text></View>
-                <View style={[styles.tableColHeader, { width: '70%' }]}><Text style={styles.tableCellHeader}>Patologia / Ricoveri Pregressi</Text></View>
+                <View style={[styles.tableColHeader, { width: '30%' }]}><SafeText style={styles.tableCellHeader}>Data / Anno</SafeText></View>
+                <View style={[styles.tableColHeader, { width: '70%' }]}><SafeText style={styles.tableCellHeader}>Patologia / Ricoveri Pregressi</SafeText></View>
               </View>
-              {data.pastMedicalHistory.map((item, i) => (
+              {pastMedicalHistory.map((item, i) => (
                 <View style={styles.tableRow} key={i}>
-                  <View style={[styles.tableCol, { width: '30%' }]}><Text style={styles.tableCell}>{item.date}</Text></View>
-                  <View style={[styles.tableCol, { width: '70%' }]}><Text style={styles.tableCell}>{item.pathology}</Text></View>
+                  <View style={[styles.tableCol, { width: '30%' }]}><SafeText style={styles.tableCell}>{item.date || ''}</SafeText></View>
+                  <View style={[styles.tableCol, { width: '70%' }]}><SafeText style={styles.tableCell}>{item.pathology || ''}</SafeText></View>
                 </View>
               ))}
             </View>
           ) : (
-            <Text style={styles.emptyNotice}>Nessuna anamnesi pregressa segnalata.</Text>
+            <SafeText style={styles.emptyNotice}>Nessuna anamnesi pregressa segnalata.</SafeText>
           )}
 
           <View style={{ marginTop: 10 }}>
              <Field 
                 label="Dati forniti da" 
-                value={`${data.dataSource}${data.dataSource === 'Altro' ? ` (${data.dataSourceOther})` : ''}`} 
+                value={`${data.dataSource || ''}${data.dataSource === 'Altro' && data.dataSourceOther ? ` (${data.dataSourceOther})` : ''}`} 
               />
           </View>
         </View>
@@ -273,47 +276,47 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
       {/* PAGE 2: Accertamento (Modelli di Gordon) */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.title}>Accertamento Infermieristico (Modelli di Gordon)</Text>
+          <SafeText style={styles.title}>Accertamento Infermieristico (Modelli di Gordon)</SafeText>
         </View>
 
         {/* MODELLO 1 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>1. Modello di Percezione e Gestione della Salute</Text>
+          <SafeText style={styles.sectionTitle}>1. Modello di Percezione e Gestione della Salute</SafeText>
           
           {data.generalHealth && (
             <View style={styles.textBlock}>
-              <Text style={styles.label}>Stato di salute generale:</Text>
-              <Text style={styles.value}>{data.generalHealth}</Text>
+              <SafeText style={styles.label}>Stato di salute generale:</SafeText>
+              <SafeText style={styles.value}>{data.generalHealth}</SafeText>
             </View>
           )}
           
           {(data.alcoholConsumption || data.smoking || data.allergies) && (
             <View style={{ marginTop: 5 }}>
-              <Text style={styles.subSectionTitle}>Fattori di rischio:</Text>
+              <SafeText style={styles.subSectionTitle}>Fattori di rischio:</SafeText>
               {data.alcoholConsumption && <Field label="Alcool" value={data.alcoholDetails || 'Sì'} />}
               {data.smoking && <Field label="Fumo" value={data.smokingDetails || 'Sì'} />}
               {data.allergies && <Field label="Allergie" value={data.allergyDetails || 'Sì'} />}
             </View>
           )}
 
-          {data.homeTherapy && data.homeTherapy.length > 0 && (
+          {homeTherapy.length > 0 && (
             <View style={{ marginTop: 10 }}>
-              <Text style={styles.subSectionTitle}>Terapia Domiciliare:</Text>
+              <SafeText style={styles.subSectionTitle}>Terapia Domiciliare:</SafeText>
               <View style={styles.table}>
                 <View style={styles.tableRow}>
-                  <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Farmaco</Text></View>
-                  <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Motivo</Text></View>
-                  <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Dose</Text></View>
-                  <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Orari</Text></View>
-                  <View style={styles.tableColHeader}><Text style={styles.tableCellHeader}>Via</Text></View>
+                  <View style={styles.tableColHeader}><SafeText style={styles.tableCellHeader}>Farmaco</SafeText></View>
+                  <View style={styles.tableColHeader}><SafeText style={styles.tableCellHeader}>Motivo</SafeText></View>
+                  <View style={styles.tableColHeader}><SafeText style={styles.tableCellHeader}>Dose</SafeText></View>
+                  <View style={styles.tableColHeader}><SafeText style={styles.tableCellHeader}>Orari</SafeText></View>
+                  <View style={styles.tableColHeader}><SafeText style={styles.tableCellHeader}>Via</SafeText></View>
                 </View>
-                {data.homeTherapy.map((item, i) => (
+                {homeTherapy.map((item, i) => (
                   <View style={styles.tableRow} key={i}>
-                    <View style={styles.tableCol}><Text style={styles.tableCell}>{item.drug}</Text></View>
-                    <View style={styles.tableCol}><Text style={styles.tableCell}>{item.reason}</Text></View>
-                    <View style={styles.tableCol}><Text style={styles.tableCell}>{item.dose}</Text></View>
-                    <View style={styles.tableCol}><Text style={styles.tableCell}>{item.schedule}</Text></View>
-                    <View style={styles.tableCol}><Text style={styles.tableCell}>{item.route}</Text></View>
+                    <View style={styles.tableCol}><SafeText style={styles.tableCell}>{item.drug || ''}</SafeText></View>
+                    <View style={styles.tableCol}><SafeText style={styles.tableCell}>{item.reason || ''}</SafeText></View>
+                    <View style={styles.tableCol}><SafeText style={styles.tableCell}>{item.dose || ''}</SafeText></View>
+                    <View style={styles.tableCol}><SafeText style={styles.tableCell}>{item.schedule || ''}</SafeText></View>
+                    <View style={styles.tableCol}><SafeText style={styles.tableCell}>{item.route || ''}</SafeText></View>
                   </View>
                 ))}
               </View>
@@ -321,23 +324,23 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
           )}
           
           <View style={styles.modelEval}>
-             <Text style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</Text>
-             <Text style={[styles.value, { fontSize: 9, fontWeight: 700 }]}>{data.model1Status || 'Non valutato'}</Text>
+             <SafeText style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</SafeText>
+             <SafeText style={[styles.value, { fontSize: 9, fontFamily: 'Helvetica-Bold' }]}>{data.model1Status || 'Non valutato'}</SafeText>
           </View>
         </View>
 
         {/* MODELLO 2 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>2. Modello di Nutrizione e Metabolismo</Text>
+          <SafeText style={styles.sectionTitle}>2. Modello di Nutrizione e Metabolismo</SafeText>
           
           <View style={styles.row}>
-            <View style={styles.col}><Field label="Peso" value={`${data.currentWeight} kg`} /></View>
-            <View style={styles.col}><Field label="Altezza" value={`${data.height} cm`} /></View>
+            <View style={styles.col}><Field label="Peso" value={data.currentWeight ? `${data.currentWeight} kg` : ''} /></View>
+            <View style={styles.col}><Field label="Altezza" value={data.height ? `${data.height} cm` : ''} /></View>
             <View style={styles.col}><Field label="BMI" value={data.bmi} /></View>
             <View style={styles.col}><Field label="Classe" value={data.weightClass} /></View>
           </View>
           <View style={styles.row}>
-            <View style={styles.col}><Field label="Temp." value={`${data.temperature} °C ${data.temperatureLocation ? `(${data.temperatureLocation})` : ''}`} /></View>
+            <View style={styles.col}><Field label="Temp." value={data.temperature ? `${data.temperature} °C ${data.temperatureLocation ? `(${data.temperatureLocation})` : ''}` : ''} /></View>
             <View style={styles.col}><Field label="Glicemia" value={data.capillaryGlycemia ? `${data.capillaryGlycemia} mg/dl` : ''} /></View>
           </View>
 
@@ -349,20 +352,20 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
              <View style={styles.col2}><Field label="Alterazioni" value={data.appetiteAlterations} /></View>
           </View>
           <View style={styles.row}>
-             <View style={styles.col}><Field label="Dentatura" value={`${data.dentition} ${data.dentitionProsthesisType || ''}`} /></View>
-             <View style={styles.col}><Field label="Deglutizione" value={`${data.swallowing} ${data.swallowingAlteration || ''}`} /></View>
+             <View style={styles.col}><Field label="Dentatura" value={`${data.dentition || ''} ${data.dentitionProsthesisType || ''}`} /></View>
+             <View style={styles.col}><Field label="Deglutizione" value={`${data.swallowing || ''} ${data.swallowingAlteration || ''}`} /></View>
           </View>
 
-          <Text style={styles.subSectionTitle}>Stato dei Tessuti</Text>
+          <SafeText style={styles.subSectionTitle}>Stato dei Tessuti</SafeText>
           <View style={styles.row}>
-            <View style={styles.col}><Field label="Colore" value={`${data.skinColor} ${data.skinColorOther || ''}`} /></View>
+            <View style={styles.col}><Field label="Colore" value={`${data.skinColor || ''} ${data.skinColorOther || ''}`} /></View>
             <View style={styles.col}><Field label="Turgore" value={data.skinTurgor} /></View>
             <View style={styles.col}><Field label="Umidità" value={data.skinMoisture} /></View>
           </View>
           
           {(data.edema || data.erythema || data.itching) && (
             <View style={styles.row}>
-              {data.edema && <View style={styles.col}><Field label="Edema" value={`${data.edemaLocation} (Grado: ${data.edemaGrade})`} /></View>}
+              {data.edema && <View style={styles.col}><Field label="Edema" value={`${data.edemaLocation || ''} (Grado: ${data.edemaGrade || ''})`} /></View>}
               {data.erythema && <View style={styles.col}><Field label="Eritema" value={data.erythemaLocation} /></View>}
               {data.itching && <View style={styles.col}><Field label="Prurito" value={data.itchingLocation} /></View>}
             </View>
@@ -376,27 +379,27 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
           )}
 
           <View style={styles.modelEval}>
-             <Text style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</Text>
-             <Text style={[styles.value, { fontSize: 9, fontWeight: 700 }]}>{data.model2Status || 'Non valutato'}</Text>
+             <SafeText style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</SafeText>
+             <SafeText style={[styles.value, { fontSize: 9, fontFamily: 'Helvetica-Bold' }]}>{data.model2Status || 'Non valutato'}</SafeText>
           </View>
         </View>
 
         {/* MODELLO 3 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>3. Modello di Eliminazione</Text>
-          <Text style={styles.subSectionTitle}>Urinaria</Text>
+          <SafeText style={styles.sectionTitle}>3. Modello di Eliminazione</SafeText>
+          <SafeText style={styles.subSectionTitle}>Urinaria</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Minzione" value={data.urinationType} /></View>
             <View style={styles.col}><Field label="Diuresi 24h" value={data.diuresis24h ? `${data.diuresis24h} ml` : ''} /></View>
             <View style={styles.col}><Field label="Caratteristiche" value={data.urineCharacteristics} /></View>
           </View>
-          {data.urinaryCatheter !== 'No' && data.urinaryCatheter && (
+          {data.urinaryCatheter && data.urinaryCatheter !== 'No' && (
             <View style={styles.row}>
-              <View style={styles.col2}><Field label="Catetere" value={`${data.urinaryCatheter} - ${data.urinaryCatheterDetails}`} /></View>
+              <View style={styles.col2}><Field label="Catetere" value={`${data.urinaryCatheter} - ${data.urinaryCatheterDetails || ''}`} /></View>
             </View>
           )}
 
-          <Text style={styles.subSectionTitle}>Intestinale</Text>
+          <SafeText style={styles.subSectionTitle}>Intestinale</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Frequenza" value={data.bowelFrequency} /></View>
             <View style={styles.col}><Field label="Ultima evac." value={formatDate(data.lastBowelMovement)} /></View>
@@ -404,8 +407,8 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
           </View>
 
           <View style={styles.modelEval}>
-             <Text style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</Text>
-             <Text style={[styles.value, { fontSize: 9, fontWeight: 700 }]}>{data.model3Status || 'Non valutato'}</Text>
+             <SafeText style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</SafeText>
+             <SafeText style={[styles.value, { fontSize: 9, fontFamily: 'Helvetica-Bold' }]}>{data.model3Status || 'Non valutato'}</SafeText>
           </View>
         </View>
 
@@ -416,7 +419,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
         
         {/* MODELLO 4 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>4. Modello di Attività ed Esercizio Fisico</Text>
+          <SafeText style={styles.sectionTitle}>4. Modello di Attività ed Esercizio Fisico</SafeText>
           
           <View style={styles.row}>
             <View style={styles.col}><Field label="Energia Perceita" value={data.energyLevel} /></View>
@@ -424,7 +427,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
             <View style={styles.col}><Field label="Equilibrio" value={data.balance} /></View>
           </View>
 
-          <Text style={styles.subSectionTitle}>Cardio-Respiratorio</Text>
+          <SafeText style={styles.subSectionTitle}>Cardio-Respiratorio</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Respiro" value={data.respiratoryFunction} /></View>
             <View style={styles.col}><Field label="Freq. Resp." value={data.respiratoryRate} /></View>
@@ -437,14 +440,14 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
           </View>
 
           <View style={styles.modelEval}>
-             <Text style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</Text>
-             <Text style={[styles.value, { fontSize: 9, fontWeight: 700 }]}>{data.model4Status || 'Non valutato'}</Text>
+             <SafeText style={[styles.label, { fontSize: 9 }]}>Valutazione Modello:</SafeText>
+             <SafeText style={[styles.value, { fontSize: 9, fontFamily: 'Helvetica-Bold' }]}>{data.model4Status || 'Non valutato'}</SafeText>
           </View>
         </View>
 
         {/* MODELLO 5 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>5. Modello di Riposo e Sonno</Text>
+          <SafeText style={styles.sectionTitle}>5. Modello di Riposo e Sonno</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Ore Sonno" value={data.sleepHours} /></View>
             <View style={styles.col}><Field label="Riposato al risveglio" value={data.sleepRested === 'true' ? 'Sì' : 'No'} /></View>
@@ -454,7 +457,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
 
         {/* MODELLO 6 */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>6. Modello Cognitivo e Percettivo</Text>
+          <SafeText style={styles.sectionTitle}>6. Modello Cognitivo e Percettivo</SafeText>
           <View style={styles.row}>
             <View style={styles.col}><Field label="Coscienza" value={data.consciousness} /></View>
             <View style={styles.col}><Field label="Orientato" value={data.orientation === 'true' ? 'Sì' : 'No'} /></View>
@@ -467,7 +470,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
           </View>
           {data.pain === 'true' && (
             <View style={{ marginTop: 5 }}>
-              <Text style={styles.subSectionTitle}>Valutazione Dolore</Text>
+              <SafeText style={styles.subSectionTitle}>Valutazione Dolore</SafeText>
               <View style={styles.row}>
                 <View style={styles.col}><Field label="NRS" value={data.painNrs} /></View>
                 <View style={styles.col}><Field label="Sede" value={data.painLocation} /></View>
@@ -479,7 +482,7 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
 
         {/* MODELLI 7-11 SINTESI */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sintesi Altri Modelli (7-11)</Text>
+          <SafeText style={styles.sectionTitle}>Sintesi Altri Modelli (7-11)</SafeText>
           <Field label="Stato Civile/Ruoli" value={`${data.maritalStatusRoles || ''} ${data.occupationalRole || ''}`} />
           <Field label="Vive" value={data.livingSituation} />
           <Field label="Coping (Eventi Stressanti)" value={data.stressors} />
@@ -491,48 +494,48 @@ export const AssessmentPDF = ({ data }: { data: NursingAssessment }) => {
       {/* PAGE 4: Piano Assistenza & Scale */}
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Scale di Valutazione</Text>
+          <SafeText style={styles.sectionTitle}>Scale di Valutazione</SafeText>
           <View style={styles.row}>
             <View style={styles.col}>
-              <Text style={styles.subSectionTitle}>Rischio Lesioni (Braden)</Text>
+              <SafeText style={styles.subSectionTitle}>Rischio Lesioni (Braden)</SafeText>
               <Field label="Punteggio Totale" value={data.bradenScore} />
               <Field label="Rischio" value={data.pressureUlcerRisk} />
             </View>
             <View style={styles.col}>
-              <Text style={styles.subSectionTitle}>Rischio Cadute (Conley)</Text>
+              <SafeText style={styles.subSectionTitle}>Rischio Cadute (Conley)</SafeText>
               <Field label="Punteggio Totale" value={data.conleyScore} />
               <Field label="Rischio" value={data.fallRisk ? 'A rischio' : 'Nessun Rischio'} />
             </View>
           </View>
         </View>
 
-        {data.carePlans && data.carePlans.length > 0 && (
+        {carePlans.length > 0 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Piano di Assistenza (PES)</Text>
+            <SafeText style={styles.sectionTitle}>Piano di Assistenza (PES)</SafeText>
             
-            {data.carePlans.map((plan, i) => (
+            {carePlans.map((plan, i) => (
               <View key={i} style={{ marginBottom: 15, paddingBottom: 10, borderBottom: '1px solid #e2e8f0' }}>
-                <Text style={[styles.subSectionTitle, { color: '#166A3D', fontSize: 12 }]}>Problema Assistenziale {i + 1}</Text>
+                <SafeText style={[styles.subSectionTitle, { color: '#166A3D', fontSize: 12 }]}>Problema Assistenziale {i + 1}</SafeText>
                 <View style={styles.textBlock}>
-                  <Text style={styles.value}>{plan.problem}</Text>
+                  <SafeText style={styles.value}>{plan.problem || ''}</SafeText>
                 </View>
                 
                 <View style={styles.row}>
                   <View style={styles.col}>
-                     <Text style={styles.label}>Obiettivo:</Text>
-                     <Text style={styles.value}>{plan.objective || '-'}</Text>
+                     <SafeText style={styles.label}>Obiettivo:</SafeText>
+                     <SafeText style={styles.value}>{plan.objective || '-'}</SafeText>
                   </View>
                   <View style={styles.col}>
-                     <Text style={styles.label}>Valutazione (Esito):</Text>
-                     <Text style={styles.value}>{plan.evaluation || '-'}</Text>
+                     <SafeText style={styles.label}>Valutazione (Esito):</SafeText>
+                     <SafeText style={styles.value}>{plan.evaluation || '-'}</SafeText>
                   </View>
                 </View>
                 
                 <View style={{ marginTop: 8 }}>
-                  <Text style={styles.label}>Interventi Pianificati e Attuati:</Text>
-                  <Text style={styles.value}>{plan.plannedInterventions || '-'}</Text>
+                  <SafeText style={styles.label}>Interventi Pianificati e Attuati:</SafeText>
+                  <SafeText style={styles.value}>{plan.plannedInterventions || '-'}</SafeText>
                   {plan.implementedInterventions && (
-                    <Text style={[styles.value, { marginTop: 4, fontStyle: 'italic' }]}>Attuati: {plan.implementedInterventions}</Text>
+                    <SafeText style={[styles.value, { marginTop: 4, fontFamily: 'Helvetica-Oblique' }]}>Attuati: {plan.implementedInterventions}</SafeText>
                   )}
                 </View>
               </View>
