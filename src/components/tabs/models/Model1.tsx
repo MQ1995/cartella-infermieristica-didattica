@@ -2,7 +2,8 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
 import { Checkbox } from '../../ui/Checkbox';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { ConfirmDeleteButton } from '../../ui/ConfirmDeleteButton';
 
 export default function Model1() {
   const { control, watch, register } = useFormContext();
@@ -109,13 +110,9 @@ export default function Model1() {
                   <Input name={`homeTherapy.${index}.dose`} label="" placeholder="Dose/die" />
                   <Input name={`homeTherapy.${index}.schedule`} label="" placeholder="Orari" />
                   <Input name={`homeTherapy.${index}.route`} label="" placeholder="Via" />
-                  <button
-                    type="button"
-                    onClick={() => removeTherapy(index)}
-                    className="text-rose-500 hover:text-rose-700 p-2 print:hidden flex justify-center w-full md:w-auto mt-2 md:mt-0"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  <div className="w-full md:w-auto mt-2 md:mt-0 flex justify-center">
+                    <ConfirmDeleteButton onConfirm={() => removeTherapy(index)} size={18} />
+                  </div>
                 </div>
               ))}
             </div>

@@ -2,7 +2,8 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Textarea } from '../ui/Textarea';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 
 export default function InitialAssessmentSection() {
   const { control, watch } = useFormContext();
@@ -12,6 +13,7 @@ export default function InitialAssessmentSection() {
   });
 
   const admissionType = watch('admissionType');
+  const origin = watch('origin');
   const dataSource = watch('dataSource');
 
   return (
@@ -81,7 +83,17 @@ export default function InitialAssessmentSection() {
           {admissionType === 'Trasferimento interno' && (
             <Input name="admissionTransferFrom" label="da (specificare)" placeholder="es. Pronto Soccorso" />
           )}
-          <Input name="origin" label="Provenienza (casa / altro ente)" placeholder="es. casa" />
+          <Select
+            name="origin"
+            label="Trasferimento da"
+            options={[
+              { label: 'Casa', value: 'Casa' },
+              { label: 'Altro ente', value: 'Altro ente' },
+            ]}
+          />
+          {origin === 'Altro ente' && (
+            <Input name="originOther" label="Specificare ente" placeholder="es. Casa di cura, RSA..." />
+          )}
           <Select
             name="arrivalMode"
             label="Modalità di arrivo"
@@ -125,16 +137,10 @@ export default function InitialAssessmentSection() {
               <div className="print:hidden"></div>
             </div>
             {fields.map((field, index) => (
-              <div key={field.id} className="grid grid-cols-[150px_1fr_40px] gap-2 items-center bg-white border border-slate-200 p-2 rounded-md">
+              <div key={field.id} className="grid grid-cols-[150px_1fr_auto] gap-2 items-center bg-white border border-slate-200 p-2 rounded-md">
                 <Input name={`pastMedicalHistory.${index}.date`} label="" placeholder="Anno/Data" />
                 <Input name={`pastMedicalHistory.${index}.pathology`} label="" placeholder="Descrizione" />
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="text-rose-500 hover:text-rose-700 p-2 print:hidden flex justify-center"
-                >
-                  <Trash2 size={18} />
-                </button>
+                <ConfirmDeleteButton onConfirm={() => remove(index)} size={18} />
               </div>
             ))}
           </div>

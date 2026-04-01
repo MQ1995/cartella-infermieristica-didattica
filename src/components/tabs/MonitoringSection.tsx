@@ -1,5 +1,6 @@
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 
 const COLUMNS = [
   { key: 'date',            label: 'Data',        type: 'date',   width: 'w-32' },
@@ -10,7 +11,7 @@ const COLUMNS = [
   { key: 'respiratoryRate', label: 'FR',          type: 'text',   width: 'w-16', placeholder: 'a/m' },
   { key: 'spo2',            label: 'SpO2',        type: 'text',   width: 'w-16', placeholder: '%' },
   { key: 'o2Therapy',       label: 'O₂ Lt/min',   type: 'text',   width: 'w-20', placeholder: '-' },
-  { key: 'pain',            label: 'NRS',         type: 'number', width: 'w-14', placeholder: '0-10' },
+  { key: 'pain',            label: 'NRS',         type: 'number', width: 'w-14', placeholder: '0-10', min: '0', max: '10' },
   { key: 'glycemia',        label: 'Glicemia',    type: 'text',   width: 'w-20', placeholder: 'mg/dL' },
   { key: 'notes',           label: 'Altro',       type: 'text',   width: 'w-36', placeholder: 'note' },
 ] as const;
@@ -62,21 +63,27 @@ export default function MonitoringSection() {
                   {COLUMNS.map(col => (
                     <td key={col.key} className="px-1 py-1">
                       <input
-                        {...register(`vitalSigns.${index}.${col.key}`)}
+                        {...register(`vitalSigns.${index}.${col.key}`, {
+                          onChange: ('min' in col || 'max' in col) ? (e) => {
+                            const val = parseInt(e.target.value, 10);
+                            if (!isNaN(val)) {
+                              const min = 'min' in col ? parseInt(col.min as string, 10) : -Infinity;
+                              const max = 'max' in col ? parseInt(col.max as string, 10) : Infinity;
+                              if (val < min) e.target.value = String(min);
+                              if (val > max) e.target.value = String(max);
+                            }
+                          } : undefined,
+                        })}
                         type={col.type}
                         placeholder={'placeholder' in col ? col.placeholder : undefined}
+                        min={'min' in col ? col.min : undefined}
+                        max={'max' in col ? col.max : undefined}
                         className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white"
                       />
                     </td>
                   ))}
                   <td className="px-1 py-1 print:hidden">
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-rose-400 hover:text-rose-600 p-1 flex justify-center"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <ConfirmDeleteButton onConfirm={() => remove(index)} size={16} />
                   </td>
                 </tr>
               ))}

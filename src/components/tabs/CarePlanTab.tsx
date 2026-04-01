@@ -1,5 +1,6 @@
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Textarea } from '../ui/Textarea';
 
 export default function CarePlanTab() {
@@ -11,10 +12,6 @@ export default function CarePlanTab() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      <div className="text-center pb-6 border-b border-slate-200">
-        <h2 className="text-2xl font-bold text-slate-800">Piano di Assistenza</h2>
-        <p className="text-slate-500">Problemi, Obiettivi, Interventi (PES)</p>
-      </div>
 
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold text-emerald-700">Pianificazione Assistenziale</h3>
@@ -49,15 +46,8 @@ export default function CarePlanTab() {
         <div className="space-y-8">
           {fields.map((field, index) => (
             <div key={field.id} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative group print:border-b-2 print:border-black print:pb-8">
-              <div className="absolute top-4 right-4 print:hidden">
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="text-rose-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
-                  title="Elimina Problema"
-                >
-                  <Trash2 size={20} />
-                </button>
+              <div className="absolute top-4 right-4 print:hidden opacity-0 group-hover:opacity-100 focus-within:opacity-100">
+                <ConfirmDeleteButton onConfirm={() => remove(index)} size={20} />
               </div>
 
               <div className="flex items-center gap-3 mb-6">
