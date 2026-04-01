@@ -387,7 +387,7 @@ export interface NursingAssessment {
   dischargeNotes: string;
 
   // Care Plan
-  carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
+  carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string; status: string }>;
 
   // Esami diagnostici
   diagnosticExams: Array<{
