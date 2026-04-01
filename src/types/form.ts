@@ -56,24 +56,37 @@ export interface NursingAssessment {
   appetite: string;
   appetiteAlterations: string[];
   currentWeight: string;
+  weightNotDetectedReason: string;
   height: string;
   temperature: string;
+  temperatureLocation: string;
   idealWeight: string;
   bmi: string;
   weightClass: string;
+  obesityGrade: string;
   basalMetabolism: string;
   caloricNeed: string;
   dentition: string;
+  dentitionProsthesisType: string;
   swallowing: string;
+  swallowingAlteration: string;
   enteralNutrition: string;
+  enteralNutritionType: string;
+  enteralNutritionSize: string;
+  enteralNutritionDate: string;
   parenteralNutrition: string;
   capillaryGlycemia: string;
-  mustScore: number;
+  
+  malnutritionTool: string;
+  malnutritionRiskScore: string;
   malnutritionRisk: boolean;
 
   // Skin Status
   skinTemperature: string;
+  skinColdLocation: string;
+  skinWarmLocation: string;
   skinColor: string;
+  skinColorOther: string;
   skinTurgor: string;
   skinMoisture: string;
   itching: boolean;
@@ -83,12 +96,33 @@ export interface NursingAssessment {
   edema: boolean;
   edemaLocation: string;
   edemaGrade: string;
+  tc: string;
+
   vascularAccess: boolean;
   vascularAccessType: string;
+  vascularAccessDetailsType: string;
+  vascularAccessLocation: string;
+  vascularAccessDate: string;
+  vascularAccessDressing: string;
+  vascularAccessDressingDate: string;
+  exitSiteScale: string;
+  exitSiteScore: string;
+
   skinIntegrity: boolean;
-  wounds: Array<{ type: string; location: string; description: string; x: number; y: number }>;
+  surgicalWounds: string;
+  skinLesions: string;
+  otherSkinLesions: string;
+  skinAppendagesAlterations: string;
+
   bradenScore: number;
   pressureUlcerRisk: string;
+  pressureUlcerRiskFactors: string;
+  pressureUlcerRiskFactorsDetails: string;
+
+  throatScaleScore: string;
+  
+  model2Notes: string;
+  model2Status: string;
 
   // Elimination
   urinationType: string;
@@ -184,22 +218,34 @@ export const defaultValues: NursingAssessment = {
   appetite: '',
   appetiteAlterations: [],
   currentWeight: '',
+  weightNotDetectedReason: '',
   height: '',
   temperature: '',
+  temperatureLocation: '',
   idealWeight: '',
   bmi: '',
   weightClass: '',
+  obesityGrade: '',
   basalMetabolism: '',
   caloricNeed: '',
   dentition: '',
+  dentitionProsthesisType: '',
   swallowing: '',
+  swallowingAlteration: '',
   enteralNutrition: '',
+  enteralNutritionType: '',
+  enteralNutritionSize: '',
+  enteralNutritionDate: '',
   parenteralNutrition: '',
   capillaryGlycemia: '',
-  mustScore: 0,
+  malnutritionTool: '',
+  malnutritionRiskScore: '',
   malnutritionRisk: false,
   skinTemperature: '',
+  skinColdLocation: '',
+  skinWarmLocation: '',
   skinColor: '',
+  skinColorOther: '',
   skinTurgor: '',
   skinMoisture: '',
   itching: false,
@@ -209,12 +255,28 @@ export const defaultValues: NursingAssessment = {
   edema: false,
   edemaLocation: '',
   edemaGrade: '',
+  tc: '',
   vascularAccess: false,
   vascularAccessType: '',
+  vascularAccessDetailsType: '',
+  vascularAccessLocation: '',
+  vascularAccessDate: '',
+  vascularAccessDressing: '',
+  vascularAccessDressingDate: '',
+  exitSiteScale: '',
+  exitSiteScore: '',
   skinIntegrity: true,
-  wounds: [],
+  surgicalWounds: '',
+  skinLesions: '',
+  otherSkinLesions: '',
+  skinAppendagesAlterations: '',
   bradenScore: 0,
   pressureUlcerRisk: '',
+  pressureUlcerRiskFactors: '',
+  pressureUlcerRiskFactorsDetails: '',
+  throatScaleScore: '',
+  model2Notes: '',
+  model2Status: '',
   urinationType: '',
   urinationAlterations: [],
   urineCharacteristics: '',

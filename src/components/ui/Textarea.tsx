@@ -19,7 +19,7 @@ export const Textarea: React.FC<TextareaProps> = ({ name, label, className = '',
         id={name}
         rows={rows}
         className="px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
-          focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500
           print:border print:border-slate-200 print:shadow-none print:bg-transparent resize-y"
         {...register(name)}
         {...props}

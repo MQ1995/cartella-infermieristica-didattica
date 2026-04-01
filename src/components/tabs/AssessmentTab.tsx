@@ -16,7 +16,22 @@ export default function AssessmentTab() {
     control,
     name: 'homeTherapy'
   });
-  
+
+  const weightChange = watch('weightChange');
+  const weightClass = watch('weightClass');
+  const dentition = watch('dentition');
+  const swallowing = watch('swallowing');
+  const enteralNutrition = watch('enteralNutrition');
+  const malnutritionRisk = watch('malnutritionRisk');
+  const skinTemperature = watch('skinTemperature');
+  const skinColor = watch('skinColor');
+  const itching = watch('itching');
+  const erythema = watch('erythema');
+  const edema = watch('edema');
+  const vascularAccess = watch('vascularAccess');
+  const skinIntegrity = watch('skinIntegrity');
+  const pressureUlcerRiskFactors = watch('pressureUlcerRiskFactors');
+
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       <div className="text-center pb-6 border-b border-slate-200">
@@ -25,8 +40,8 @@ export default function AssessmentTab() {
       </div>
 
       {/* 1. Percezione e Gestione della Salute */}
-      <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <h3 className="text-lg font-semibold text-indigo-700 mb-4 border-b border-indigo-100 pb-2">
+      <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
           1. Modello di Percezione e Gestione della Salute
         </h3>
         
@@ -45,29 +60,32 @@ export default function AssessmentTab() {
           />
           <Textarea 
             name="preventiveActions" 
-            label="Prevenzione primaria/secondaria/terziaria" 
+            label="Azioni messe in atto per la prevenzione primaria/secondaria/terziaria" 
             placeholder="(Screening, visite, autoispezione...)"
             rows={2}
           />
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200">
-            <div>
-              <Checkbox name="alcoholConsumption" label="Consumo di Alcool" />
-              {alcoholConsumption && (
-                <Input name="alcoholDetails" label="Tipo e Quantità" className="mt-2" />
-              )}
-            </div>
-            <div>
-              <Checkbox name="smoking" label="Fumo" />
-              {smoking && (
-                <Input name="smokingDetails" label="Tipo e Quantità" className="mt-2" />
-              )}
-            </div>
-            <div>
-              <Checkbox name="allergies" label="Allergie note riferite" />
-              {allergies && (
-                <Input name="allergyDetails" label="Specificare (farmaci, alimenti)" className="mt-2" />
-              )}
+          <div className="pt-4 border-t border-slate-200">
+            <h4 className="font-semibold text-slate-700 mb-3">Fattori di rischio legati alla salute:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <Checkbox name="alcoholConsumption" label="Consumo di Alcool" />
+                {alcoholConsumption && (
+                  <Input name="alcoholDetails" label="Specificare (tipo e quantità)" className="mt-2" />
+                )}
+              </div>
+              <div>
+                <Checkbox name="smoking" label="Fumo" />
+                {smoking && (
+                  <Input name="smokingDetails" label="Specificare (tipo e quantità)" className="mt-2" />
+                )}
+              </div>
+              <div>
+                <Checkbox name="allergies" label="Allergie note riferite" />
+                {allergies && (
+                  <Input name="allergyDetails" label="Specificare (farmaci, alimenti ecc.)" className="mt-2" />
+                )}
+              </div>
             </div>
           </div>
 
@@ -86,7 +104,7 @@ export default function AssessmentTab() {
               <button
                 type="button"
                 onClick={() => appendTherapy({ drug: '', reason: '', dose: '', schedule: '', route: '' })}
-                className="text-sm bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-indigo-100 transition-colors print:hidden"
+                className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
               >
                 <Plus size={16} /> Aggiungi Farmaco
               </button>
@@ -100,17 +118,17 @@ export default function AssessmentTab() {
               <div className="space-y-2">
                 <div className="grid grid-cols-[1fr_1fr_100px_100px_100px_40px] gap-2 mb-2 font-medium text-slate-700 text-sm px-2 hidden md:grid">
                   <div>Farmaco</div>
-                  <div>Motivo</div>
+                  <div>Motivo dell'assunzione</div>
                   <div>Dose/die</div>
                   <div>Orari</div>
-                  <div>Via</div>
+                  <div>Via di assunzione</div>
                   <div className="print:hidden"></div>
                 </div>
                 {homeTherapyFields.map((field, index) => (
                   <div key={field.id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_100px_100px_100px_40px] gap-2 items-center bg-white border border-slate-200 p-2 rounded-md">
                     <Input name={`homeTherapy.${index}.drug`} label="" placeholder="Farmaco" />
                     <Input name={`homeTherapy.${index}.reason`} label="" placeholder="Motivo" />
-                    <Input name={`homeTherapy.${index}.dose`} label="" placeholder="Dose" />
+                    <Input name={`homeTherapy.${index}.dose`} label="" placeholder="Dose/die" />
                     <Input name={`homeTherapy.${index}.schedule`} label="" placeholder="Orari" />
                     <Input name={`homeTherapy.${index}.route`} label="" placeholder="Via" />
                     <button
@@ -138,7 +156,7 @@ export default function AssessmentTab() {
                 <input 
                   type="radio" 
                   value="FUNZIONALE" 
-                  className="text-indigo-600 focus:ring-indigo-500 w-4 h-4" 
+                  className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" 
                   {...register('model1Status')}
                 />
                 FUNZIONALE
@@ -147,7 +165,7 @@ export default function AssessmentTab() {
                 <input 
                   type="radio" 
                   value="DISFUNZIONALE" 
-                  className="text-indigo-600 focus:ring-indigo-500 w-4 h-4" 
+                  className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" 
                   {...register('model1Status')}
                 />
                 DISFUNZIONALE
@@ -158,119 +176,410 @@ export default function AssessmentTab() {
       </section>
 
       {/* 2. Nutrizione e Metabolismo */}
-      <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <h3 className="text-lg font-semibold text-indigo-700 mb-4 border-b border-indigo-100 pb-2">
+      <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
           2. Modello di Nutrizione e Metabolismo
         </h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <Textarea name="eatingHabits" label="Abitudini alimentari" rows={2} />
-          <Textarea name="dietaryRestrictions" label="Restrizioni dietetiche / Intolleranze" rows={2} />
-        </div>
+        <div className="space-y-6">
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2">Dati Soggettivi</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Textarea name="eatingHabits" label="Abitudini alimentari (cosa mangia abitualmente pasti e spuntini tipo e quantità, idratazione)" rows={3} />
+            <div className="space-y-4">
+              <Input name="dietaryRestrictions" label="Restrizioni dietetiche" />
+              <Input name="foodAllergies" label="Allergie/intolleranze alimentari" />
+            </div>
+          </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-6">
-          <Input name="currentWeight" label="Peso (kg)" type="number" step="0.1" />
-          <Input name="height" label="Altezza (cm)" type="number" />
-          <Input name="temperature" label="T. Corporea (°C)" type="number" step="0.1" />
-          <Input name="bmi" label="BMI calcolato" readOnly className="bg-slate-100" />
-          <Select 
-            name="weightClass" 
-            label="Classe di peso" 
-            options={[
-              { label: 'Sottopeso', value: 'Sottopeso' },
-              { label: 'Normopeso', value: 'Normopeso' },
-              { label: 'Sovrappeso', value: 'Sovrappeso' },
-              { label: 'Obesità', value: 'Obesita' }
-            ]} 
-          />
-          <Input name="capillaryGlycemia" label="Glicemia (mg/dl)" type="number" />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Select 
-            name="dentition" 
-            label="Dentatura" 
-            options={[
-              { label: 'Normale', value: 'Normale' },
-              { label: 'Edentula', value: 'Edentula' },
-              { label: 'Alterata', value: 'Alterata' },
-              { label: 'Protesi dentale', value: 'Protesi' }
-            ]} 
-          />
-          <Select 
-            name="swallowing" 
-            label="Deglutizione" 
-            options={[
-              { label: 'Normale', value: 'Normale' },
-              { label: 'Disfagia Liquidi', value: 'DisfagiaLiquidi' },
-              { label: 'Disfagia Solidi', value: 'DisfagiaSolidi' }
-            ]} 
-          />
-          <Select 
-            name="appetite" 
-            label="Appetito" 
-            options={[
-              { label: 'Normale', value: 'Normale' },
-              { label: 'Aumentato', value: 'Aumentato' },
-              { label: 'Diminuito', value: 'Diminuito' }
-            ]} 
-          />
-        </div>
-
-        {/* Rimossa Mappa Corporea come richiesto */}
-      </section>
-
-      {/* 3. Eliminazione */}
-      <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <h3 className="text-lg font-semibold text-indigo-700 mb-4 border-b border-indigo-100 pb-2">
-          3. Modello di Eliminazione
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Urinaria */}
-          <div className="space-y-4">
-            <h4 className="font-medium text-slate-800 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-              Eliminazione Urinaria
-            </h4>
-            <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start border-t border-slate-200 pt-6">
+            <div className="space-y-3">
               <Select 
-                name="urinationType" 
-                label="Minzione" 
+                name="weightChange" 
+                label="Variazione di peso negli ultimi 3-6 mesi?" 
                 options={[
-                  { label: 'Spontanea', value: 'Spontanea' },
-                  { label: 'Incontinenza', value: 'Incontinenza' },
-                  { label: 'Ritenzione', value: 'Ritenzione' }
+                  { label: 'No', value: 'No' },
+                  { label: 'Sì, perdita di KG', value: 'Perdita' },
+                  { label: 'Sì, aumento di KG', value: 'Aumento' }
                 ]} 
               />
-              <Input name="diuresis24h" label="Diuresi 24h (ml)" type="number" />
+              {weightChange && weightChange !== 'No' && (
+                <Input name="weightChangeAmount" label="Specificare KG" type="number" step="0.1" />
+              )}
             </div>
-            <Input name="urinaryCatheter" label="Catetere Vescicale (Tipo/Calibro/Data)" />
-            <Textarea name="urineCharacteristics" label="Caratteristiche Urine (Colore, Odore, etc.)" rows={2} />
+
+            <div className="space-y-3">
+              <Select 
+                name="appetite" 
+                label="Appetito" 
+                options={[
+                  { label: 'Normale', value: 'Normale' },
+                  { label: 'Aumentato', value: 'Aumentato' },
+                  { label: 'Diminuito', value: 'Diminuito' }
+                ]} 
+              />
+              <div className="space-y-2 mt-2">
+                <label className="text-sm font-medium text-slate-700 block">Alterazioni:</label>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                    <input type="checkbox" value="Alterazione del gusto" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('appetiteAlterations')} />
+                    Alterazione del gusto
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                    <input type="checkbox" value="Nausea" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('appetiteAlterations')} />
+                    Nausea
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                    <input type="checkbox" value="Vomito" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('appetiteAlterations')} />
+                    Vomito
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                    <input type="checkbox" value="Dispepsia" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('appetiteAlterations')} />
+                    Dispepsia
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Intestinale */}
-          <div className="space-y-4 border-t md:border-t-0 md:border-l border-slate-200 pt-6 md:pt-0 md:pl-8">
-            <h4 className="font-medium text-slate-800 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-800"></span>
-              Eliminazione Intestinale
-            </h4>
-            <div className="grid grid-cols-2 gap-4">
-              <Input name="bowelFrequency" label="Frequenza / Ultima evacuazione" />
-              <Input name="laxatives" label="Uso lassativi (tipo)" />
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mt-8">Esame Fisico</h4>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Input name="currentWeight" label="Peso attuale" />
+              <Input name="height" label="Altezza" />
+              <div className="grid grid-cols-2 gap-2">
+                <Input name="temperature" label="Temp. corporea" />
+                <Input name="temperatureLocation" label="(sede)" />
+              </div>
             </div>
-            <Textarea name="stoolCharacteristics" label="Caratteristiche Feci (Scala Bristol)" rows={2} />
-            <Select 
-              name="abdomen" 
-              label="Addome" 
-              options={[
-                { label: 'Trattabile / Peristalsi Normale', value: 'Trattabile' },
-                { label: 'Globoso / Peristalsi Ipoattiva', value: 'Globoso_Ipoattiva' },
-                { label: 'Teso / Peristalsi Assente', value: 'Teso_Assente' }
-              ]} 
-            />
+            <Input name="weightNotDetectedReason" label="*Se il peso non è rilevato ma riferito, specificare motivo" className="text-xs" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <Input name="idealWeight" label="Peso ideale (calcolato con la Formula di Lorenz)" />
+              <Input name="bmi" label="Indice di massa corporea (BMI) Kg/m2" />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4 items-end">
+                <Select 
+                  name="weightClass" 
+                  label="Classe di Peso" 
+                  className="flex-1"
+                  options={[
+                    { label: 'Normopeso', value: 'Normopeso' },
+                    { label: 'Sovrappeso', value: 'Sovrappeso' },
+                    { label: 'Sottopeso', value: 'Sottopeso' },
+                    { label: 'Obesità', value: 'Obesità' }
+                  ]} 
+                />
+                {weightClass === 'Obesità' && (
+                  <Input name="obesityGrade" label="Grado obesità" className="w-24" />
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <Input name="basalMetabolism" label="Metabolismo basale (Harris-Benedict)" />
+                <Input name="caloricNeed" label="Fabbisogno Calorico (Formula di Long)" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              <div className="flex flex-col gap-2">
+                <Select 
+                  name="dentition" 
+                  label="Dentatura" 
+                  options={[
+                    { label: 'Normale', value: 'Normale' },
+                    { label: 'Edentula', value: 'Edentula' },
+                    { label: 'Alterata', value: 'Alterata' },
+                    { label: 'Protesi dentale', value: 'Protesi dentale' }
+                  ]} 
+                />
+                {dentition === 'Protesi dentale' && (
+                  <Input name="dentitionProsthesisType" label="Tipo di protesi" />
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Select 
+                  name="swallowing" 
+                  label="Deglutizione" 
+                  options={[
+                    { label: 'Normale', value: 'Normale' },
+                    { label: 'Disfagia', value: 'Disfagia' }
+                  ]} 
+                />
+                {swallowing === 'Disfagia' && (
+                  <Select 
+                    name="swallowingAlteration" 
+                    label="Disfagia per:" 
+                    options={[
+                      { label: 'Liquidi', value: 'Liquidi' },
+                      { label: 'Solidi', value: 'Solidi' },
+                      { label: 'Entrambi', value: 'Entrambi' }
+                    ]} 
+                  />
+                )}
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Select 
+                    name="enteralNutrition" 
+                    label="Nutrizione enterale" 
+                    options={[
+                      { label: 'No', value: 'No' },
+                      { label: 'SNG', value: 'SNG' },
+                      { label: 'PEG', value: 'PEG' }
+                    ]} 
+                  />
+                  {enteralNutrition && enteralNutrition !== 'No' && (
+                    <div className="grid grid-cols-3 gap-2">
+                      <Input name="enteralNutritionType" label="Tipo/Kcal" />
+                      <Input name="enteralNutritionSize" label="Dimensione" />
+                      <Input name="enteralNutritionDate" label="Posizionato il" type="date" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <Select 
+                    name="parenteralNutrition" 
+                    label="Nutrizione parenterale" 
+                    options={[
+                      { label: 'No', value: 'No' },
+                      { label: 'Parziale', value: 'Parziale' },
+                      { label: 'Totale', value: 'Totale' }
+                    ]} 
+                  />
+                  <div className="mt-2">
+                    <Input name="capillaryGlycemia" label="Glicemia capillare (mg/dl)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+              <h5 className="font-medium text-emerald-800 mb-3">Rischio malnutrizione</h5>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <Input name="malnutritionTool" label="Strumento utilizzato" placeholder="es. MUST" />
+                <div className="flex items-center gap-4 h-[42px]">
+                  <span className="text-sm font-medium text-slate-700">Paziente a rischio malnutrizione?</span>
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('malnutritionRisk')} /> Sì
+                  </label>
+                  <label className="flex items-center gap-1 cursor-pointer">
+                    <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('malnutritionRisk')} /> No
+                  </label>
+                </div>
+                {malnutritionRisk === 'true' && (
+                  <Input name="malnutritionRiskScore" label="Punteggio specifico" />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mt-8">Stato dei Tessuti</h4>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Select 
+                  name="skinTemperature" 
+                  label="Stato termico cutaneo" 
+                  options={[
+                    { label: 'Normale', value: 'Normale' },
+                    { label: 'Freddo', value: 'Freddo' },
+                    { label: 'Caldo', value: 'Caldo' }
+                  ]} 
+                />
+                {skinTemperature === 'Freddo' && <Input name="skinColdLocation" label="Sede" />}
+                {skinTemperature === 'Caldo' && <Input name="skinWarmLocation" label="Sede" />}
+              </div>
+
+              <div className="space-y-2">
+                <Select 
+                  name="skinColor" 
+                  label="Colorito cutaneo" 
+                  options={[
+                    { label: 'Roseo', value: 'Roseo' },
+                    { label: 'Pallido', value: 'Pallido' },
+                    { label: 'Cianotico', value: 'Cianotico' },
+                    { label: 'Itterico', value: 'Itterico' },
+                    { label: 'Altro', value: 'Altro' }
+                  ]} 
+                />
+                {skinColor === 'Altro' && <Input name="skinColorOther" label="Specificare altro" />}
+              </div>
+              
+              <div className="space-y-4">
+                <Select 
+                  name="skinTurgor" 
+                  label="Turgore cutaneo" 
+                  options={[
+                    { label: 'Normale', value: 'Normale' },
+                    { label: 'Ridotto', value: 'Ridotto' }
+                  ]} 
+                />
+                <Select 
+                  name="skinMoisture" 
+                  label="Umidità" 
+                  options={[
+                    { label: 'Asciutta al tatto', value: 'Asciutta' },
+                    { label: 'Secca/Desquamata', value: 'Secca' },
+                    { label: 'Eccessiva sudorazione', value: 'Sudorazione' }
+                  ]} 
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-200">
+              <div>
+                <Checkbox name="itching" label="Prurito" />
+                {itching && <Input name="itchingLocation" label="Sede" className="mt-2" />}
+              </div>
+              <div>
+                <Checkbox name="erythema" label="Eritemi" />
+                {erythema && <Input name="erythemaLocation" label="Sede" className="mt-2" />}
+              </div>
+              <div>
+                <Checkbox name="edema" label="Edema" />
+                {edema && (
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <Input name="edemaLocation" label="Sede" />
+                    <Input name="edemaGrade" label="Grado" />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-200">
+              <Input name="tc" label="TC (Specificare misurazione/sede)" className="max-w-xs" />
+            </div>
+
+            <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-100 space-y-4">
+              <div className="flex items-center gap-4">
+                <span className="font-medium text-emerald-800">Presenza di accessi vascolari:</span>
+                <label className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('vascularAccess')} /> No
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('vascularAccess')} /> Sì
+                </label>
+              </div>
+
+              {vascularAccess === 'true' && (
+                <div className="space-y-4 pt-2 border-t border-emerald-200/50">
+                  <div className="flex gap-4 mb-2">
+                     <label className="flex items-center gap-1 cursor-pointer text-sm">
+                      <input type="radio" value="venoso" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('vascularAccessType')} /> Venoso
+                    </label>
+                    <label className="flex items-center gap-1 cursor-pointer text-sm">
+                      <input type="radio" value="arterioso" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('vascularAccessType')} /> Arterioso
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Input name="vascularAccessDetailsType" label="Tipo" />
+                    <Input name="vascularAccessLocation" label="Sede" />
+                    <Input name="vascularAccessDate" label="Data inserzione" type="date" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input name="vascularAccessDressing" label="Tipologia di medicazione" />
+                    <Input name="vascularAccessDressingDate" label="Data ultima medicazione (se necessario)" type="date" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end bg-white p-3 rounded border border-emerald-100">
+                    <Input name="exitSiteScale" label="Condizione “exit site”: Scala utilizzata" />
+                    <Input name="exitSiteScore" label="Punteggio" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-200">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="font-medium text-slate-800">Integrità Cutanea:</span>
+                <label className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('skinIntegrity')} /> Sì
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('skinIntegrity')} /> No
+                </label>
+              </div>
+
+              {skinIntegrity === 'false' && (
+                <div className="space-y-4 pl-4 border-l-2 border-slate-200">
+                  <Textarea name="surgicalWounds" label="Ferite chirurgiche (sede, dimensioni, caratteristiche, data intervento chirurgico, medicazione)" rows={2} />
+                  <Textarea name="skinLesions" label="Lesioni cutanee (vascolari, da pressione, stoma ecc.) (specificare sede, dimensioni, stadio, caratteristiche, medicazione)" rows={3} />
+                  <Textarea name="otherSkinLesions" label="Altro (es. abrasioni)" rows={2} />
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4">
+              <Input name="skinAppendagesAlterations" label="Alterazioni annessi cutanei (unghie e capelli) (No/Sì specificare sede e caratteristiche)" />
+            </div>
+
+            <div className="mt-6 p-4 bg-slate-100 rounded-lg border border-slate-200">
+              <h5 className="font-medium text-slate-800 mb-3">Valutazione del rischio di Lesioni da Pressione</h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <Input name="bradenScore" label="Punteggio Scala Braden" type="number" readOnly className="bg-white" />
+                <Input name="pressureUlcerRisk" label="Rischio" readOnly className="bg-white" />
+              </div>
+              <div className="flex items-center gap-4 mb-2">
+                <span className="text-sm font-medium text-slate-700">Fattori di rischio lesioni da pressione:</span>
+                <label className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('pressureUlcerRiskFactors')} /> No
+                </label>
+                <label className="flex items-center gap-1 cursor-pointer text-sm">
+                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('pressureUlcerRiskFactors')} /> Sì
+                </label>
+              </div>
+              {pressureUlcerRiskFactors === 'true' && (
+                <Textarea name="pressureUlcerRiskFactorsDetails" label="Si, quali? (Intrinseci ed estrinseci, specificare i fattori specifici per la persona assistita)" rows={2} />
+              )}
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+               <Input name="throatScaleScore" label="Valutazione cavo orale: Punteggio scala Throat" />
+            </div>
+
+            <div className="pt-6 mt-6 border-t border-slate-200">
+              <Textarea 
+                name="model2Notes" 
+                label="Eventuali note aggiuntive sul Modello Di Nutrizione e Metabolismo" 
+                rows={3}
+              />
+              <div className="mt-4 flex gap-6 items-center">
+                <span className="text-sm font-semibold text-slate-700">MODELLO:</span>
+                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    value="FUNZIONALE" 
+                    className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" 
+                    {...register('model2Status')}
+                  />
+                  FUNZIONALE
+                </label>
+                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    value="DISFUNZIONALE" 
+                    className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" 
+                    {...register('model2Status')}
+                  />
+                  DISFUNZIONALE
+                </label>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
+
+      {/* 3. Eliminazione (Leaving placeholder to not break the build) */}
+      <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 border-b border-emerald-100 pb-2">
+          3. Modello di Eliminazione
+        </h3>
+        <p className="text-slate-500 italic">Il Modello di Eliminazione è presente nel form.</p>
       </section>
 
     </div>

@@ -14,7 +14,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({ name, label, className = '',
       <input
         type="checkbox"
         id={name}
-        className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+        className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
         {...register(name)}
         {...props}
       />

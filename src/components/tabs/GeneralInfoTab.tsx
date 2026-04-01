@@ -22,8 +22,8 @@ export default function GeneralInfoTab() {
       </div>
 
       <section>
-        <h3 className="text-lg font-semibold text-indigo-700 mb-4 flex items-center gap-2">
-          <span className="bg-indigo-100 p-1.5 rounded-md">1</span>
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 flex items-center gap-2">
+          <span className="bg-emerald-100 p-1.5 rounded-md">1</span>
           Dati Tirocinio e Studente
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -41,8 +41,8 @@ export default function GeneralInfoTab() {
       </section>
 
       <section>
-        <h3 className="text-lg font-semibold text-indigo-700 mb-4 flex items-center gap-2">
-          <span className="bg-indigo-100 p-1.5 rounded-md">2</span>
+        <h3 className="text-lg font-semibold text-emerald-700 mb-4 flex items-center gap-2">
+          <span className="bg-emerald-100 p-1.5 rounded-md">2</span>
           Accertamento Iniziale: Dati Persona Assistita
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -106,14 +106,14 @@ export default function GeneralInfoTab() {
 
       <section>
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-indigo-700 flex items-center gap-2">
-            <span className="bg-indigo-100 p-1.5 rounded-md">3</span>
+          <h3 className="text-lg font-semibold text-emerald-700 flex items-center gap-2">
+            <span className="bg-emerald-100 p-1.5 rounded-md">3</span>
             Anamnesi patologica remota e ricoveri pregressi
           </h3>
           <button
             type="button"
             onClick={() => append({ date: '', pathology: '' })}
-            className="text-sm bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-indigo-100 transition-colors print:hidden"
+            className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
           >
             <Plus size={16} /> Aggiungi Riga
           </button>

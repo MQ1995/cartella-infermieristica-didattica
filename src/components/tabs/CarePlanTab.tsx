@@ -17,11 +17,11 @@ export default function CarePlanTab() {
       </div>
 
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-indigo-700">Pianificazione Assistenziale</h3>
+        <h3 className="text-lg font-semibold text-emerald-700">Pianificazione Assistenziale</h3>
         <button
           type="button"
           onClick={() => append({ problem: '', objective: '', plannedInterventions: '', implementedInterventions: '', evaluation: '' })}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors shadow-sm print:hidden"
+          className="bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-emerald-700 transition-colors shadow-sm print:hidden"
         >
           <Plus size={18} />
           Aggiungi Problema
@@ -40,7 +40,7 @@ export default function CarePlanTab() {
           <button
             type="button"
             onClick={() => append({ problem: '', objective: '', plannedInterventions: '', implementedInterventions: '', evaluation: '' })}
-            className="bg-white text-indigo-600 border border-indigo-200 px-4 py-2 rounded-lg hover:bg-indigo-50 transition-colors shadow-sm"
+            className="bg-white text-emerald-600 border border-emerald-200 px-4 py-2 rounded-lg hover:bg-emerald-50 transition-colors shadow-sm"
           >
             Inizia Pianificazione
           </button>
@@ -61,7 +61,7 @@ export default function CarePlanTab() {
               </div>
 
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-indigo-100 text-indigo-700 font-bold w-8 h-8 rounded-full flex items-center justify-center">
+                <div className="bg-emerald-100 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center">
                   {index + 1}
                 </div>
                 <h4 className="font-semibold text-slate-800">Problema / Rischio Assistenziale (PES)</h4>

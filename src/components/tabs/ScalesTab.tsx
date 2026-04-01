@@ -64,8 +64,8 @@ export default function ScalesTab() {
 
       {/* Scala Braden */}
       <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <div className="flex justify-between items-center mb-6 border-b border-indigo-100 pb-2">
-          <h3 className="text-lg font-semibold text-indigo-700">Scala Braden (Rischio Lesioni da Pressione)</h3>
+        <div className="flex justify-between items-center mb-6 border-b border-emerald-100 pb-2">
+          <h3 className="text-lg font-semibold text-emerald-700">Scala Braden (Rischio Lesioni da Pressione)</h3>
           <div className="text-right">
             <div className="text-sm text-slate-500">Punteggio Totale</div>
             <div className={`text-2xl font-bold ${bradenScore <= 12 ? 'text-rose-600' : 'text-emerald-600'}`}>
@@ -140,8 +140,8 @@ export default function ScalesTab() {
 
       {/* Scala Conley */}
       <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-        <div className="flex justify-between items-center mb-6 border-b border-indigo-100 pb-2">
-          <h3 className="text-lg font-semibold text-indigo-700">Scala Conley (Rischio Cadute)</h3>
+        <div className="flex justify-between items-center mb-6 border-b border-emerald-100 pb-2">
+          <h3 className="text-lg font-semibold text-emerald-700">Scala Conley (Rischio Cadute)</h3>
           <div className="text-right">
             <div className="text-sm text-slate-500">Punteggio Totale</div>
             <div className={`text-2xl font-bold ${fallRisk ? 'text-rose-600' : 'text-emerald-600'}`}>

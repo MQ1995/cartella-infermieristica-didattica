@@ -81,7 +81,7 @@ function App() {
     <FormProvider {...methods}>
       <div className="min-h-screen flex flex-col print:bg-white print:text-black">
         {/* Header - Hidden on Print */}
-        <header className="bg-indigo-600 text-white shadow-md print:hidden sticky top-0 z-50">
+        <header className="bg-emerald-600 text-white shadow-md print:hidden sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Stethoscope className="h-6 w-6" />
@@ -89,7 +89,7 @@ function App() {
             </div>
             
             <div className="flex flex-wrap gap-2">
-              <label className="cursor-pointer bg-indigo-500 hover:bg-indigo-400 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm transition-colors">
+              <label className="cursor-pointer bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm transition-colors">
                 <FolderOpen size={16} />
                 Carica
                 <input type="file" accept=".json" className="hidden" onChange={handleImportJson} />
@@ -97,7 +97,7 @@ function App() {
               <button 
                 type="button"
                 onClick={handleExportJson}
-                className="bg-indigo-500 hover:bg-indigo-400 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm transition-colors relative"
+                className="bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm transition-colors relative"
               >
                 <Save size={16} />
                 Salva Backup
@@ -116,7 +116,7 @@ function App() {
               <button 
                 type="button"
                 onClick={() => generateDocx(methods.getValues())}
-                className="bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-colors"
+                className="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-colors"
               >
                 <Download size={16} />
                 Esporta DOCX
@@ -138,11 +138,11 @@ function App() {
                   onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left whitespace-nowrap transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold shadow-sm border border-indigo-100'
+                      ? 'bg-emerald-50 text-emerald-700 font-semibold shadow-sm border border-emerald-100'
                       : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
-                  <span className={activeTab === tab.id ? 'text-indigo-600' : 'text-slate-400'}>
+                  <span className={activeTab === tab.id ? 'text-emerald-600' : 'text-slate-400'}>
                     {tab.icon}
                   </span>
                   {tab.label}
