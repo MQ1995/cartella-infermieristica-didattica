@@ -126,7 +126,7 @@ export default function MedicationsTab() {
                     </tr>
                     {isExpanded && (
                       <tr key={`${field.id}-notes`} className="bg-amber-50 border-b border-slate-200">
-                        <td colSpan={TIME_SLOTS.length + 4} className="px-3 pb-2 border-l-4 border-amber-400">
+                        <td colSpan={TIME_SLOTS.length + 5} className="px-3 pb-2 border-l-4 border-amber-400">
                           <textarea
                             {...register(`medications.${index}.notes`)}
                             placeholder="Note aggiuntive per questo farmaco..."
