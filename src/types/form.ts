@@ -359,6 +359,14 @@ export interface NursingAssessment {
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
 
+  // Esami diagnostici
+  diagnosticExams: Array<{
+    date: string;
+    time: string;
+    examType: string;
+    result: string;
+  }>;
+
   // Bilancio idrico giornaliero
   fluidBalanceDays: Array<{
     date: string;
@@ -731,6 +739,7 @@ export const defaultValues: NursingAssessment = {
   model11Status: '',
 
   carePlans: [],
+  diagnosticExams: [],
   fluidBalanceDays: [],
   vitalSigns: []
 };

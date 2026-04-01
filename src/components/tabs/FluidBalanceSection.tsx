@@ -3,6 +3,7 @@ import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
 import { Plus, ChevronDown, ChevronUp, Lock, LockOpen } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Input } from '../ui/Input';
+import { InfoTooltip } from '../ui/InfoTooltip';
 
 const INTAKE_FIELDS = [
   { key: 'intakeInfusions',   label: 'Infusioni EV' },
@@ -26,6 +27,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
   onToggleLock: () => void;
 }) {
   const [expanded, setExpanded] = useState(true);
+  const { register } = useFormContext();
 
   const prefix = `fluidBalanceDays.${index}`;
   const intakeKeys  = INTAKE_FIELDS.map(f => `${prefix}.${f.key}`);
@@ -44,7 +46,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
   const balanceBg    = !hasVals ? 'bg-slate-50 border-slate-200' : balance > 0 ? 'bg-blue-50 border-blue-200' : balance < 0 ? 'bg-rose-50 border-rose-200' : 'bg-emerald-50 border-emerald-200';
 
   return (
-    <div className={`border border-slate-200 rounded-lg overflow-hidden ${locked ? 'opacity-60' : ''}`}>
+    <div className="border border-slate-200 rounded-lg overflow-hidden">
       {/* Row header */}
       <div
         className="flex items-center gap-3 px-4 py-3 bg-white cursor-pointer hover:bg-slate-50 transition-colors"
@@ -95,7 +97,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
 
       {/* Expanded detail */}
       {expanded && (
-        <div className="border-t border-slate-200 bg-slate-50 p-4">
+        <div className={`border-t border-slate-200 bg-slate-50 p-4 ${locked ? 'opacity-60' : ''}`}>
           <fieldset disabled={locked} className={locked ? 'pointer-events-none' : ''}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -120,9 +122,24 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
                   Uscite <span className="font-normal normal-case">(ml)</span>
                 </h5>
                 <div className="space-y-2">
-                  {OUTPUT_FIELDS.map(f => (
-                    <Input key={f.key} name={`${prefix}.${f.key}`} label={f.label} type="number" placeholder="0" />
-                  ))}
+                  {OUTPUT_FIELDS.map(f =>
+                    f.key === 'outputPerspiratio' ? (
+                      <div key={f.key} className="flex flex-col space-y-1">
+                        <label className="text-sm font-medium text-slate-700 flex items-center">
+                          {f.label}
+                          <InfoTooltip content="Formula: 10 ml × peso corporeo (kg) / 24h. Per un adulto di 70 kg ≈ 700 ml/die. Aumenta in caso di febbre (+100–150 ml per ogni °C sopra 37°C) o diaforesi." />
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="0"
+                          className="px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 print:border-b print:border-t-0 print:border-x-0 print:rounded-none print:shadow-none print:px-0 print:bg-transparent"
+                          {...register(`${prefix}.${f.key}`)}
+                        />
+                      </div>
+                    ) : (
+                      <Input key={f.key} name={`${prefix}.${f.key}`} label={f.label} type="number" placeholder="0" />
+                    )
+                  )}
                   <Input name={`${prefix}.outputOtherNote`} label="Specificare altro uscita" placeholder="es. sudorazione..." />
                   <div className="flex justify-between items-center px-3 py-1.5 bg-white border border-slate-200 rounded text-sm mt-1">
                     <span className="font-semibold text-slate-600">Totale uscite</span>
@@ -134,7 +151,9 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
 
             {/* Balance summary */}
             <div className={`mt-4 px-4 py-3 rounded-lg border-2 flex items-center justify-between transition-colors ${balanceBg}`}>
-              <span className="text-sm font-semibold text-slate-600">Bilancio {date || 'giornata'}</span>
+              <span className="text-sm font-semibold text-slate-600">
+                Bilancio {date ? date.split('-').reverse().join('-') : 'giornata'}
+              </span>
               <div className="text-right">
                 <div className={`text-xl font-bold tabular-nums ${balanceColor}`}>
                   {!hasVals ? '—' : `${balance > 0 ? '+' : ''}${balance} ml`}

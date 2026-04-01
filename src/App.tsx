@@ -12,6 +12,7 @@ import ScalesTab from './components/tabs/ScalesTab';
 import CarePlanTab from './components/tabs/CarePlanTab';
 import MonitoringSection from './components/tabs/MonitoringSection';
 import FluidBalanceSection from './components/tabs/FluidBalanceSection';
+import DiagnosticExamsSection from './components/tabs/DiagnosticExamsSection';
 
 type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'careplan';
 
@@ -196,6 +197,7 @@ function App() {
               <div className={activeTab === 'monitoring' ? 'block space-y-8' : 'hidden print:block print:break-after-page'}>
                 <MonitoringSection />
                 <FluidBalanceSection />
+                <DiagnosticExamsSection />
               </div>
               <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
                 <CarePlanTab />
