@@ -369,7 +369,6 @@ export interface NursingAssessment {
     ora24: boolean;
     oraCustom: string;
     notes: string;
-    signature: string;
   }>;
 
   // Accertamento quotidiano (diario)
