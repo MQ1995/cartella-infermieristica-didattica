@@ -78,7 +78,7 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
                 {...register(`${prefix}.notes`)}
                 rows={4}
                 placeholder={locked ? '—' : 'Osservazioni cliniche, andamento della giornata, interventi effettuati...'}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
               />
             </div>
 
@@ -90,8 +90,8 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
               <textarea
                 {...register(`${prefix}.newProblems`)}
                 rows={3}
-                placeholder={locked ? '—' : 'es. Rischio caduta correlato a instabilità dell\'andatura che si manifesta con...'}
-                className="w-full px-3 py-2 bg-white border border-amber-200 rounded-md text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                placeholder={locked ? '—' : 'es. Rischio caduta correlato a instabilità dell\'andatura'}
+                className="w-full px-3 py-2 bg-white border border-amber-200 rounded-md text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
               />
             </div>
           </fieldset>

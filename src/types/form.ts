@@ -356,6 +356,22 @@ export interface NursingAssessment {
   model11Notes: string;
   model11Status: string;
 
+  // Prescrizione farmacologica
+  medications: Array<{
+    drug: string;
+    dosage: string;
+    route: string;
+    ora8: boolean;
+    ora12: boolean;
+    ora14: boolean;
+    ora16: boolean;
+    ora20: boolean;
+    ora24: boolean;
+    oraCustom: string;
+    notes: string;
+    signature: string;
+  }>;
+
   // Accertamento quotidiano (diario)
   dailyAssessments: Array<{
     date: string;
@@ -753,6 +769,7 @@ export const defaultValues: NursingAssessment = {
   model11Notes: '',
   model11Status: '',
 
+  medications: [],
   dailyAssessments: [],
   dischargeUnresolvedProblems: '',
   dischargeObjectives: '',
