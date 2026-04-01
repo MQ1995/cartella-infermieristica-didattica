@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Printer, Stethoscope, Activity, ClipboardList, BedDouble } from 'lucide-react';
+import { Save, FolderOpen, Download, Stethoscope, Activity, ClipboardList, BedDouble } from 'lucide-react';
 import { saveAs } from 'file-saver';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import type { NursingAssessment } from "./types/form";
 import { defaultValues } from './types/form';
-import { generateDocx } from "./utils/docxExport";
-import { Download } from "lucide-react";
+import { AssessmentPDF } from './utils/pdfExport';
 
 // Import Tabs
 import GeneralInfoTab from './components/tabs/GeneralInfoTab';
@@ -22,6 +22,8 @@ function App() {
   const methods = useForm<NursingAssessment>({
     defaultValues: defaultValues,
   });
+
+  const formValues = methods.watch();
 
   // Load from local storage on mount
   useEffect(() => {
@@ -47,8 +49,12 @@ function App() {
   const handleExportJson = () => {
     const data = methods.getValues();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const fileName = data.studentName ? `assessment-${data.studentName.replace(/\s+/g, '-').toLowerCase()}` : 'assessment-draft';
-    saveAs(blob, `${fileName}.json`);
+    
+    // Create smart filename based on user inputs
+    const studentPart = data.studentName ? data.studentName.replace(/\s+/g, '-').toLowerCase() : 'studente';
+    const patientPart = data.patientGender && data.patientAge ? `paziente-${data.patientGender}${data.patientAge}` : 'bozza';
+    
+    saveAs(blob, `assessment-${studentPart}-${patientPart}.json`);
     setIsSaved(true);
   };
 
@@ -79,49 +85,48 @@ function App() {
 
   return (
     <FormProvider {...methods}>
-      <div className="min-h-screen flex flex-col print:bg-white print:text-black">
-        {/* Header - Hidden on Print */}
-        <header className="bg-emerald-600 text-white shadow-md print:hidden sticky top-0 z-50">
+      <div className="min-h-screen flex flex-col bg-slate-50">
+        {/* Header */}
+        <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Stethoscope className="h-6 w-6" />
-              <h1 className="text-xl font-bold">Cartella Infermieristica</h1>
+              <h1 className="text-xl font-bold tracking-tight">Cartella Infermieristica</h1>
             </div>
             
-            <div className="flex flex-wrap gap-2">
-              <label className="cursor-pointer bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm transition-colors">
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="cursor-pointer bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50">
                 <FolderOpen size={16} />
                 Carica
                 <input type="file" accept=".json" className="hidden" onChange={handleImportJson} />
               </label>
+              
               <button 
                 type="button"
                 onClick={handleExportJson}
-                className="bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm transition-colors relative"
+                className="bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium shadow-sm transition-colors relative border border-emerald-500/50"
               >
                 <Save size={16} />
                 Salva Backup
                 {!isSaved && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full"></span>
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-400 rounded-full shadow-sm"></span>
                 )}
               </button>
-              <button 
-                type="button"
-                onClick={() => window.print()}
-                className="bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-colors"
-              >
-                <Printer size={16} />
-                Stampa PDF
-              </button>
-              <button 
-                type="button"
-                onClick={() => generateDocx(methods.getValues())}
-                className="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-2 text-sm font-medium transition-colors"
-              >
-                <Download size={16} />
-                Esporta DOCX
 
-              </button>
+              <div className="h-6 w-px bg-emerald-600 mx-1"></div>
+              
+              <PDFDownloadLink 
+                document={<AssessmentPDF data={formValues as NursingAssessment} />} 
+                fileName={`cartella-inf-${formValues.studentName?.replace(/\s+/g, '-').toLowerCase() || 'studente'}.pdf`}
+                className="bg-white text-emerald-700 hover:bg-emerald-50 px-4 py-1.5 rounded-md flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
+              >
+                {({ loading }) => (
+                  <>
+                    <Download size={16} className={loading ? 'animate-bounce' : ''} />
+                    {loading ? 'Generazione PDF...' : 'Esporta PDF'}
+                  </>
+                )}
+              </PDFDownloadLink>
             </div>
           </div>
         </header>
@@ -129,17 +134,17 @@ function App() {
         {/* Main Content */}
         <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 flex flex-col md:flex-row gap-6">
           
-          {/* Sidebar Nav - Hidden on Print */}
-          <aside className="w-full md:w-64 flex-shrink-0 print:hidden">
+          {/* Sidebar Nav */}
+          <aside className="w-full md:w-64 flex-shrink-0">
             <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 md:sticky md:top-24">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left whitespace-nowrap transition-colors ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left whitespace-nowrap transition-all ${
                     activeTab === tab.id
-                      ? 'bg-emerald-50 text-emerald-700 font-semibold shadow-sm border border-emerald-100'
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'bg-emerald-50 text-emerald-800 font-semibold shadow-sm border border-emerald-200'
+                      : 'text-slate-600 hover:bg-white hover:shadow-sm border border-transparent'
                   }`}
                 >
                   <span className={activeTab === tab.id ? 'text-emerald-600' : 'text-slate-400'}>
@@ -152,18 +157,18 @@ function App() {
           </aside>
 
           {/* Form Content */}
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 print:border-none print:shadow-none min-h-[600px]">
-            <form className="p-6 h-full print:p-0">
-              <div className={activeTab === 'general' ? 'block' : 'hidden print:block print:break-after-page'}>
+          <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 min-h-[700px]">
+            <form className="p-6 h-full" onSubmit={(e) => e.preventDefault()}>
+              <div className={activeTab === 'general' ? 'block' : 'hidden'}>
                 <GeneralInfoTab />
               </div>
-              <div className={activeTab === 'assessment' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div className={activeTab === 'assessment' ? 'block' : 'hidden'}>
                 <AssessmentTab />
               </div>
-              <div className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div className={activeTab === 'scales' ? 'block' : 'hidden'}>
                 <ScalesTab />
               </div>
-              <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div className={activeTab === 'careplan' ? 'block' : 'hidden'}>
                 <CarePlanTab />
               </div>
             </form>
