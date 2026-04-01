@@ -204,8 +204,8 @@ export default function Model2() {
             </div>
           </div>
           
-          <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
-            <h5 className="font-medium text-emerald-800 mb-3">Rischio malnutrizione</h5>
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <h5 className="font-medium text-amber-800 mb-3">Rischio malnutrizione</h5>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <Input name="malnutritionTool" label="Strumento utilizzato" placeholder="es. MUST" />
               <div className="flex items-center gap-4 h-[42px]">
@@ -301,9 +301,9 @@ export default function Model2() {
             <Input name="tc" label="TC (Specificare misurazione/sede)" className="max-w-xs" />
           </div>
 
-          <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-100 space-y-4">
+          <div className="mt-6 p-4 bg-white border border-slate-200 rounded-lg space-y-4">
             <div className="flex items-center gap-4">
-              <span className="font-medium text-emerald-800">Presenza di accessi vascolari:</span>
+              <span className="font-medium text-slate-800">Presenza di accessi vascolari:</span>
               <label className="flex items-center gap-1 cursor-pointer text-sm">
                 <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('vascularAccess')} /> No
               </label>
@@ -313,7 +313,7 @@ export default function Model2() {
             </div>
 
             {vascularAccess === 'true' && (
-              <div className="space-y-4 pt-2 border-t border-emerald-200/50">
+              <div className="space-y-4 pt-2 border-t border-slate-200">
                 <div className="flex gap-4 mb-2">
                    <label className="flex items-center gap-1 cursor-pointer text-sm">
                     <input type="radio" value="venoso" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('vascularAccessType')} /> Venoso
@@ -331,7 +331,7 @@ export default function Model2() {
                   <Input name="vascularAccessDressing" label="Tipologia di medicazione" />
                   <Input name="vascularAccessDressingDate" label="Data ultima medicazione (se necessario)" type="date" />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end bg-white p-3 rounded border border-emerald-100">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end bg-white p-3 rounded border border-slate-200">
                   <Input name="exitSiteScale" label="Condizione “exit site”: Scala utilizzata" />
                   <Input name="exitSiteScore" label="Punteggio" />
                 </div>
@@ -363,8 +363,8 @@ export default function Model2() {
             <Input name="skinAppendagesAlterations" label="Alterazioni annessi cutanei (unghie e capelli) (No/Sì specificare sede e caratteristiche)" />
           </div>
 
-          <div className="mt-6 p-4 bg-slate-100 rounded-lg border border-slate-200">
-            <h5 className="font-medium text-slate-800 mb-3">Valutazione del rischio di Lesioni da Pressione</h5>
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <h5 className="font-medium text-amber-800 mb-3">Valutazione del rischio di Lesioni da Pressione</h5>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <Input name="bradenScore" label="Punteggio Scala Braden" type="number" readOnly className="bg-white" />
               <Input name="pressureUlcerRisk" label="Rischio" readOnly className="bg-white" />

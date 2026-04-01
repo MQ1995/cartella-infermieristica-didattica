@@ -160,8 +160,8 @@ export default function Model4() {
             {prosthesis === 'true' && <Input name="prosthesisDetails" label="Specificare presidio e lateralità" />}
           </div>
 
-          <div className="bg-emerald-50 p-4 border border-emerald-200 rounded-lg">
-            <Input name="barthelScore" label="Valutazione ADL: Punteggio scala Barthel" type="number" className="bg-white" />
+          <div className="bg-white p-4 border border-slate-200 rounded-lg">
+            <Input name="barthelScore" label="Valutazione ADL: Punteggio scala Barthel" type="number" />
           </div>
         </div>
 
@@ -290,7 +290,7 @@ export default function Model4() {
             />
 
             {respiratoryFunction === 'Supportato' && (
-              <div className="bg-emerald-50 p-4 border border-emerald-100 rounded-md space-y-3">
+              <div className="bg-slate-50 p-4 border border-slate-200 rounded-lg space-y-3">
                 <Input name="respiratoryDevice" label="Tipologia di presidio utilizzato" />
                 <Input name="respiratorySupport" label="Tipologia di supporto utilizzato" />
               </div>

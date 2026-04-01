@@ -43,7 +43,7 @@ export default function Model1() {
         />
         
         <div className="pt-4 border-t border-slate-200">
-          <h4 className="font-semibold text-slate-700 mb-3">Fattori di rischio legati alla salute:</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Fattori di rischio legati alla salute</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Checkbox name="alcoholConsumption" label="Consumo di Alcool" />
@@ -67,7 +67,7 @@ export default function Model1() {
         </div>
 
         <div className="pt-6 mt-6 border-t border-slate-200">
-          <h4 className="font-semibold text-slate-700 mb-4">Esame Fisico</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Esame Fisico</h4>
           <Textarea 
             name="physicalAppearance" 
             label="Aspetto generale di salute" 
@@ -119,7 +119,7 @@ export default function Model1() {
 
         <div className="pt-6 mt-6 border-t border-slate-200">
           <div className="mb-4">
-            <h4 className="font-semibold text-slate-700 mb-3">Valutazione rischio caduta</h4>
+            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Valutazione rischio caduta</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <Input
                 name="fallRiskScaleUsed"

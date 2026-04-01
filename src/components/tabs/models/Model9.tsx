@@ -17,7 +17,7 @@ export default function Model9() {
     <LockableSection title="9. Modello di Sessualità e Riproduzione">
       
       <div className="space-y-6">
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Per assistiti di sesso Femminile</h4>
+        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Per assistiti di sesso Femminile</h4>
         
         <div className={`space-y-6 ${patientGender === 'M' ? 'opacity-50 pointer-events-none' : ''}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -84,7 +84,7 @@ export default function Model9() {
           </div>
         </div>
 
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 mt-8 uppercase text-sm tracking-wider">Per assistiti di sesso maschile</h4>
+        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 mt-8">Per assistiti di sesso maschile</h4>
         
         <div className={`space-y-6 ${patientGender === 'F' ? 'opacity-50 pointer-events-none' : ''}`}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -56,11 +56,11 @@ export default function Model7() {
             <div className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
               <input type="radio" value="Altro" className="text-emerald-600 focus:ring-emerald-500" {...register('interviewAttitude')} /> Altro
               {interviewAttitude === 'Altro' && (
-                <input 
-                  type="text" 
-                  className="ml-2 px-2 py-1 border border-slate-300 rounded text-sm focus:ring-emerald-500" 
+                <input
+                  type="text"
+                  className="ml-2 px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white"
                   placeholder="Specificare"
-                  {...register('interviewAttitudeOther')} 
+                  {...register('interviewAttitudeOther')}
                 />
               )}
             </div>

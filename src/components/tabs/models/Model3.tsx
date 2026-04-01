@@ -23,7 +23,7 @@ export default function Model3() {
       <div className="space-y-8">
         {/* ELIMINAZIONE URINARIA */}
         <div>
-          <h4 className="font-semibold text-slate-700 mb-4 uppercase text-sm tracking-wider">Eliminazione Urinaria</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Eliminazione Urinaria</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
@@ -158,7 +158,7 @@ export default function Model3() {
                 </label>
               </div>
               {urinaryCatheter && urinaryCatheter !== 'No' && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pl-4 border-l-2 border-emerald-100 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pl-4 border-l-2 border-slate-200 mt-2">
                   <Input name="urinaryCatheterDate" label="Posizionato il" type="date" />
                   <Input name="urinaryCatheterDetails" label="Tipo, calibro, materiale" />
                   <Select 
@@ -187,7 +187,7 @@ export default function Model3() {
                 </label>
               </div>
               {urinaryStoma === 'true' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-emerald-100 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-slate-200 mt-2">
                   <Input name="urinaryStomaDetails" label="Tipo, sede" />
                   <Select 
                     name="urinaryStomaManagement" 
@@ -208,7 +208,7 @@ export default function Model3() {
 
         {/* ELIMINAZIONE INTESTINALE */}
         <div className="pt-6 border-t border-slate-300">
-          <h4 className="font-semibold text-slate-700 mb-4 uppercase text-sm tracking-wider">Eliminazione Intestinale</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Eliminazione Intestinale</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <Input name="bowelFrequency" label="Frequenza abituale" />
@@ -355,7 +355,7 @@ export default function Model3() {
                 </label>
               </div>
               {bowelStoma === 'true' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-emerald-100 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-slate-200 mt-2">
                   <Input name="bowelStomaDetails" label="Tipo, sede" />
                   <Select 
                     name="bowelStomaManagement" 

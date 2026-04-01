@@ -34,9 +34,7 @@ export default function Model10() {
           rows={3}
         />
 
-        <div className="bg-white p-4 border border-slate-200 rounded-lg">
-          <Input name="copingReferencePersons" label="Persone di riferimento in grado di aiutarla:" />
-        </div>
+        <Input name="copingReferencePersons" label="Persone di riferimento in grado di aiutarla:" />
 
         <div className="pt-6 mt-6 border-t border-slate-200">
           <Textarea 

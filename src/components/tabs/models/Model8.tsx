@@ -66,11 +66,11 @@ export default function Model8() {
                 <input type="radio" value="Altro" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('livingSituation')} /> altro
               </label>
               {livingSituation === 'Altro' && (
-                <input 
-                  type="text" 
-                  className="px-2 py-1 border border-slate-300 rounded text-sm focus:ring-emerald-500" 
+                <input
+                  type="text"
+                  className="px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white"
                   placeholder="Specificare"
-                  {...register('livingSituationOther')} 
+                  {...register('livingSituationOther')}
                 />
               )}
             </div>
@@ -94,11 +94,11 @@ export default function Model8() {
             <div className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
               <input type="checkbox" value="Altra persona" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('supportSystem')} /> Altra persona
               {supportSystem?.includes('Altra persona') && (
-                <input 
-                  type="text" 
-                  className="ml-2 px-2 py-1 border border-slate-300 rounded text-sm focus:ring-emerald-500 w-32" 
+                <input
+                  type="text"
+                  className="ml-2 px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white w-32"
                   placeholder="Specificare"
-                  {...register('supportSystemOther')} 
+                  {...register('supportSystemOther')}
                 />
               )}
             </div>

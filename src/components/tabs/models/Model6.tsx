@@ -20,7 +20,7 @@ export default function Model6() {
       
       <div className="space-y-8">
         <div>
-          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Stato di Coscienza e Neurologico</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Stato di Coscienza e Neurologico</h4>
           <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
             <div className="flex flex-wrap gap-4 items-center">
               <span className="text-sm font-medium text-slate-700">Stato di coscienza:</span>
@@ -64,7 +64,7 @@ export default function Model6() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Orientamento</h4>
+            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Orientamento</h4>
             <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium text-slate-700 w-32">Orientato:</span>
@@ -106,7 +106,7 @@ export default function Model6() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Collaborazione</h4>
+            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Collaborazione</h4>
             <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
               <div className="flex flex-col gap-3">
                 <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
@@ -145,7 +145,7 @@ export default function Model6() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Linguaggio</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Linguaggio</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 border border-slate-200 rounded-lg">
             <Input name="spokenLanguage" label="Lingua parlata" />
             
@@ -187,7 +187,7 @@ export default function Model6() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Altre Abilità Cognitive</h4>
+            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Altre Abilità Cognitive</h4>
             <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
               <div className="flex flex-col gap-2">
                 <span className="text-sm font-medium text-slate-700">Memoria:</span>
@@ -209,7 +209,7 @@ export default function Model6() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Sensi</h4>
+            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Sensi</h4>
             <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
               <div className="flex flex-col gap-2">
                 <span className="text-sm font-medium text-slate-700">Vista:</span>
@@ -235,7 +235,7 @@ export default function Model6() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 uppercase text-sm tracking-wider">Dolore</h4>
+          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Dolore</h4>
           <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
             <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-slate-700 w-48">Il paziente riferisce dolore?</span>
@@ -248,12 +248,12 @@ export default function Model6() {
             </div>
 
             {pain === 'true' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-emerald-100 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-slate-200 pt-2">
                 <Input name="painLocation" label="Sede" />
                 <Input name="painTime" label="Tempo (comparsa e durata)" />
                 <Input name="painQuality" label="Qualità" />
                 <Input name="painFactors" label="Fattori aggravanti o allevianti" />
-                <Input name="painNrs" label="Intensità del dolore (NRS da 0 a 10) / Altra Scala" type="number" className="bg-emerald-50" />
+                <Input name="painNrs" label="Intensità del dolore (NRS da 0 a 10) / Altra Scala" type="number" />
                 <Textarea name="painTreatment" label="Trattamento farmacologico e non farmacologico in corso" rows={2} />
               </div>
             )}
