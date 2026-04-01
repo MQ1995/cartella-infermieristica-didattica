@@ -29,8 +29,7 @@ export interface NursingAssessment {
   dataSource: string;
   dataSourceOther: string;
   
-  // 2. Accertamento (Gordon)
-  // Health Perception
+  // MODEL 1
   generalHealth: string;
   healthPromotion: string;
   preventiveActions: string;
@@ -47,7 +46,7 @@ export interface NursingAssessment {
   conleyScore: number;
   fallRisk: boolean;
 
-  // Nutrition
+  // MODEL 2
   eatingHabits: string;
   dietaryRestrictions: string;
   foodAllergies: string;
@@ -81,7 +80,6 @@ export interface NursingAssessment {
   malnutritionRiskScore: string;
   malnutritionRisk: boolean;
 
-  // Skin Status
   skinTemperature: string;
   skinColdLocation: string;
   skinWarmLocation: string;
@@ -120,35 +118,124 @@ export interface NursingAssessment {
   pressureUlcerRiskFactorsDetails: string;
 
   throatScaleScore: string;
-  
   model2Notes: string;
   model2Status: string;
 
-  // Elimination
+  // MODEL 3
   urinationType: string;
-  urinationAlterations: string[];
+  urinationFrequency: string;
+  urinaryIncontinenceTypes: string[];
+  urinaryRetention: string;
+  urinaryRetentionResidue: string;
+  otherUrinaryAlterations: string[];
+  pollakiuriaFrequency: string;
   urineCharacteristics: string;
+  urineAlterationsDescription: string;
   diuresis24h: string;
+  diuresisAlteration: string;
   incontinenceAids: string;
+  incontinenceAidsDetails: string;
   urinaryCatheter: string;
+  urinaryCatheterDate: string;
+  urinaryCatheterDetails: string;
+  urinaryCatheterManagement: string;
+  urinaryCatheterManagedBy: string;
+  urinaryStoma: string;
+  urinaryStomaDetails: string;
+  urinaryStomaManagement: string;
+  urinaryStomaManagedBy: string;
+  
   bowelFrequency: string;
-  bowelAlterations: string[];
+  lastBowelMovement: string;
+  bowelAlterations: string;
+  bowelAlterationsTypes: string[];
+  bowelIncontinenceType: string;
+  bowelIncontinenceAids: string;
+  bowelIncontinenceAidsDetails: string;
   laxatives: string;
+  laxativesDetails: string;
   stoolCharacteristics: string;
-  abdomen: string;
+  stoolAlterationsDetails: string;
+  bristolScale: string;
+  romaIIIScale: string;
+  abdomenExam: string;
+  peristalsis: string;
+  peristalsisType: string;
+  bowelStoma: string;
+  bowelStomaDetails: string;
+  bowelStomaManagement: string;
+  bowelStomaManagedBy: string;
+  drains: string;
+  drainsDetails: string;
+  eliminationOtherObservations: string;
+  model3Notes: string;
+  model3Status: string;
 
-  // Activity & Exercise
+  // MODEL 4
   energyLevel: string;
   leisureActivities: string;
-  exercise: string;
-  barthelScore: number;
+  exerciseRoutine: string;
+  funcAlimentazione: string;
+  funcCuraAspetto: string;
+  funcBagno: string;
+  funcMobilitaGen: string;
+  funcGabinetto: string;
+  funcCucinare: string;
+  funcMobilitaLetto: string;
+  funcCasa: string;
+  funcVestirsi: string;
+  funcSpesa: string;
+
+  assumedPosition: string;
+  decubitusType: string;
+  muscleTone: string;
+  muscleToneAlterations: string;
+  muscleStrength: string;
+  muscleStrengthAlterations: string;
+  jointExcursion: string;
+  jointExcursionAlterations: string;
+  balance: string;
+  walking: string;
+  walkingAlterations: string;
+  prosthesis: string;
+  prosthesisDetails: string;
+  barthelScore: string;
+  generalAppearance: string;
+
   respiratoryFunction: string;
   respiratoryRate: string;
   spo2: string;
-  heartRate: string;
-  bloodPressure: string;
-  
-  // Other Models (Sleep, Cognitive, Self-perception, Roles, Sexuality, Coping, Values)
+  breathingDepth: string;
+  breathingQuality: string;
+  dyspneaType: string;
+  breathingAlterations: string[];
+  breathingPathological: string;
+  breathingOtherAlterations: string;
+  respiratoryNoises: string;
+  respiratoryNoisesDetails: string;
+  coughReflex: string;
+  cough: string;
+  coughDetails: string;
+  sputum: string;
+  sputumDetails: string;
+  sputumAbility: string;
+  respiratoryDevice: string;
+  respiratorySupport: string;
+
+  pulseRate: string;
+  pulseLocation: string;
+  pulseType: string;
+  pulseRhythm: string;
+  pulseAmplitude: string;
+  bloodPressureValue: string;
+  bloodPressureLocation: string;
+  bloodPressurePosture: string[];
+  capillaryRefill: string;
+
+  model4Notes: string;
+  model4Status: string;
+
+  // Sleep
   sleepHours: string;
   sleepRested: boolean;
   sleepMeds: string;
@@ -161,10 +248,7 @@ export interface NursingAssessment {
   stressFactors: string;
   religiousRestrictions: string;
 
-  // 3. Scale
-  // Handled via computed values or specific fields above
-
-  // 4. Piano di Assistenza (PES)
+  // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
 }
 
@@ -195,6 +279,7 @@ export const defaultValues: NursingAssessment = {
   pastMedicalHistory: [],
   dataSource: '',
   dataSourceOther: '',
+  
   generalHealth: '',
   healthPromotion: '',
   preventiveActions: '',
@@ -210,6 +295,7 @@ export const defaultValues: NursingAssessment = {
   model1Status: '',
   conleyScore: 0,
   fallRisk: false,
+  
   eatingHabits: '',
   dietaryRestrictions: '',
   foodAllergies: '',
@@ -277,26 +363,119 @@ export const defaultValues: NursingAssessment = {
   throatScaleScore: '',
   model2Notes: '',
   model2Status: '',
+
   urinationType: '',
-  urinationAlterations: [],
+  urinationFrequency: '',
+  urinaryIncontinenceTypes: [],
+  urinaryRetention: '',
+  urinaryRetentionResidue: '',
+  otherUrinaryAlterations: [],
+  pollakiuriaFrequency: '',
   urineCharacteristics: '',
+  urineAlterationsDescription: '',
   diuresis24h: '',
-  incontinenceAids: '',
-  urinaryCatheter: '',
+  diuresisAlteration: '',
+  incontinenceAids: 'false',
+  incontinenceAidsDetails: '',
+  urinaryCatheter: 'No',
+  urinaryCatheterDate: '',
+  urinaryCatheterDetails: '',
+  urinaryCatheterManagement: 'Si',
+  urinaryCatheterManagedBy: '',
+  urinaryStoma: 'false',
+  urinaryStomaDetails: '',
+  urinaryStomaManagement: 'Si',
+  urinaryStomaManagedBy: '',
+  
   bowelFrequency: '',
-  bowelAlterations: [],
-  laxatives: '',
+  lastBowelMovement: '',
+  bowelAlterations: 'false',
+  bowelAlterationsTypes: [],
+  bowelIncontinenceType: '',
+  bowelIncontinenceAids: 'false',
+  bowelIncontinenceAidsDetails: '',
+  laxatives: 'false',
+  laxativesDetails: '',
   stoolCharacteristics: '',
-  abdomen: '',
+  stoolAlterationsDetails: '',
+  bristolScale: '',
+  romaIIIScale: '',
+  abdomenExam: '',
+  peristalsis: '',
+  peristalsisType: '',
+  bowelStoma: 'false',
+  bowelStomaDetails: '',
+  bowelStomaManagement: 'Si',
+  bowelStomaManagedBy: '',
+  drains: 'false',
+  drainsDetails: '',
+  eliminationOtherObservations: '',
+  model3Notes: '',
+  model3Status: '',
+
   energyLevel: '',
   leisureActivities: '',
-  exercise: '',
-  barthelScore: 0,
+  exerciseRoutine: '',
+  funcAlimentazione: '',
+  funcCuraAspetto: '',
+  funcBagno: '',
+  funcMobilitaGen: '',
+  funcGabinetto: '',
+  funcCucinare: '',
+  funcMobilitaLetto: '',
+  funcCasa: '',
+  funcVestirsi: '',
+  funcSpesa: '',
+
+  assumedPosition: '',
+  decubitusType: '',
+  muscleTone: '',
+  muscleToneAlterations: '',
+  muscleStrength: '',
+  muscleStrengthAlterations: '',
+  jointExcursion: '',
+  jointExcursionAlterations: '',
+  balance: '',
+  walking: '',
+  walkingAlterations: '',
+  prosthesis: 'false',
+  prosthesisDetails: '',
+  barthelScore: '',
+  generalAppearance: '',
+
   respiratoryFunction: '',
   respiratoryRate: '',
   spo2: '',
-  heartRate: '',
-  bloodPressure: '',
+  breathingDepth: '',
+  breathingQuality: '',
+  dyspneaType: '',
+  breathingAlterations: [],
+  breathingPathological: '',
+  breathingOtherAlterations: '',
+  respiratoryNoises: '',
+  respiratoryNoisesDetails: '',
+  coughReflex: '',
+  cough: '',
+  coughDetails: '',
+  sputum: '',
+  sputumDetails: '',
+  sputumAbility: '',
+  respiratoryDevice: '',
+  respiratorySupport: '',
+
+  pulseRate: '',
+  pulseLocation: '',
+  pulseType: '',
+  pulseRhythm: '',
+  pulseAmplitude: '',
+  bloodPressureValue: '',
+  bloodPressureLocation: '',
+  bloodPressurePosture: [],
+  capillaryRefill: '',
+
+  model4Notes: '',
+  model4Status: '',
+
   sleepHours: '',
   sleepRested: true,
   sleepMeds: '',
