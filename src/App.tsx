@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Download, Stethoscope, Activity, ClipboardList, BedDouble } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble } from 'lucide-react';
 import { saveAs } from 'file-saver';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import ExportButton from './components/pdf/ExportButton';
 import type { NursingAssessment } from "./types/form";
 import { defaultValues } from './types/form';
-import { AssessmentPDF } from './utils/pdfExport';
 
 // Import Tabs
 import GeneralInfoTab from './components/tabs/GeneralInfoTab';
@@ -114,19 +113,9 @@ function App() {
               </button>
 
               <div className="h-6 w-px bg-emerald-600 mx-1"></div>
+              <ExportButton data={formValues as NursingAssessment} />
+
               
-              <PDFDownloadLink 
-                document={<AssessmentPDF data={formValues as NursingAssessment} />} 
-                fileName={`cartella-inf-${formValues.studentName?.replace(/\s+/g, '-').toLowerCase() || 'studente'}.pdf`}
-                className="bg-white text-emerald-700 hover:bg-emerald-50 px-4 py-1.5 rounded-md flex items-center gap-2 text-sm font-bold shadow-sm transition-colors"
-              >
-                {({ loading }) => (
-                  <>
-                    <Download size={16} className={loading ? 'animate-bounce' : ''} />
-                    {loading ? 'Generazione PDF...' : 'Esporta PDF'}
-                  </>
-                )}
-              </PDFDownloadLink>
             </div>
           </div>
         </header>
