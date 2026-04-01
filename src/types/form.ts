@@ -359,6 +359,19 @@ export interface NursingAssessment {
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
 
+  // Bilancio idrico
+  fluidIntakeInfusions: string;
+  fluidIntakeOral: string;
+  fluidIntakeOtherAmount: string;
+  fluidIntakeOtherNote: string;
+  fluidOutputUrine: string;
+  fluidOutputFeces: string;
+  fluidOutputVomit: string;
+  fluidOutputPerspiratio: string;
+  fluidOutputDrains: string;
+  fluidOutputOtherAmount: string;
+  fluidOutputOtherNote: string;
+
   // Monitoraggio parametri vitali
   vitalSigns: Array<{
     date: string;
@@ -715,5 +728,16 @@ export const defaultValues: NursingAssessment = {
   model11Status: '',
 
   carePlans: [],
+  fluidIntakeInfusions: '',
+  fluidIntakeOral: '',
+  fluidIntakeOtherAmount: '',
+  fluidIntakeOtherNote: '',
+  fluidOutputUrine: '',
+  fluidOutputFeces: '',
+  fluidOutputVomit: '',
+  fluidOutputPerspiratio: '',
+  fluidOutputDrains: '',
+  fluidOutputOtherAmount: '',
+  fluidOutputOtherNote: '',
   vitalSigns: []
 };

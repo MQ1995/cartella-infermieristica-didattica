@@ -7,7 +7,7 @@ import { InfoTooltip } from '../ui/InfoTooltip';
 const COLUMNS = [
   { key: 'date',            label: 'Data',      type: 'date',   width: 'w-32' },
   { key: 'time',            label: 'Ora',       type: 'time',   width: 'w-24' },
-  { key: 'bloodPressure',   label: 'PA',        type: 'text',   width: 'w-28', placeholder: '120/80 mmHg',
+  { key: 'bloodPressure',   label: 'PA',        type: 'text',   width: 'w-28', placeholder: 'mmHg',
     info: 'Pressione Arteriosa: forza esercitata dal sangue sulle pareti delle arterie. Valori normali: 90–120 mmHg sistolica / 60–80 mmHg diastolica.' },
   { key: 'heartRate',       label: 'FC',        type: 'text',   width: 'w-16', placeholder: 'bpm',
     info: 'Frequenza Cardiaca: numero di battiti cardiaci al minuto. Valori normali a riposo: 60–100 bpm.' },
@@ -115,7 +115,7 @@ export default function MonitoringSection() {
                               } : undefined,
                             })}
                             type={col.type}
-                            placeholder={'placeholder' in col ? col.placeholder : undefined}
+                            placeholder={isLocked ? '—' : ('placeholder' in col ? col.placeholder : undefined)}
                             min={'min' in col ? col.min : undefined}
                             max={'max' in col ? col.max : undefined}
                             disabled={isLocked}
@@ -129,11 +129,14 @@ export default function MonitoringSection() {
                             type="button"
                             onClick={() => toggleNotes(index)}
                             title={isExpanded ? 'Nascondi note' : 'Aggiungi nota'}
-                            className={`p-1 rounded transition-colors ${
+                            className={`relative p-1 rounded transition-colors ${
                               hasNote ? 'text-emerald-600 hover:text-emerald-700' : 'text-slate-300 hover:text-slate-500'
                             }`}
                           >
                             <NotebookPen size={15} />
+                            {hasNote && !isExpanded && (
+                              <span className="absolute top-0.5 right-0 w-2 h-2 bg-rose-500 rounded-full" />
+                            )}
                           </button>
                           {/* row lock toggle */}
                           <button
@@ -160,7 +163,7 @@ export default function MonitoringSection() {
                           <div>
                             <textarea
                               {...register(`vitalSigns.${index}.notes`)}
-                              placeholder="Note aggiuntive per questa rilevazione..."
+                              placeholder={isLocked ? 'Nessuna nota presente per questa rilevazione.' : 'Note aggiuntive per questa rilevazione...'}
                               rows={2}
                               disabled={isLocked}
                               className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"

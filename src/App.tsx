@@ -11,6 +11,7 @@ import AssessmentTab from './components/tabs/AssessmentTab';
 import ScalesTab from './components/tabs/ScalesTab';
 import CarePlanTab from './components/tabs/CarePlanTab';
 import MonitoringSection from './components/tabs/MonitoringSection';
+import FluidBalanceSection from './components/tabs/FluidBalanceSection';
 
 type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'careplan';
 
@@ -109,7 +110,7 @@ function App() {
             <div className="flex items-center gap-2 flex-shrink-0">
               <label className="cursor-pointer bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50">
                 <FolderOpen size={16} />
-                <span className="hidden sm:inline">Carica Backup</span>
+                <span className="hidden sm:inline">Carica da file</span>
                 <input type="file" accept=".json" className="hidden" onChange={handleImportJson} />
               </label>
 
@@ -119,7 +120,7 @@ function App() {
                 className="bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors relative border border-emerald-500/50"
               >
                 <Save size={16} />
-                <span className="hidden sm:inline">Salva Backup</span>
+                <span className="hidden sm:inline">Salva su file</span>
                 {!isSaved && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-400 rounded-full shadow-sm"></span>
                 )}
@@ -192,8 +193,9 @@ function App() {
               <div className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <ScalesTab />
               </div>
-              <div className={activeTab === 'monitoring' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div className={activeTab === 'monitoring' ? 'block space-y-8' : 'hidden print:block print:break-after-page'}>
                 <MonitoringSection />
+                <FluidBalanceSection />
               </div>
               <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
                 <CarePlanTab />
