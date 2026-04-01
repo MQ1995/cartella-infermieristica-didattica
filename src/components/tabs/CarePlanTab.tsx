@@ -231,7 +231,7 @@ export default function CarePlanTab() {
                 { label: 'Dimissione', value: 'Dimissione' },
                 { label: 'Trasferimento', value: 'Trasferimento' },
                 { label: 'Decesso', value: 'Decesso' },
-                { label: 'Terzo giorno di tirocinio', value: 'Terzo giorno di tirocinio' },
+                { label: 'Terzo giorno di presa in carico', value: 'Terzo giorno di presa in carico' },
               ]}
             />
             <Input name="dischargeDate" label="Data fine presa in carico" type="date" />
