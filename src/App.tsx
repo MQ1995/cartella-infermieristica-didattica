@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen, NotebookPen } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
@@ -13,8 +13,9 @@ import CarePlanTab from './components/tabs/CarePlanTab';
 import MonitoringSection from './components/tabs/MonitoringSection';
 import FluidBalanceSection from './components/tabs/FluidBalanceSection';
 import DiagnosticExamsSection from './components/tabs/DiagnosticExamsSection';
+import DailyAssessmentTab from './components/tabs/DailyAssessmentTab';
 
-type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'careplan';
+type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'diary' | 'careplan';
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
@@ -91,6 +92,7 @@ function App() {
     { id: 'assessment',  label: 'Accertamento',               icon: <Stethoscope size={18} /> },
     { id: 'scales',      label: 'Scale Valutazione',          icon: <Activity size={18} /> },
     { id: 'monitoring',  label: 'Monitoraggio',               icon: <HeartPulse size={18} /> },
+    { id: 'diary',       label: 'Diario',                     icon: <NotebookPen size={18} /> },
     { id: 'careplan',    label: 'Piano Assistenza',            icon: <BedDouble size={18} /> },
   ] as const;
 
@@ -198,6 +200,9 @@ function App() {
                 <MonitoringSection />
                 <FluidBalanceSection />
                 <DiagnosticExamsSection />
+              </div>
+              <div className={activeTab === 'diary' ? 'block' : 'hidden print:block print:break-after-page'}>
+                <DailyAssessmentTab />
               </div>
               <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
                 <CarePlanTab />

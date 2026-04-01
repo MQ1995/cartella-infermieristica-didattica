@@ -356,6 +356,13 @@ export interface NursingAssessment {
   model11Notes: string;
   model11Status: string;
 
+  // Accertamento quotidiano (diario)
+  dailyAssessments: Array<{
+    date: string;
+    notes: string;
+    newProblems: string;
+  }>;
+
   // Fine presa in carico
   dischargeUnresolvedProblems: string;
   dischargeObjectives: string;
@@ -746,6 +753,7 @@ export const defaultValues: NursingAssessment = {
   model11Notes: '',
   model11Status: '',
 
+  dailyAssessments: [],
   dischargeUnresolvedProblems: '',
   dischargeObjectives: '',
   dischargePlannedActions: '',
