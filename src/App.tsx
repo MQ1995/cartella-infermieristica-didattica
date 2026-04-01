@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
@@ -19,6 +19,7 @@ function App() {
   const [isSaved, setIsSaved] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const methods = useForm<NursingAssessment>({
     defaultValues: defaultValues,
@@ -142,25 +143,37 @@ function App() {
         <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-6 flex flex-col md:flex-row gap-6">
           
           {/* Sidebar Nav */}
-          <aside className="w-full md:w-64 flex-shrink-0 print:hidden">
-            <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 md:sticky md:top-24">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left whitespace-nowrap transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-emerald-50 text-emerald-800 font-semibold shadow-sm border border-emerald-200'
-                      : 'text-slate-600 hover:bg-white hover:shadow-sm border border-transparent'
-                  }`}
-                >
-                  <span className={activeTab === tab.id ? 'text-emerald-600' : 'text-slate-400'}>
-                    {tab.icon}
-                  </span>
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+          <aside className={`flex-shrink-0 print:hidden transition-all duration-200 ${sidebarCollapsed ? 'w-full md:w-14' : 'w-full md:w-64'}`}>
+            <div className="md:sticky md:top-24 md:h-[calc(100vh-7rem)] flex flex-col">
+              <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 flex-1">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={(e) => { e.preventDefault(); setActiveTab(tab.id); }}
+                    title={sidebarCollapsed ? tab.label : undefined}
+                    className={`flex items-center rounded-lg text-left whitespace-nowrap transition-all ${
+                      sidebarCollapsed ? 'justify-center px-3 py-3' : 'gap-3 px-4 py-3'
+                    } ${
+                      activeTab === tab.id
+                        ? 'bg-emerald-50 text-emerald-800 font-semibold shadow-sm border border-emerald-200'
+                        : 'text-slate-600 hover:bg-white hover:shadow-sm border border-transparent'
+                    }`}
+                  >
+                    <span className={`flex-shrink-0 ${activeTab === tab.id ? 'text-emerald-600' : 'text-slate-400'}`}>
+                      {tab.icon}
+                    </span>
+                    {!sidebarCollapsed && tab.label}
+                  </button>
+                ))}
+              </nav>
+              <button
+                onClick={() => setSidebarCollapsed(c => !c)}
+                className={`hidden md:flex items-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-white border border-transparent transition-all px-3 py-3 ${sidebarCollapsed ? 'justify-center' : 'gap-3'}`}
+                title={sidebarCollapsed ? 'Espandi' : undefined}
+              >
+                {sidebarCollapsed ? <PanelLeftOpen size={18} /> : <><PanelLeftClose size={18} /><span className="text-sm">Comprimi</span></>}
+              </button>
+            </div>
           </aside>
 
           {/* Form Content */}

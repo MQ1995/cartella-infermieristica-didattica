@@ -24,13 +24,15 @@ export function LockableSection({ title, children, headerAction, headerRight, de
             type="button"
             onClick={() => setLocked(l => !l)}
             title={locked ? 'Sblocca sezione' : 'Blocca sezione'}
-            className={`p-1.5 rounded-md transition-colors ${
-              locked
-                ? 'text-amber-600 bg-amber-100 hover:bg-amber-200'
-                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-200'
+            className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${
+              locked ? 'bg-amber-400' : 'bg-slate-200'
             }`}
           >
-            {locked ? <Lock size={15} /> : <LockOpen size={15} />}
+            <span className={`absolute top-0.5 w-5 h-5 rounded-full shadow flex items-center justify-center transition-all duration-200 ${
+              locked ? 'left-6 bg-white text-amber-500' : 'left-0.5 bg-white text-slate-400'
+            }`}>
+              {locked ? <Lock size={11} /> : <LockOpen size={11} />}
+            </span>
           </button>
           </div>
         </div>

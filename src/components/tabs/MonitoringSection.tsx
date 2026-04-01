@@ -1,19 +1,28 @@
 import { useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, NotebookPen } from 'lucide-react';
+import { Plus, NotebookPen, Lock, LockOpen } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { InfoTooltip } from '../ui/InfoTooltip';
 
 const COLUMNS = [
-  { key: 'date',            label: 'Data',       type: 'date',   width: 'w-32' },
-  { key: 'time',            label: 'Ora',        type: 'time',   width: 'w-24' },
-  { key: 'bloodPressure',   label: 'PA',         type: 'text',   width: 'w-24', placeholder: 'es. 120/80' },
-  { key: 'heartRate',       label: 'FC',         type: 'text',   width: 'w-16', placeholder: 'bpm' },
-  { key: 'temperature',     label: 'TC',         type: 'text',   width: 'w-16', placeholder: '°C' },
-  { key: 'respiratoryRate', label: 'FR',         type: 'text',   width: 'w-16', placeholder: 'a/m' },
-  { key: 'spo2',            label: 'SpO2',       type: 'text',   width: 'w-16', placeholder: '%' },
-  { key: 'o2Therapy',       label: 'O₂ Lt/min',  type: 'text',   width: 'w-20', placeholder: '-' },
-  { key: 'pain',            label: 'NRS',        type: 'number', width: 'w-14', placeholder: '0-10', min: '0', max: '10' },
-  { key: 'glycemia',        label: 'Glicemia',   type: 'text',   width: 'w-20', placeholder: 'mg/dL' },
+  { key: 'date',            label: 'Data',      type: 'date',   width: 'w-32' },
+  { key: 'time',            label: 'Ora',       type: 'time',   width: 'w-24' },
+  { key: 'bloodPressure',   label: 'PA',        type: 'text',   width: 'w-28', placeholder: '120/80 mmHg',
+    info: 'Pressione Arteriosa: forza esercitata dal sangue sulle pareti delle arterie. Valori normali: 90–120 mmHg sistolica / 60–80 mmHg diastolica.' },
+  { key: 'heartRate',       label: 'FC',        type: 'text',   width: 'w-16', placeholder: 'bpm',
+    info: 'Frequenza Cardiaca: numero di battiti cardiaci al minuto. Valori normali a riposo: 60–100 bpm.' },
+  { key: 'temperature',     label: 'TC',        type: 'text',   width: 'w-16', placeholder: '°C',
+    info: 'Temperatura Corporea: temperatura interna del corpo. Valori normali: 36.0–37.2 °C.' },
+  { key: 'respiratoryRate', label: 'FR',        type: 'text',   width: 'w-20', placeholder: 'atti/min',
+    info: 'Frequenza Respiratoria: numero di atti respiratori al minuto. Valori normali: 12–20 atti/min.' },
+  { key: 'spo2',            label: 'SpO2',      type: 'text',   width: 'w-16', placeholder: '%',
+    info: 'Saturazione periferica di ossigeno: percentuale di emoglobina ossiemoglobinata nel sangue periferico. Valori normali: 95–100%.' },
+  { key: 'o2Therapy',       label: 'O₂',        type: 'text',   width: 'w-20', placeholder: 'L/min',
+    info: 'Ossigenoterapia: flusso di ossigeno supplementare somministrato tramite cannule nasali o maschera, espresso in litri al minuto.' },
+  { key: 'pain',            label: 'NRS',       type: 'number', width: 'w-14', placeholder: '0-10', min: '0', max: '10',
+    info: 'Numeric Rating Scale: scala numerica per la valutazione del dolore. 0 = nessun dolore, 10 = dolore massimo immaginabile.' },
+  { key: 'glycemia',        label: 'Glicemia',  type: 'text',   width: 'w-20', placeholder: 'mg/dL',
+    info: 'Glicemia: concentrazione di glucosio nel sangue. Valori normali a digiuno: 70–100 mg/dL.' },
 ] as const;
 
 export default function MonitoringSection() {
@@ -21,9 +30,18 @@ export default function MonitoringSection() {
   const { fields, append, remove } = useFieldArray({ control, name: 'vitalSigns' });
   // tracks rows toggled away from their default state
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
+  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
 
   const toggleNotes = (index: number) => {
     setToggledNotes(prev => {
+      const next = new Set(prev);
+      next.has(index) ? next.delete(index) : next.add(index);
+      return next;
+    });
+  };
+
+  const toggleLock = (index: number) => {
+    setLockedRows(prev => {
       const next = new Set(prev);
       next.has(index) ? next.delete(index) : next.add(index);
       return next;
@@ -64,7 +82,10 @@ export default function MonitoringSection() {
               <tr className="bg-slate-50 border-b border-slate-200">
                 {COLUMNS.map(col => (
                   <th key={col.key} className={`px-2 py-2 text-left font-semibold text-slate-600 ${col.width}`}>
-                    {col.label}
+                    <span className="inline-flex items-center">
+                      {col.label}
+                      {'info' in col && <InfoTooltip content={col.info} />}
+                    </span>
                   </th>
                 ))}
                 {/* Note toggle + delete */}
@@ -74,11 +95,11 @@ export default function MonitoringSection() {
             <tbody>
               {fields.map((field, index) => {
                 const hasNote = !!watch(`vitalSigns.${index}.notes`);
-                // rows with a note are open by default; empty rows are closed by default
                 const isExpanded = hasNote ? !toggledNotes.has(index) : toggledNotes.has(index);
+                const isLocked = lockedRows.has(index);
                 return (
                   <>
-                    <tr key={field.id} className={`${isExpanded ? 'bg-amber-50 border-b-0' : 'border-b border-slate-100 last:border-0 hover:bg-slate-50'}`}>
+                    <tr key={field.id} className={`${isExpanded ? 'bg-amber-50 border-b-0' : 'border-b border-slate-100 last:border-0 hover:bg-slate-50'} ${isLocked ? 'opacity-60' : ''}`}>
                       {COLUMNS.map((col, colIndex) => (
                         <td key={col.key} className={`px-1 py-1 ${isExpanded && colIndex === 0 ? 'border-l-4 border-amber-400' : ''}`}>
                           <input
@@ -97,25 +118,39 @@ export default function MonitoringSection() {
                             placeholder={'placeholder' in col ? col.placeholder : undefined}
                             min={'min' in col ? col.min : undefined}
                             max={'max' in col ? col.max : undefined}
-                            className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white"
+                            disabled={isLocked}
+                            className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
                           />
                         </td>
                       ))}
                       <td className="px-1 py-1 print:hidden">
-                        <div className="flex items-center gap-0.5">
+                        <div className="flex items-center gap-1">
                           <button
                             type="button"
                             onClick={() => toggleNotes(index)}
                             title={isExpanded ? 'Nascondi note' : 'Aggiungi nota'}
                             className={`p-1 rounded transition-colors ${
-                              hasNote
-                                ? 'text-emerald-600 hover:text-emerald-700'
-                                : 'text-slate-300 hover:text-slate-500'
+                              hasNote ? 'text-emerald-600 hover:text-emerald-700' : 'text-slate-300 hover:text-slate-500'
                             }`}
                           >
                             <NotebookPen size={15} />
                           </button>
-                          <ConfirmDeleteButton onConfirm={() => remove(index)} size={15} />
+                          {/* row lock toggle */}
+                          <button
+                            type="button"
+                            onClick={() => toggleLock(index)}
+                            title={isLocked ? 'Sblocca riga' : 'Blocca riga'}
+                            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${
+                              isLocked ? 'bg-amber-400' : 'bg-slate-200'
+                            }`}
+                          >
+                            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${
+                              isLocked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'
+                            }`}>
+                              {isLocked ? <Lock size={9} /> : <LockOpen size={9} />}
+                            </span>
+                          </button>
+                          {!isLocked && <ConfirmDeleteButton onConfirm={() => remove(index)} size={15} />}
                         </div>
                       </td>
                     </tr>
@@ -127,7 +162,8 @@ export default function MonitoringSection() {
                               {...register(`vitalSigns.${index}.notes`)}
                               placeholder="Note aggiuntive per questa rilevazione..."
                               rows={2}
-                              className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none"
+                              disabled={isLocked}
+                              className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
                             />
                           </div>
                         </td>
