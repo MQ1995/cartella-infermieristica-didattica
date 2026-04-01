@@ -2,6 +2,8 @@ import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Textarea } from '../ui/Textarea';
+import { Input } from '../ui/Input';
+import { Select } from '../ui/Select';
 import { LockableSection } from '../ui/LockableSection';
 
 export default function CarePlanTab() {
@@ -104,6 +106,49 @@ export default function CarePlanTab() {
           ))}
         </div>
       )}
+      </LockableSection>
+
+      <LockableSection title="Fine presa in carico">
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Select
+              name="dischargeReason"
+              label="Motivo di chiusura"
+              options={[
+                { label: 'Dimissione', value: 'Dimissione' },
+                { label: 'Trasferimento', value: 'Trasferimento' },
+                { label: 'Decesso', value: 'Decesso' },
+                { label: 'Terzo giorno di tirocinio', value: 'Terzo giorno di tirocinio' },
+              ]}
+            />
+            <Input name="dischargeDate" label="Data fine presa in carico" type="date" />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Textarea
+              name="dischargeUnresolvedProblems"
+              label="Problemi non risolti / rischi residui"
+              rows={4}
+            />
+            <Textarea
+              name="dischargeObjectives"
+              label="Obiettivi formulati"
+              rows={4}
+            />
+          </div>
+
+          <Textarea
+            name="dischargePlannedActions"
+            label="Azioni pianificate"
+            rows={3}
+          />
+
+          <Textarea
+            name="dischargeNotes"
+            label="Note aggiuntive"
+            rows={2}
+          />
+        </div>
       </LockableSection>
     </div>
   );

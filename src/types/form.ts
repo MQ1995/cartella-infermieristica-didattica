@@ -356,6 +356,14 @@ export interface NursingAssessment {
   model11Notes: string;
   model11Status: string;
 
+  // Fine presa in carico
+  dischargeUnresolvedProblems: string;
+  dischargeObjectives: string;
+  dischargePlannedActions: string;
+  dischargeReason: string;
+  dischargeDate: string;
+  dischargeNotes: string;
+
   // Care Plan
   carePlans: Array<{ problem: string; objective: string; plannedInterventions: string; implementedInterventions: string; evaluation: string }>;
 
@@ -738,6 +746,12 @@ export const defaultValues: NursingAssessment = {
   model11Notes: '',
   model11Status: '',
 
+  dischargeUnresolvedProblems: '',
+  dischargeObjectives: '',
+  dischargePlannedActions: '',
+  dischargeReason: '',
+  dischargeDate: '',
+  dischargeNotes: '',
   carePlans: [],
   diagnosticExams: [],
   fluidBalanceDays: [],
