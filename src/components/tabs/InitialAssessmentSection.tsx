@@ -6,8 +6,9 @@ import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { LockableSection } from '../ui/LockableSection';
 
-const SUB = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
 const DIVIDER = 'border-t border-slate-200 my-5';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
 
 // ── Presa in carico ───────────────────────────────────────────────────────────
 
@@ -15,9 +16,9 @@ function PrisaInCaricoSection() {
   return (
     <LockableSection title="Presa in carico">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Input name="careStartDate" label="Inizio presa in carico" type="date" />
-        <Input name="careEndDate" label="Fine presa in carico" type="date" />
-        <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
+        <Input name="careStartDate"       label="Inizio presa in carico"           type="date" />
+        <Input name="careEndDate"         label="Fine presa in carico"             type="date" />
+        <Input name="assessmentStartDate" label="Data e ora inizio accertamento"   type="datetime-local" />
       </div>
     </LockableSection>
   );
@@ -44,17 +45,17 @@ function PatientAndAdmissionSection() {
             { label: 'Altro',     value: 'Altro' },
           ]}
         />
-        <Input name="patientAge"    label="Età"            type="number" />
-        <Input name="nationality"   label="Nazionalità"    />
+        <Input name="patientAge"      label="Età"             type="number" />
+        <Input name="nationality"     label="Nazionalità" />
         <Input name="patientLanguage" label="Lingua parlata" />
         <Select
           name="maritalStatus"
           label="Stato civile"
           options={[
-            { label: 'Nubile / Celibe',        value: 'Celibe' },
-            { label: 'Coniugato/a',             value: 'Coniugato' },
-            { label: 'Separato/a – Divorziato/a', value: 'Separato' },
-            { label: 'Vedovo/a',                value: 'Vedovo' },
+            { label: 'Nubile / Celibe',             value: 'Celibe' },
+            { label: 'Coniugato/a',                 value: 'Coniugato' },
+            { label: 'Separato/a – Divorziato/a',   value: 'Separato' },
+            { label: 'Vedovo/a',                    value: 'Vedovo' },
           ]}
         />
         <Input name="referencePerson" label="Persona di riferimento (grado parentela)" />
@@ -62,43 +63,56 @@ function PatientAndAdmissionSection() {
 
       <div className={DIVIDER} />
 
-      {/* Ricovero */}
+      {/* Dati di ricovero */}
       <p className={SUB}>Dati di ricovero</p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <Input name="admissionDate" label="Data e ora di ricovero" type="datetime-local" />
-        <Select
-          name="admissionType"
-          label="Tipo di ricovero"
-          options={[
-            { label: 'Programmato',         value: 'Programmato' },
-            { label: 'Urgente',             value: 'Urgente' },
-            { label: 'TSO',                 value: 'TSO' },
-            { label: 'Trasferimento interno', value: 'Trasferimento interno' },
-          ]}
-        />
-        {admissionType === 'Trasferimento interno' && (
-          <Input name="admissionTransferFrom" label="Trasferito da" placeholder="es. Pronto Soccorso, TI" />
-        )}
-        <Select
-          name="origin"
-          label="Provenienza"
-          options={[
-            { label: 'Domicilio',      value: 'Domicilio' },
-            { label: 'Pronto Soccorso', value: 'Pronto Soccorso' },
-            { label: 'RSA / Casa di cura', value: 'RSA' },
-            { label: 'Altro ente',     value: 'Altro ente' },
-          ]}
-        />
-        {origin === 'Altro ente' && (
-          <Input name="originOther" label="Specificare ente" placeholder="es. struttura riabilitativa" />
-        )}
+
+        <div className={BOX}>
+          <Select
+            name="admissionType"
+            label="Tipo di ricovero"
+            options={[
+              { label: 'Programmato',           value: 'Programmato' },
+              { label: 'Urgente',               value: 'Urgente' },
+              { label: 'TSO',                   value: 'TSO' },
+              { label: 'Trasferimento interno', value: 'Trasferimento interno' },
+            ]}
+          />
+          {admissionType === 'Trasferimento interno' && (
+            <>
+              <div className="border-t border-slate-100" />
+              <Input name="admissionTransferFrom" label="Trasferito da" placeholder="es. Pronto Soccorso, TI" />
+            </>
+          )}
+        </div>
+
+        <div className={BOX}>
+          <Select
+            name="origin"
+            label="Provenienza"
+            options={[
+              { label: 'Domicilio',           value: 'Domicilio' },
+              { label: 'Pronto Soccorso',     value: 'Pronto Soccorso' },
+              { label: 'RSA / Casa di cura',  value: 'RSA' },
+              { label: 'Altro ente',          value: 'Altro ente' },
+            ]}
+          />
+          {origin === 'Altro ente' && (
+            <>
+              <div className="border-t border-slate-100" />
+              <Input name="originOther" label="Specificare ente" placeholder="es. struttura riabilitativa" />
+            </>
+          )}
+        </div>
+
         <Select
           name="arrivalMode"
           label="Modalità di arrivo"
           options={[
-            { label: 'A piedi',             value: 'Piedi' },
-            { label: 'Sedia a rotelle',     value: 'Carrozzina' },
-            { label: 'Barella / lettino',   value: 'Barella' },
+            { label: 'A piedi',           value: 'Piedi' },
+            { label: 'Sedia a rotelle',   value: 'Carrozzina' },
+            { label: 'Barella / lettino', value: 'Barella' },
           ]}
         />
       </div>
@@ -158,7 +172,7 @@ function AnamnesisSection() {
               {fields.map((field, index) => (
                 <tr key={field.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-middle">
                   <td className="px-2 py-1.5">
-                    <Input name={`pastMedicalHistory.${index}.date`} label="" placeholder="es. 2018" />
+                    <Input name={`pastMedicalHistory.${index}.date`}      label="" placeholder="es. 2018" />
                   </td>
                   <td className="px-2 py-1.5">
                     <Input name={`pastMedicalHistory.${index}.pathology`} label="" placeholder="es. Appendicectomia, ipertensione arteriosa" />
@@ -177,19 +191,22 @@ function AnamnesisSection() {
 
       {/* Fonte dati */}
       <p className={SUB}>Fonte dei dati</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+      <div className={BOX}>
         <Select
           name="dataSource"
           label="I dati sono stati forniti da:"
           options={[
-            { label: 'Persona ricoverata',        value: 'Paziente' },
-            { label: 'Parenti / accompagnatori',  value: 'Parenti' },
-            { label: 'Documentazione clinica',    value: 'Documentazione' },
-            { label: 'Altro (specificare)',        value: 'Altro' },
+            { label: 'Persona ricoverata',       value: 'Paziente' },
+            { label: 'Parenti / accompagnatori', value: 'Parenti' },
+            { label: 'Documentazione clinica',   value: 'Documentazione' },
+            { label: 'Altro (specificare)',       value: 'Altro' },
           ]}
         />
         {dataSource === 'Altro' && (
-          <Input name="dataSourceOther" label="Specificare fonte" />
+          <>
+            <div className="border-t border-slate-100" />
+            <Input name="dataSourceOther" label="Specificare fonte" />
+          </>
         )}
       </div>
 
