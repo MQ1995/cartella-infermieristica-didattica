@@ -1,373 +1,406 @@
-import { LockableSection } from '../../ui/LockableSection';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Select } from '../../ui/Select';
 import { Textarea } from '../../ui/Textarea';
+import { LockableSection } from '../../ui/LockableSection';
+
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
+const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
+const CL      = 'flex items-center gap-2 cursor-pointer text-sm text-slate-700';
+const CB      = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500 rounded border-slate-300';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
 
 export default function Model4() {
-  const { watch, register } = useFormContext();
-  
-  const muscleTone = watch('muscleTone');
-  const muscleStrength = watch('muscleStrength');
-  const jointExcursion = watch('jointExcursion');
-  const walking = watch('walking');
-  const prosthesis = watch('prosthesis');
-  const respiratoryFunction = watch('respiratoryFunction');
-  const cough = watch('cough');
+  const { register } = useFormContext();
+
+  const assumedPosition    = useWatch({ name: 'assumedPosition' });
+  const muscleTone         = useWatch({ name: 'muscleTone' });
+  const muscleStrength     = useWatch({ name: 'muscleStrength' });
+  const jointExcursion     = useWatch({ name: 'jointExcursion' });
+  const walking            = useWatch({ name: 'walking' });
+  const prosthesis         = useWatch({ name: 'prosthesis' });
+  const respiratoryFunction = useWatch({ name: 'respiratoryFunction' });
+  const breathingQuality   = useWatch({ name: 'breathingQuality' });
+  const respiratoryNoises  = useWatch({ name: 'respiratoryNoises' });
+  const cough              = useWatch({ name: 'cough' });
+  const sputum             = useWatch({ name: 'sputum' });
 
   return (
-    <LockableSection title="4. Modello di Attività ed Esercizio Fisico">
-      
-      <div className="space-y-6">
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2">Dati Soggettivi</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Select 
-            name="energyLevel" 
-            label="Grado di energia percepito per le attività desiderate/necessarie" 
-            options={[
-              { label: 'Ottimo', value: 'Ottimo' },
-              { label: 'Buono', value: 'Buono' },
-              { label: 'Sufficiente', value: 'Sufficiente' },
-              { label: 'Insufficiente', value: 'Insufficiente' }
-            ]} 
-          />
-          <Input name="leisureActivities" label="Attività di svago svolte prima del ricovero" />
-        </div>
-        <Input name="exerciseRoutine" label="Esercizio fisico svolto prima del ricovero (tipo e regolarità)" />
+    <LockableSection title="4. Attività ed esercizio fisico">
+      <div className="space-y-5">
 
-        <div className="mt-6 pt-4 border-t border-slate-200">
-          <h5 className="font-medium text-slate-700 mb-2">Abilità percepita secondo Scala funzionale</h5>
-          <p className="text-xs text-slate-500 mb-4">
-            0 = Completamente autonomo | 1 = Ausili | 2 = Assistenza/supervisione persona | 3 = Assistenza + ausili | 4 = Dipendente, non partecipa
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 bg-white p-4 rounded-lg border border-slate-200">
+        {/* ── Dati soggettivi ── */}
+        <p className={SUB}>Dati soggettivi</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Select
+            name="energyLevel"
+            label="Grado di energia percepito per le attività"
+            options={[
+              { label: 'Ottimo',        value: 'Ottimo' },
+              { label: 'Buono',         value: 'Buono' },
+              { label: 'Sufficiente',   value: 'Sufficiente' },
+              { label: 'Insufficiente', value: 'Insufficiente' },
+            ]}
+          />
+          <Input name="leisureActivities" label="Attività di svago prima del ricovero" />
+        </div>
+        <Input name="exerciseRoutine" label="Esercizio fisico prima del ricovero (tipo e regolarità)" />
+
+        <div className={DIVIDER} />
+
+        {/* ── Scala funzionale ADL ── */}
+        <p className={SUB}>Scala funzionale ADL</p>
+        <p className="text-xs text-slate-500 -mt-2 mb-2">
+          0 = Completamente autonomo · 1 = Ausili · 2 = Assistenza / supervisione · 3 = Assistenza + ausili · 4 = Dipendente, non partecipa
+        </p>
+        <div className={`${BOX} !space-y-0`}>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 p-1">
             {[
-              { id: 'funcAlimentazione', label: 'Alimentazione' },
-              { id: 'funcCuraAspetto', label: 'Cura dell\'aspetto' },
-              { id: 'funcBagno', label: 'Fare il bagno' },
-              { id: 'funcMobilitaGen', label: 'Mobilità generale' },
-              { id: 'funcGabinetto', label: 'Uso del gabinetto' },
-              { id: 'funcCucinare', label: 'Cucinare' },
-              { id: 'funcMobilitaLetto', label: 'Mobilità a letto' },
-              { id: 'funcCasa', label: 'Mantenimento casa' },
-              { id: 'funcVestirsi', label: 'Vestirsi' },
-              { id: 'funcSpesa', label: 'Fare la spesa' }
+              { id: 'funcAlimentazione',  label: 'Alimentazione' },
+              { id: 'funcCuraAspetto',    label: "Cura dell'aspetto" },
+              { id: 'funcBagno',          label: 'Bagno / doccia' },
+              { id: 'funcMobilitaGen',    label: 'Mobilità generale' },
+              { id: 'funcGabinetto',      label: 'Uso del gabinetto' },
+              { id: 'funcCucinare',       label: 'Cucinare' },
+              { id: 'funcMobilitaLetto',  label: 'Mobilità a letto' },
+              { id: 'funcCasa',           label: 'Mantenimento casa' },
+              { id: 'funcVestirsi',       label: 'Vestirsi' },
+              { id: 'funcSpesa',          label: 'Fare la spesa' },
             ].map(item => (
               <Input key={item.id} name={item.id} label={item.label} type="number" min="0" max="4" />
             ))}
           </div>
         </div>
 
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mt-8">Esame Fisico</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <Select 
-                name="assumedPosition" 
-                label="Posizione assunta" 
-                className="flex-1"
+        <div className={DIVIDER} />
+
+        {/* ── Esame fisico — mobilità ── */}
+        <p className={SUB}>Esame fisico — mobilità</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Colonna sinistra */}
+          <div className="space-y-3">
+            <div className={BOX}>
+              <Select
+                name="assumedPosition"
+                label="Posizione assunta"
                 options={[
-                  { label: 'Libera', value: 'Libera' },
-                  { label: 'A letto con decubito', value: 'A letto' }
-                ]} 
+                  { label: 'Libera',                   value: 'Libera' },
+                  { label: 'A letto con decubito',     value: 'A letto' },
+                ]}
               />
-              {watch('assumedPosition') === 'A letto' && (
-                <Select 
-                  name="decubitusType" 
-                  label="Decubito" 
-                  className="flex-1"
+              {assumedPosition === 'A letto' && (
+                <Select
+                  name="decubitusType"
+                  label="Tipo di decubito"
                   options={[
                     { label: 'Indifferente', value: 'Indifferente' },
-                    { label: 'Preferito', value: 'Preferito' },
-                    { label: 'Obbligato', value: 'Obbligato' }
-                  ]} 
+                    { label: 'Preferito',    value: 'Preferito' },
+                    { label: 'Obbligato',    value: 'Obbligato' },
+                  ]}
                 />
               )}
             </div>
-            
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="muscleTone" 
-                label="Tono e trofismo" 
+
+            <div className={BOX}>
+              <Select
+                name="muscleTone"
+                label="Tono e trofismo muscolare"
                 options={[
-                  { label: 'Normale', value: 'Normale' },
-                  { label: 'Alterazioni', value: 'Alterazioni' }
-                ]} 
+                  { label: 'Nella norma', value: 'Normale' },
+                  { label: 'Alterazioni', value: 'Alterazioni' },
+                ]}
               />
-              {muscleTone === 'Alterazioni' && <Input name="muscleToneAlterations" label="Sede e tipo" className="text-sm" />}
+              {muscleTone === 'Alterazioni' && (
+                <Input name="muscleToneAlterations" label="Sede e tipo" />
+              )}
             </div>
-            
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="muscleStrength" 
-                label="Forza muscolare" 
+
+            <div className={BOX}>
+              <Select
+                name="muscleStrength"
+                label="Forza muscolare"
                 options={[
-                  { label: 'Normale', value: 'Normale' },
-                  { label: 'Alterazioni', value: 'Alterazioni' }
-                ]} 
+                  { label: 'Nella norma', value: 'Normale' },
+                  { label: 'Alterazioni', value: 'Alterazioni' },
+                ]}
               />
-              {muscleStrength === 'Alterazioni' && <Input name="muscleStrengthAlterations" label="Sede, tipo e caratteristiche" className="text-sm" />}
+              {muscleStrength === 'Alterazioni' && (
+                <Input name="muscleStrengthAlterations" label="Sede, tipo e caratteristiche" />
+              )}
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="jointExcursion" 
-                label="Escursione articolare" 
+          {/* Colonna destra */}
+          <div className="space-y-3">
+            <div className={BOX}>
+              <Select
+                name="jointExcursion"
+                label="Escursione articolare"
                 options={[
-                  { label: 'Normale', value: 'Normale' },
-                  { label: 'Alterazioni', value: 'Alterazioni' }
-                ]} 
+                  { label: 'Nella norma', value: 'Normale' },
+                  { label: 'Alterazioni', value: 'Alterazioni' },
+                ]}
               />
-              {jointExcursion === 'Alterazioni' && <Input name="jointExcursionAlterations" label="Sede e tipo" className="text-sm" />}
+              {jointExcursion === 'Alterazioni' && (
+                <Input name="jointExcursionAlterations" label="Sede e tipo" />
+              )}
             </div>
 
-            <Select 
-              name="balance" 
-              label="Equilibrio" 
-              options={[
-                { label: 'Stabile', value: 'Stabile' },
-                { label: 'Instabile', value: 'Instabile' }
-              ]} 
-            />
+            <div className={BOX}>
+              <Select
+                name="balance"
+                label="Equilibrio"
+                options={[
+                  { label: 'Stabile',   value: 'Stabile' },
+                  { label: 'Instabile', value: 'Instabile' },
+                ]}
+              />
+            </div>
 
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="walking" 
-                label="Deambulazione" 
+            <div className={BOX}>
+              <Select
+                name="walking"
+                label="Deambulazione"
                 options={[
                   { label: 'Nella norma', value: 'Nella norma' },
-                  { label: 'Alterazioni', value: 'Alterazioni' }
-                ]} 
+                  { label: 'Alterazioni', value: 'Alterazioni' },
+                ]}
               />
-              {walking === 'Alterazioni' && <Input name="walkingAlterations" label="Specificare tipo alterazione" className="text-sm" />}
+              {walking === 'Alterazioni' && (
+                <Input name="walkingAlterations" label="Specificare tipo di alterazione" />
+              )}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-slate-700 w-48">Utilizzo di protesi e/o ausili:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('prosthesis')} /> No
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('prosthesis')} /> Sì
-              </label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className={BOX}>
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="text-sm font-medium text-slate-700 min-w-[160px]">Protesi e / o ausili</span>
+              <label className={RL}><input type="radio" value="false" {...register('prosthesis')} className={RADIO} /> No</label>
+              <label className={RL}><input type="radio" value="true"  {...register('prosthesis')} className={RADIO} /> Sì</label>
             </div>
-            {prosthesis === 'true' && <Input name="prosthesisDetails" label="Specificare presidio e lateralità" />}
+            {prosthesis === 'true' && (
+              <Input name="prosthesisDetails" label="Specificare presidio e lateralità" />
+            )}
           </div>
 
-          <div className="bg-white p-4 border border-slate-200 rounded-lg">
-            <Input name="barthelScore" label="Valutazione ADL: Punteggio scala Barthel" type="number" />
+          <div className={BOX}>
+            <Input name="barthelScore" label="Valutazione ADL — punteggio scala Barthel" type="number" />
           </div>
         </div>
 
-        <Textarea name="generalAppearance" label="Aspetto generale (cura dell'aspetto, igiene, livello di energia)" rows={2} className="mt-4" />
+        <Textarea name="generalAppearance" label="Aspetto generale (cura, igiene, livello di energia)" rows={2} />
 
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mt-8">Funzione Respiratoria</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="flex gap-4 bg-white p-3 rounded-md border border-slate-200">
-              <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700">
-                <input type="radio" value="Autonomo" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('respiratoryFunction')} /> Respiro autonomo
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-700">
-                <input type="radio" value="Supportato" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('respiratoryFunction')} /> Respiro supportato
-              </label>
+        <div className={DIVIDER} />
+
+        {/* ── Funzione respiratoria ── */}
+        <p className={SUB}>Funzione respiratoria</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Colonna sinistra */}
+          <div className="space-y-3">
+
+            <div className={BOX}>
+              <span className="text-sm font-medium text-slate-700 block">Tipo di respiro</span>
+              <div className="flex gap-4">
+                <label className={RL}><input type="radio" value="Autonomo"   {...register('respiratoryFunction')} className={RADIO} /> Autonomo</label>
+                <label className={RL}><input type="radio" value="Supportato" {...register('respiratoryFunction')} className={RADIO} /> Supportato</label>
+              </div>
+              {respiratoryFunction === 'Supportato' && (
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <Input name="respiratoryDevice"  label="Presidio utilizzato" />
+                  <Input name="respiratorySupport" label="Tipo di supporto" />
+                </div>
+              )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Input name="respiratoryRate" label="Frequenza respiratoria" />
-              <Input name="spo2" label="SPO2 %" />
+            <div className={BOX}>
+              <div className="grid grid-cols-2 gap-3">
+                <Input name="respiratoryRate" label="Frequenza respiratoria (atti/min)" />
+                <Input name="spo2"            label="SpO₂ (%)" />
+              </div>
+              <Select
+                name="breathingDepth"
+                label="Profondità del respiro"
+                options={[
+                  { label: 'Nella norma',  value: 'Normale' },
+                  { label: 'Superficiale', value: 'Superficiale' },
+                  { label: 'Profondo',     value: 'Profondo' },
+                ]}
+              />
             </div>
 
-            <Select 
-              name="breathingDepth" 
-              label="Profondità" 
-              options={[
-                { label: 'Normale', value: 'Normale' },
-                { label: 'Superficiale', value: 'Superficiale' },
-                { label: 'Profondo', value: 'Profondo' }
-              ]} 
-            />
-
-            <div className="bg-white p-3 border border-slate-200 rounded-md">
-              <label className="text-sm font-medium text-slate-700 mb-2 block">Qualità:</label>
-              <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 text-sm text-slate-600">
-                  <input type="radio" value="Eupnea" className="text-emerald-600 focus:ring-emerald-500" {...register('breathingQuality')} /> Eupnea
-                </label>
-                <div className="flex gap-2 items-center">
-                  <label className="flex items-center gap-2 text-sm text-slate-600">
-                    <input type="radio" value="Dispnea" className="text-emerald-600 focus:ring-emerald-500" {...register('breathingQuality')} /> Dispnea:
-                  </label>
-                  {watch('breathingQuality') === 'Dispnea' && (
-                    <div className="flex gap-3 ml-2">
-                      <label className="flex items-center gap-1 text-xs"><input type="radio" value="sforzo" {...register('dyspneaType')} /> sforzo</label>
-                      <label className="flex items-center gap-1 text-xs"><input type="radio" value="riposo" {...register('dyspneaType')} /> riposo</label>
-                      <label className="flex items-center gap-1 text-xs"><input type="radio" value="ortopnea" {...register('dyspneaType')} /> ortopnea</label>
+            <div className={BOX}>
+              <span className="text-sm font-medium text-slate-700 block">Qualità del respiro</span>
+              <div className="space-y-2">
+                <label className={RL}><input type="radio" value="Eupnea" {...register('breathingQuality')} className={RADIO} /> Eupnea</label>
+                <div className="space-y-1">
+                  <label className={RL}><input type="radio" value="Dispnea" {...register('breathingQuality')} className={RADIO} /> Dispnea</label>
+                  {breathingQuality === 'Dispnea' && (
+                    <div className="flex gap-4 pl-6">
+                      {['sforzo', 'riposo', 'ortopnea'].map(v => (
+                        <label key={v} className={RL}><input type="radio" value={v} {...register('dyspneaType')} className={RADIO} /> {v}</label>
+                      ))}
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-3 border border-slate-200 rounded-md">
-              <label className="text-sm font-medium text-slate-700 mb-2 block">Alterazioni:</label>
-              <div className="flex flex-wrap gap-4">
-                {['Tachipnea', 'Bradipnea', 'Polipnea', 'Pause di apnea'].map((opt) => (
-                  <label key={opt} className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-                    <input type="checkbox" value={opt} className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('breathingAlterations')} />
-                    {opt}
+            <div className={BOX}>
+              <span className="text-sm font-medium text-slate-700 block">Alterazioni del respiro</span>
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                {['Tachipnea', 'Bradipnea', 'Polipnea', 'Pause di apnea'].map(v => (
+                  <label key={v} className={CL}>
+                    <input type="checkbox" value={v} {...register('breathingAlterations')} className={CB} /> {v}
                   </label>
                 ))}
               </div>
-              <div className="grid grid-cols-2 gap-2 mt-2">
-                <Input name="breathingPathological" label="Respiro patologico (tipo)" className="text-xs" />
-                <Input name="breathingOtherAlterations" label="Altro" className="text-xs" />
+              <div className="grid grid-cols-2 gap-3">
+                <Input name="breathingPathological"    label="Respiro patologico (tipo)" />
+                <Input name="breathingOtherAlterations" label="Altro" />
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="respiratoryNoises" 
-                label="Rumori respiratori" 
+          {/* Colonna destra */}
+          <div className="space-y-3">
+
+            <div className={BOX}>
+              <Select
+                name="respiratoryNoises"
+                label="Rumori respiratori"
                 options={[
-                  { label: 'Assenti', value: 'Assenti' },
-                  { label: 'Presenti', value: 'Presenti' }
-                ]} 
+                  { label: 'Assenti',  value: 'Assenti' },
+                  { label: 'Presenti', value: 'Presenti' },
+                ]}
               />
-              {watch('respiratoryNoises') === 'Presenti' && <Input name="respiratoryNoisesDetails" label="Caratteristiche" className="text-sm" />}
+              {respiratoryNoises === 'Presenti' && (
+                <Input name="respiratoryNoisesDetails" label="Caratteristiche" />
+              )}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="coughReflex" 
-                label="Riflesso della tosse" 
+            <div className={BOX}>
+              <Select
+                name="coughReflex"
+                label="Riflesso della tosse"
                 options={[
-                  { label: 'Assente', value: 'Assente' },
-                  { label: 'Presente', value: 'Presente' }
-                ]} 
+                  { label: 'Assente',  value: 'Assente' },
+                  { label: 'Presente', value: 'Presente' },
+                ]}
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="cough" 
-                label="Tosse" 
+            <div className={BOX}>
+              <Select
+                name="cough"
+                label="Tosse"
                 options={[
-                  { label: 'Assente', value: 'Assente' },
-                  { label: 'Presente', value: 'Presente' }
-                ]} 
+                  { label: 'Assente',  value: 'Assente' },
+                  { label: 'Presente', value: 'Presente' },
+                ]}
               />
-              {cough === 'Presente' && <Input name="coughDetails" label="Caratteristiche" className="text-sm" />}
+              {cough === 'Presente' && (
+                <Input name="coughDetails" label="Caratteristiche" />
+              )}
             </div>
 
-            <div className="flex flex-col gap-2">
-              <Select 
-                name="sputum" 
-                label="Espettorato" 
+            <div className={BOX}>
+              <Select
+                name="sputum"
+                label="Espettorato"
                 options={[
-                  { label: 'Assente', value: 'Assente' },
-                  { label: 'Presente', value: 'Presente' }
-                ]} 
+                  { label: 'Assente',  value: 'Assente' },
+                  { label: 'Presente', value: 'Presente' },
+                ]}
               />
-              {watch('sputum') === 'Presente' && <Input name="sputumDetails" label="Caratteristiche" className="text-sm" />}
+              {sputum === 'Presente' && (
+                <Input name="sputumDetails" label="Caratteristiche" />
+              )}
+              <Select
+                name="sputumAbility"
+                label="Capacità di espettorare"
+                options={[
+                  { label: 'Assente',  value: 'Assente' },
+                  { label: 'Presente', value: 'Presente' },
+                ]}
+              />
             </div>
 
-            <Select 
-              name="sputumAbility" 
-              label="Capacità di espettorare" 
-              options={[
-                { label: 'Assente', value: 'Assente' },
-                { label: 'Presente', value: 'Presente' }
-              ]} 
-            />
-
-            {respiratoryFunction === 'Supportato' && (
-              <div className="bg-slate-50 p-4 border border-slate-200 rounded-lg space-y-3">
-                <Input name="respiratoryDevice" label="Tipologia di presidio utilizzato" />
-                <Input name="respiratorySupport" label="Tipologia di supporto utilizzato" />
-              </div>
-            )}
           </div>
         </div>
 
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mt-8">Funzione Cardiaca e Vascolare</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Input name="pulseRate" label="Frequenza (Polso)" type="number" />
-              <Input name="pulseLocation" label="Sede rilevazione" />
+        <div className={DIVIDER} />
+
+        {/* ── Funzione cardiaca e vascolare ── */}
+        <p className={SUB}>Funzione cardiaca e vascolare</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Polso */}
+          <div className={BOX}>
+            <div className="grid grid-cols-2 gap-3">
+              <Input name="pulseRate"     label="Frequenza polso (bpm)" type="number" />
+              <Input name="pulseLocation" label="Sede di rilevazione" />
             </div>
-            
-            <div className="bg-white p-3 border border-slate-200 rounded-md">
-              <div className="flex gap-4 mb-2">
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Normale" {...register('pulseType')} /> Normale</label>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Tachicardia" {...register('pulseType')} /> Tachicardia</label>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Bradicardia" {...register('pulseType')} /> Bradicardia</label>
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                {['Normale', 'Tachicardia', 'Bradicardia'].map(v => (
+                  <label key={v} className={RL}><input type="radio" value={v} {...register('pulseType')} className={RADIO} /> {v}</label>
+                ))}
               </div>
-              <div className="flex gap-4 mb-2 pt-2 border-t border-slate-100">
-                <span className="text-sm font-medium text-slate-700">Ritmo:</span>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Ritmico" {...register('pulseRhythm')} /> Ritmico</label>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Aritmico" {...register('pulseRhythm')} /> Aritmico</label>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-slate-600 w-16">Ritmo</span>
+                {['Ritmico', 'Aritmico'].map(v => (
+                  <label key={v} className={RL}><input type="radio" value={v} {...register('pulseRhythm')} className={RADIO} /> {v}</label>
+                ))}
               </div>
-              <div className="flex gap-4 pt-2 border-t border-slate-100">
-                <span className="text-sm font-medium text-slate-700">Ampiezza:</span>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Pieno" {...register('pulseAmplitude')} /> Pieno</label>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Debole" {...register('pulseAmplitude')} /> Debole</label>
-                <label className="flex items-center gap-1 text-sm"><input type="radio" value="Filiforme" {...register('pulseAmplitude')} /> Filiforme</label>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-slate-600 w-16">Ampiezza</span>
+                {['Pieno', 'Debole', 'Filiforme'].map(v => (
+                  <label key={v} className={RL}><input type="radio" value={v} {...register('pulseAmplitude')} className={RADIO} /> {v}</label>
+                ))}
               </div>
             </div>
           </div>
-          
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <Input name="bloodPressureValue" label="Pressione Arteriosa (valore)" />
+
+          {/* Pressione arteriosa */}
+          <div className={BOX}>
+            <div className="grid grid-cols-2 gap-3">
+              <Input name="bloodPressureValue"    label="Pressione arteriosa (mmHg)" />
               <Input name="bloodPressureLocation" label="Sede di rilevazione" />
             </div>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="checkbox" value="Ortostatismo" {...register('bloodPressurePosture')} /> Ortostatismo</label>
-              <label className="flex items-center gap-1 text-sm"><input type="checkbox" value="Clinostatismo" {...register('bloodPressurePosture')} /> Clinostatismo</label>
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-slate-700 block">Postura durante la rilevazione</span>
+              <div className="flex gap-4">
+                {['Ortostatismo', 'Clinostatismo'].map(v => (
+                  <label key={v} className={CL}>
+                    <input type="checkbox" value={v} {...register('bloodPressurePosture')} className={CB} /> {v}
+                  </label>
+                ))}
+              </div>
             </div>
-            <Input name="capillaryRefill" label="Refill capillare" className="max-w-[200px]" />
+            <Input name="capillaryRefill" label="Refill capillare" />
           </div>
         </div>
 
-        <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model4Notes" 
-            label="Eventuali note aggiuntive sul Modello Di Attività ed Esercizio Fisico" 
-            rows={3}
-          />
-          
-          <div className="mt-6 p-4 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Valutazione Modello 4</span>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="FUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model4Status')}
-                />
-                FUNZIONALE
+        <div className={DIVIDER} />
+
+        {/* ── Note + status bar ── */}
+        <Textarea name="model4Notes" label="Note" rows={3} />
+
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 4</span>
+          <div className="flex gap-6">
+            {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
+              <label key={v} className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                <input type="radio" value={v} {...register('model4Status')} className="w-4 h-4 text-emerald-600 focus:ring-emerald-500" />
+                {v}
               </label>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="DISFUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model4Status')}
-                />
-                DISFUNZIONALE
-              </label>
-            </div>
+            ))}
           </div>
         </div>
 
