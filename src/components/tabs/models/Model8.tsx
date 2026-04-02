@@ -1,139 +1,150 @@
-import { LockableSection } from '../../ui/LockableSection';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
+import { Select } from '../../ui/Select';
+import { LockableSection } from '../../ui/LockableSection';
+
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
+const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const CB      = 'w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500';
+const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
 
 export default function Model8() {
-  const { watch, register } = useFormContext();
+  const { register } = useFormContext();
 
-  const occupationalRole = watch('occupationalRole');
-  const livingSituation = watch('livingSituation');
-  const supportSystemRaw = watch('supportSystem');
-  const supportSystem: string[] = Array.isArray(supportSystemRaw) ? supportSystemRaw : [];
+  const occupationalRole = useWatch({ name: 'occupationalRole' });
+  const livingSituation  = useWatch({ name: 'livingSituation' });
+  const supportSystem    = useWatch({ name: 'supportSystem' }) as string[] | undefined ?? [];
 
   return (
-    <LockableSection title="8. Modello di Ruoli e Relazioni">
-      
-      <div className="space-y-6">
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2">Dati Soggettivi</h4>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 border border-slate-200 rounded-lg">
-          <Input name="maritalStatusRoles" label="Stato civile" />
-          <Input name="educationLevel" label="Livello di scolarità" />
+    <LockableSection title="8. Ruoli e relazioni">
+      <div className="space-y-5">
+
+        {/* ── Dati anagrafici e sociali ── */}
+        <p className={SUB}>Dati sociali</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Select
+            name="educationLevel"
+            label="Livello di scolarità"
+            options={[
+              { label: 'Nessun titolo',              value: 'Nessuno' },
+              { label: 'Licenza elementare',         value: 'Elementare' },
+              { label: 'Licenza media',               value: 'Media' },
+              { label: 'Diploma superiore',           value: 'Diploma' },
+              { label: 'Laurea / post-laurea',        value: 'Laurea' },
+            ]}
+          />
+          <Input name="nationality2" label="Nazionalità / provenienza culturale" placeholder="es. Italiana" />
         </div>
 
-        <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-          <label className="text-sm font-semibold text-slate-700 block">Ruolo professionale:</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex items-center gap-2">
-              <input type="radio" value="Occupato" className="text-emerald-600 focus:ring-emerald-500" {...register('occupationalRole')} /> 
-              <span className="text-sm text-slate-700 w-24">Occupato/a</span>
-              {occupationalRole === 'Occupato' && <Input name="occupationalActivityType" label="" placeholder="Tipo di Attività" className="flex-1 text-xs" />}
-            </div>
-            <div className="flex items-center gap-2">
-              <input type="radio" value="Pensionato" className="text-emerald-600 focus:ring-emerald-500" {...register('occupationalRole')} /> 
-              <span className="text-sm text-slate-700 w-24">Pensionato/a</span>
-              {occupationalRole === 'Pensionato' && <Input name="occupationalPrevious" label="" placeholder="Occupazione precedente" className="flex-1 text-xs" />}
-            </div>
-            <div className="flex items-center gap-2">
-              <input type="radio" value="Casalingo" className="text-emerald-600 focus:ring-emerald-500" {...register('occupationalRole')} /> 
-              <span className="text-sm text-slate-700">Casalingo/a</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <input type="radio" value="Disoccupato" className="text-emerald-600 focus:ring-emerald-500" {...register('occupationalRole')} /> 
-              <span className="text-sm text-slate-700 w-24">Disoccupato</span>
-              {occupationalRole === 'Disoccupato' && <Input name="occupationalDesired" label="" placeholder="Occupazione desiderata" className="flex-1 text-xs" />}
-            </div>
-            <div className="flex items-center gap-2">
-              <input type="radio" value="Studente" className="text-emerald-600 focus:ring-emerald-500" {...register('occupationalRole')} /> 
-              <span className="text-sm text-slate-700 w-24">Studente</span>
-              {occupationalRole === 'Studente' && <Input name="occupationalEnrolled" label="" placeholder="Iscritto a" className="flex-1 text-xs" />}
-            </div>
-          </div>
-        </div>
+        <div className={DIVIDER} />
 
-        <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-semibold text-slate-700 w-16">Vive:</span>
-            <label className="flex items-center gap-1 cursor-pointer text-sm">
-              <input type="radio" value="Da solo" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('livingSituation')} /> da solo
-            </label>
-            <label className="flex items-center gap-1 cursor-pointer text-sm">
-              <input type="radio" value="In famiglia" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('livingSituation')} /> in famiglia
-            </label>
-            <div className="flex items-center gap-2">
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="Altro" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('livingSituation')} /> altro
-              </label>
-              {livingSituation === 'Altro' && (
-                <input
-                  type="text"
-                  className="px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white"
-                  placeholder="Specificare"
-                  {...register('livingSituationOther')}
-                />
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
-            <Textarea name="familyStructure" label="Struttura e ruolo famigliare (moglie/marito/figli)" rows={2} />
-            <Textarea name="significantRelationships" label="Relazioni significative extra famigliari: (amici/gruppi sociali di appartenenza ecc..)" rows={2} />
-          </div>
-        </div>
-
-        <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-          <label className="text-sm font-semibold text-slate-700 block mb-2">Sistema di supporto:</label>
-          <div className="flex flex-wrap gap-4">
-            {['coniuge', 'figli', 'parenti', 'nessuno'].map((opt) => (
-              <label key={opt} className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-                <input type="checkbox" value={opt} className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('supportSystem')} />
-                {opt}
+        {/* ── Ruolo professionale ── */}
+        <p className={SUB}>Ruolo professionale</p>
+        <div className={BOX}>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-y-2 gap-x-4">
+            {['Occupato/a', 'Pensionato/a', 'Casalingo/a', 'Disoccupato/a', 'Studente'].map(v => (
+              <label key={v} className={RL}>
+                <input type="radio" value={v} {...register('occupationalRole')} className={RADIO} /> {v}
               </label>
             ))}
-            <div className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-              <input type="checkbox" value="Altra persona" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('supportSystem')} /> Altra persona
-              {supportSystem?.includes('Altra persona') && (
-                <input
-                  type="text"
-                  className="ml-2 px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white w-32"
-                  placeholder="Specificare"
-                  {...register('supportSystemOther')}
-                />
-              )}
-            </div>
           </div>
+          {occupationalRole && occupationalRole !== 'Casalingo/a' && (
+            <>
+              <div className="border-t border-slate-100" />
+              <Input
+                name="occupationalDetails"
+                label={
+                  occupationalRole === 'Occupato/a'    ? 'Tipo di attività' :
+                  occupationalRole === 'Pensionato/a'  ? 'Occupazione precedente' :
+                  occupationalRole === 'Disoccupato/a' ? 'Occupazione precedente / desiderata' :
+                  'Iscritto/a a'
+                }
+              />
+            </>
+          )}
         </div>
 
-        <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model8Notes" 
-            label="Eventuali note aggiuntive sul Modello di Ruoli e Relazioni" 
-            rows={3}
-          />
-          
-          <div className="mt-6 p-4 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Valutazione Modello 8</span>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="FUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model8Status')}
-                />
-                FUNZIONALE
-              </label>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="DISFUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model8Status')}
-                />
-                DISFUNZIONALE
+        <div className={DIVIDER} />
+
+        {/* ── Situazione abitativa ── */}
+        <p className={SUB}>Situazione abitativa e familiare</p>
+        <div className="space-y-3">
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Vive:</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {['Da solo/a', 'In famiglia', 'In struttura'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('livingSituation')} className={RADIO} /> {v}
+                </label>
+              ))}
+              <label className={RL}>
+                <input type="radio" value="Altro" {...register('livingSituation')} className={RADIO} /> Altro
               </label>
             </div>
+            {livingSituation === 'Altro' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="livingSituationOther" label="Specificare" />
+              </>
+            )}
+          </div>
+
+          <Textarea name="familyStructure"         label="Struttura familiare e ruolo (coniuge, figli, conviventi...)" rows={2} />
+          <Textarea name="significantRelationships" label="Relazioni significative extra-familiari (amici, gruppi sociali...)" rows={2} />
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Sistema di supporto ── */}
+        <p className={SUB}>Sistema di supporto</p>
+        <div className={BOX}>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {['Coniuge / partner', 'Figli', 'Parenti', 'Amici', 'Nessuno'].map(v => (
+              <label key={v} className={RL}>
+                <input type="checkbox" value={v} {...register('supportSystem')} className={CB} /> {v}
+              </label>
+            ))}
+            <label className={RL}>
+              <input type="checkbox" value="Altra persona" {...register('supportSystem')} className={CB} /> Altra persona
+            </label>
+          </div>
+          {supportSystem.includes('Altra persona') && (
+            <>
+              <div className="border-t border-slate-100" />
+              <Input name="supportSystemOther" label="Specificare" />
+            </>
+          )}
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Impatto della malattia sui ruoli ── */}
+        <p className={SUB}>Impatto della malattia</p>
+        <Textarea
+          name="illnessRoleImpact"
+          label="Come la malattia ha influenzato i ruoli familiari, lavorativi e sociali?"
+          rows={3}
+        />
+
+        <div className={DIVIDER} />
+
+        {/* ── Note ── */}
+        <Textarea name="model8Notes" label="Note" rows={3} />
+
+        {/* ── Status bar ── */}
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 8</span>
+          <div className="flex gap-6">
+            {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
+              <label key={v} className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                <input type="radio" value={v} {...register('model8Status')} className={RADIO} />
+                {v}
+              </label>
+            ))}
           </div>
         </div>
 
