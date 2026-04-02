@@ -205,12 +205,9 @@ export default function Model6() {
 
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Vista</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {['Normale', 'Occhiali', 'Lenti a contatto', 'Alterazioni'].map(v => (
-                <label key={v} className={RL}>
-                  <input type="radio" value={v} {...register('vision')} className={RADIO} /> {v}
-                </label>
-              ))}
+            <div className="flex gap-5">
+              <label className={RL}><input type="radio" value="Normale"     {...register('vision')} className={RADIO} /> Normale</label>
+              <label className={RL}><input type="radio" value="Alterazioni" {...register('vision')} className={RADIO} /> Alterazioni</label>
             </div>
             {vision === 'Alterazioni' && (
               <>
@@ -218,16 +215,18 @@ export default function Model6() {
                 <Input name="visionAlterationDetails" label="Specificare" />
               </>
             )}
+            <div className="border-t border-slate-100" />
+            <div className="flex gap-5">
+              <label className={RL}><input type="checkbox" {...register('visionGlasses')}      className={CB} /> Occhiali</label>
+              <label className={RL}><input type="checkbox" {...register('visionContactLenses')} className={CB} /> Lenti a contatto</label>
+            </div>
           </div>
 
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Udito</p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
-              {['Normale', 'Protesi acustica', 'Alterazioni'].map(v => (
-                <label key={v} className={RL}>
-                  <input type="radio" value={v} {...register('hearing')} className={RADIO} /> {v}
-                </label>
-              ))}
+            <div className="flex gap-5">
+              <label className={RL}><input type="radio" value="Normale"     {...register('hearing')} className={RADIO} /> Normale</label>
+              <label className={RL}><input type="radio" value="Alterazioni" {...register('hearing')} className={RADIO} /> Alterazioni</label>
             </div>
             {hearing === 'Alterazioni' && (
               <>
@@ -235,6 +234,8 @@ export default function Model6() {
                 <Input name="hearingAlterationDetails" label="Specificare" />
               </>
             )}
+            <div className="border-t border-slate-100" />
+            <label className={RL}><input type="checkbox" {...register('hearingAid')} className={CB} /> Protesi acustica</label>
           </div>
         </div>
 
