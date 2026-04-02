@@ -520,6 +520,15 @@ export interface NursingAssessment {
     notes: string;
   }>;
 
+  // Scala dolore NRS
+  painEvaluations: Array<{
+    date: string;
+    time: string;
+    score: string;
+    location: string;
+    notes: string;
+  }>;
+
   // Monitoraggio parametri vitali
   vitalSigns: Array<{
     date: string;
@@ -877,6 +886,7 @@ export const defaultValues: NursingAssessment = {
   model11Notes: '',
   model11Status: '',
 
+  painEvaluations: [],
   mustEvaluations: [],
   gcsEvaluations: [],
   avpuEvaluations: [],
