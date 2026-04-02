@@ -724,6 +724,220 @@ function avpuLevel(value: string) {
   return AVPU_LEVELS.find(l => l.value === value);
 }
 
+// ─────────────────────────────────────────────
+// Glasgow Coma Scale
+// ─────────────────────────────────────────────
+
+const GCS_EYES = [
+  { value: '4', label: 'Spontanea' },
+  { value: '3', label: 'Alla voce' },
+  { value: '2', label: 'Al dolore' },
+  { value: '1', label: 'Assente' },
+] as const;
+
+const GCS_VERBAL = [
+  { value: '5', label: 'Orientata' },
+  { value: '4', label: 'Confusa' },
+  { value: '3', label: 'Parole inappropriate' },
+  { value: '2', label: 'Suoni incomprensibili' },
+  { value: '1', label: 'Assente' },
+] as const;
+
+const GCS_MOTOR = [
+  { value: '6', label: 'Esegue ordini' },
+  { value: '5', label: 'Localizza il dolore' },
+  { value: '4', label: 'Retrazione al dolore' },
+  { value: '3', label: 'Flessione patologica (decorticazione)' },
+  { value: '2', label: 'Estensione patologica (decerebrazione)' },
+  { value: '1', label: 'Assente' },
+] as const;
+
+function gcsRisk(score: number): { label: string; border: string; text: string; badge: string; num: string } {
+  if (score <= 8)  return { label: 'Coma grave',          border: 'border-rose-500',    text: 'text-rose-700',    badge: 'bg-rose-100 text-rose-700 border-rose-200',          num: 'bg-rose-100 text-rose-700'    };
+  if (score <= 12) return { label: 'Coma moderato',        border: 'border-amber-500',   text: 'text-amber-700',   badge: 'bg-amber-100 text-amber-700 border-amber-200',        num: 'bg-amber-100 text-amber-700'  };
+  if (score <= 14) return { label: 'Alterazione lieve',    border: 'border-amber-300',   text: 'text-amber-600',   badge: 'bg-amber-50 text-amber-600 border-amber-200',         num: 'bg-amber-50 text-amber-600'   };
+  return                   { label: 'Coscienza normale',   border: 'border-emerald-500', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',  num: 'bg-emerald-100 text-emerald-700' };
+}
+
+function GcsCard({ index, onRemove, locked, onToggleLock }: {
+  index: number;
+  onRemove: () => void;
+  locked: boolean;
+  onToggleLock: () => void;
+}) {
+  const [expanded, setExpanded] = useState(true);
+  const { register } = useFormContext();
+  const prefix = `gcsEvaluations.${index}`;
+
+  const date    = useWatch({ name: `${prefix}.date` });
+  const time    = useWatch({ name: `${prefix}.time` }) as string | undefined;
+  const eyes    = useWatch({ name: `${prefix}.eyes` })   as string | undefined;
+  const verbal  = useWatch({ name: `${prefix}.verbal` }) as string | undefined;
+  const motor   = useWatch({ name: `${prefix}.motor` })  as string | undefined;
+
+  const allAnswered = [eyes, verbal, motor].every(v => v !== undefined && v !== '');
+  const score = allAnswered ? parseInt(eyes!) + parseInt(verbal!) + parseInt(motor!) : null;
+  const risk  = score !== null ? gcsRisk(score) : null;
+
+  const dateLabel = date
+    ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
+    : `Valutazione ${index + 1}`;
+
+  return (
+    <div className={`border rounded-xl overflow-hidden transition-all ${
+      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+    }`}>
+      {/* Header */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
+          risk ? risk.num : 'bg-slate-100 text-slate-400'
+        }`}>
+          {index + 1}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
+          {allAnswered && (
+            <p className="text-xs text-slate-400">E{eyes} V{verbal} M{motor}</p>
+          )}
+        </div>
+        {risk && score !== null && (
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${risk.badge}`}>
+            {risk.label} ({score})
+          </span>
+        )}
+        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={onToggleLock}
+            title={locked ? 'Sblocca' : 'Blocca'}
+            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
+          >
+            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
+              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
+            </span>
+          </button>
+          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
+          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
+            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Body */}
+      {expanded && (
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+          <div className="p-5 space-y-4">
+
+            {/* Data e ora */}
+            <div className="flex gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+                <input type="date" {...register(`${prefix}.date`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+                <input type="time" {...register(`${prefix}.time`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
+            </div>
+
+            {/* 3 subscales */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* E — Eye */}
+              <div>
+                <p className="text-xs font-semibold text-slate-600 mb-2">
+                  E — Apertura occhi
+                  {eyes && <span className="ml-1.5 font-mono text-emerald-600">({eyes})</span>}
+                </p>
+                <div className={BOX}>
+                  {GCS_EYES.map(opt => (
+                    <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                      <span className={RL}>
+                        <input type="radio" value={opt.value} {...register(`${prefix}.eyes`)} className={RADIO} />
+                        {opt.label}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* V — Verbal */}
+              <div>
+                <p className="text-xs font-semibold text-slate-600 mb-2">
+                  V — Risposta verbale
+                  {verbal && <span className="ml-1.5 font-mono text-emerald-600">({verbal})</span>}
+                </p>
+                <div className={BOX}>
+                  {GCS_VERBAL.map(opt => (
+                    <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                      <span className={RL}>
+                        <input type="radio" value={opt.value} {...register(`${prefix}.verbal`)} className={RADIO} />
+                        {opt.label}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* M — Motor */}
+              <div>
+                <p className="text-xs font-semibold text-slate-600 mb-2">
+                  M — Risposta motoria
+                  {motor && <span className="ml-1.5 font-mono text-emerald-600">({motor})</span>}
+                </p>
+                <div className={BOX}>
+                  {GCS_MOTOR.map(opt => (
+                    <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                      <span className={RL}>
+                        <input type="radio" value={opt.value} {...register(`${prefix}.motor`)} className={RADIO} />
+                        {opt.label}
+                      </span>
+                      <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Note */}
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+              <textarea
+                {...register(`${prefix}.notes`)}
+                rows={2}
+                placeholder={locked ? '—' : 'Osservazioni aggiuntive...'}
+                className={TA}
+              />
+            </div>
+
+            {/* Score bar */}
+            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
+              risk ? risk.border : 'border-slate-300'
+            }`}>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Glasgow Coma Scale</span>
+              <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
+                {score === null
+                  ? 'Compilare tutti i campi'
+                  : `${risk!.label} — GCS ${score}/15`
+                }
+              </span>
+            </div>
+
+          </div>
+        </fieldset>
+      )}
+    </div>
+  );
+}
+
 function AvpuCard({ index, onRemove, locked, onToggleLock }: {
   index: number;
   onRemove: () => void;
@@ -1511,6 +1725,31 @@ export default function ScalesTab() {
     }
   }, [barthelEvals, setValue]);
 
+  // ── GCS ─────────────────────────────────────
+  const { fields: gcsFields, append: appendGcs, remove: removeGcs } = useFieldArray({ control, name: 'gcsEvaluations' });
+  const [lockedGcs, setLockedGcs] = useState<Set<number>>(new Set());
+  const toggleLockGcs = (i: number) => setLockedGcs(prev => {
+    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
+  });
+  const addGcsEval = () => appendGcs({
+    date: new Date().toISOString().slice(0, 10),
+    time: new Date().toTimeString().slice(0, 5),
+    eyes: '', verbal: '', motor: '', notes: '',
+  });
+
+  // Auto-update gcsScore (used in Model6) from last completed evaluation
+  const gcsEvals = useWatch({ name: 'gcsEvaluations' }) as Array<Record<string, string>> | undefined;
+  useEffect(() => {
+    if (!gcsEvals) return;
+    for (let i = gcsEvals.length - 1; i >= 0; i--) {
+      const ev = gcsEvals[i];
+      if (ev.eyes && ev.verbal && ev.motor) {
+        setValue('gcsScore', String(parseInt(ev.eyes) + parseInt(ev.verbal) + parseInt(ev.motor)));
+        return;
+      }
+    }
+  }, [gcsEvals, setValue]);
+
   // ── AVPU ────────────────────────────────────
   const { fields: avpuFields, append: appendAvpu, remove: removeAvpu } = useFieldArray({ control, name: 'avpuEvaluations' });
   const [lockedAvpu, setLockedAvpu] = useState<Set<number>>(new Set());
@@ -1745,6 +1984,56 @@ export default function ScalesTab() {
                 onRemove={() => remove(index)}
                 locked={lockedRows.has(index)}
                 onToggleLock={() => toggleLock(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── GCS ── */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
+            Glasgow Coma Scale (GCS)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {[
+                    ['3–8',   'Coma grave'],
+                    ['9–12',  'Coma moderato'],
+                    ['13–14', 'Alterazione lieve'],
+                    ['15',    'Coscienza normale'],
+                  ].map(([range, label]) => (
+                    <tr key={range}>
+                      <td className="pr-3 font-mono font-bold">{range}</td>
+                      <td>{label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
+          </h3>
+          <button
+            type="button"
+            onClick={addGcsEval}
+            className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
+          >
+            <Plus size={16} /> Aggiungi valutazione
+          </button>
+        </div>
+        {gcsFields.length === 0 ? (
+          <div className="text-sm text-slate-500 italic p-6 bg-slate-50 border border-slate-200 rounded-lg text-center print:hidden">
+            Nessuna valutazione inserita. Clicca "Aggiungi valutazione" per iniziare.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {gcsFields.map((field, index) => (
+              <GcsCard
+                key={field.id}
+                index={index}
+                onRemove={() => removeGcs(index)}
+                locked={lockedGcs.has(index)}
+                onToggleLock={() => toggleLockGcs(index)}
               />
             ))}
           </div>
