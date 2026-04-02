@@ -777,17 +777,17 @@ const NRS_LEVELS = [
   { value: '10', label: 'Insopportabile',    color: 'bg-rose-300 text-rose-800 border-rose-500'          },
 ] as const;
 
-// Solid bg colors for slider segments (must be full class strings for Tailwind)
+// 10 segment colors (one per interval: 0-1, 1-2, …, 9-10)
 const NRS_BG = [
-  'bg-emerald-400', 'bg-emerald-300', 'bg-yellow-300', 'bg-yellow-400',
-  'bg-amber-400',   'bg-amber-500',   'bg-orange-400', 'bg-orange-500',
-  'bg-rose-400',    'bg-rose-500',    'bg-rose-600',
+  'bg-emerald-400', 'bg-lime-400',   'bg-yellow-400', 'bg-amber-400',
+  'bg-amber-500',   'bg-orange-400', 'bg-orange-500', 'bg-rose-400',
+  'bg-rose-500',    'bg-rose-600',
 ];
-// Hex values for range input accent-color
+// Hex per score value 0-10 (for thumb accent)
 const NRS_ACCENT = [
-  '#34d399','#6ee7b7','#fde047','#facc15',
-  '#fbbf24','#f59e0b','#fb923c','#f97316',
-  '#fb7185','#f43f5e','#e11d48',
+  '#34d399','#a3e635','#facc15','#fbbf24',
+  '#f59e0b','#fb923c','#f97316','#fb7185',
+  '#f43f5e','#e11d48','#be123c',
 ];
 
 function nrsColor(value: string)  { return NRS_LEVELS.find(l => l.value === value)?.color ?? 'bg-slate-100 text-slate-500 border-slate-200'; }
@@ -887,34 +887,43 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
                 </span>
               </div>
 
-              {/* Colored segment track */}
-              <div className="flex gap-0.5 mb-1.5">
-                {NRS_LEVELS.map((level, i) => (
-                  <div
-                    key={level.value}
-                    className={`flex-1 h-2.5 rounded-full transition-all duration-150 ${
-                      score !== '' && i <= n ? NRS_BG[i] : 'bg-slate-200'
-                    }`}
-                  />
-                ))}
+              {/* Slider: colored segments ARE the track */}
+              <div className="relative h-8 flex items-center">
+                {/* Segments — inset by half-thumb (12px) so they align with thumb travel range */}
+                <div className="absolute inset-x-3 flex gap-0.5 h-4 rounded-full overflow-hidden pointer-events-none">
+                  {NRS_BG.map((bg, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 transition-all duration-150 ${score !== '' && n > i ? bg : 'bg-slate-200'}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Range input — transparent track, styled thumb only */}
+                <input
+                  type="range"
+                  min="0"
+                  max="10"
+                  step="1"
+                  {...register(`${prefix}.score`)}
+                  style={{ '--thumb-border': score !== '' ? NRS_ACCENT[n] : '#94a3b8' } as React.CSSProperties}
+                  className="relative w-full h-8 appearance-none bg-transparent cursor-pointer disabled:cursor-not-allowed
+                    [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-8
+                    [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6
+                    [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
+                    [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-[3px]
+                    [&::-webkit-slider-thumb]:border-[color:var(--thumb-border)]
+                    [&::-moz-range-track]:bg-transparent
+                    [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full
+                    [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md
+                    [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-[color:var(--thumb-border)]"
+                />
               </div>
 
-              {/* Range input */}
-              <input
-                type="range"
-                min="0"
-                max="10"
-                step="1"
-                {...register(`${prefix}.score`)}
-                style={{ accentColor: score !== '' ? NRS_ACCENT[n] : undefined }}
-                className="w-full h-2 cursor-pointer disabled:cursor-not-allowed"
-              />
-
-              {/* Step labels */}
+              {/* Endpoint labels */}
               <div className="flex justify-between text-xs text-slate-400 mt-0.5 px-0.5">
-                {NRS_LEVELS.map(level => (
-                  <span key={level.value} className="w-0 flex justify-center select-none">{level.value}</span>
-                ))}
+                <span>0 — Nessun dolore</span>
+                <span>10 — Insopportabile</span>
               </div>
             </div>
 
