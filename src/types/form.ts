@@ -127,6 +127,15 @@ export interface NursingAssessment {
 
   bradenScore: number;
   pressureUlcerRisk: string;
+  bradenEvaluations: Array<{
+    date: string;
+    sensory: string;
+    moisture: string;
+    activity: string;
+    mobility: string;
+    nutrition: string;
+    friction: string;
+  }>;
   pressureUlcerRiskFactors: string;
   pressureUlcerRiskFactorsDetails: string;
 
@@ -589,6 +598,7 @@ export const defaultValues: NursingAssessment = {
   skinAppendagesAlterations: '',
   bradenScore: 0,
   pressureUlcerRisk: '',
+  bradenEvaluations: [],
   pressureUlcerRiskFactors: '',
   pressureUlcerRiskFactorsDetails: '',
   throatScaleScore: '',
