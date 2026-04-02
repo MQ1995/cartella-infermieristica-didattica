@@ -890,7 +890,7 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
               {/* Slider: colored segments ARE the track */}
               <div className="relative h-8 flex items-center">
                 {/* Segments — inset by half-thumb (12px) so they align with thumb travel range */}
-                <div className="absolute inset-x-3 flex gap-0.5 h-4 rounded-full overflow-hidden pointer-events-none">
+                <div className="absolute inset-x-3 top-1/2 -translate-y-1/2 flex gap-0.5 h-4 rounded-full overflow-hidden pointer-events-none">
                   {NRS_BG.map((bg, i) => (
                     <div
                       key={i}
