@@ -1,138 +1,141 @@
-import { LockableSection } from '../../ui/LockableSection';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
+import { LockableSection } from '../../ui/LockableSection';
+
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
+const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
 
 export default function Model9() {
-  const { watch, register } = useFormContext();
+  const { register } = useFormContext();
 
-  const patientGender = watch('patientGender');
-  const menopause = watch('menopause');
-  const contraceptives = watch('contraceptives');
-  const breastExam = watch('breastExam');
-  const screeningTests = watch('screeningTests');
-  const testiclesExam = watch('testiclesExam');
+  const patientGender  = useWatch({ name: 'patientGender' });
+  const menopause      = useWatch({ name: 'menopause' });
+  const contraceptives = useWatch({ name: 'contraceptives' });
+  const breastExam     = useWatch({ name: 'breastExam' });
+  const screeningTests = useWatch({ name: 'screeningTests' });
+  const testiclesExam  = useWatch({ name: 'testiclesExam' });
+
+  const isFemale = patientGender !== 'M';
+  const isMale   = patientGender !== 'F';
 
   return (
-    <LockableSection title="9. Modello di Sessualità e Riproduzione">
-      
-      <div className="space-y-6">
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Per assistite di sesso femminile</h4>
-        
-        <div className={`space-y-6 ${patientGender === 'M' ? 'opacity-50 pointer-events-none' : ''}`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input name="lastMenstruation" label="Data ultima mestruazione" type="date" />
-            <Input name="menarche" label="Menarca" />
+    <LockableSection title="9. Sessualità e riproduzione">
+      <div className="space-y-5">
+
+        {/* ── Sezione femminile ── */}
+        <p className={SUB}>Sesso femminile</p>
+        <div className={`space-y-3 transition-opacity ${!isFemale ? 'opacity-40 pointer-events-none' : ''}`}>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input name="menarche"          label="Menarca (età)"          placeholder="es. 12" />
+            <Input name="lastMenstruation"  label="Data ultima mestruazione" type="date" />
           </div>
-          
+
           <Textarea name="menstrualProblems" label="Problemi legati al ciclo mestruale" rows={2} />
 
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-slate-700 w-32">Menopausa:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('menopause')} /> No
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('menopause')} /> Sì
-              </label>
+          <div className={BOX}>
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-medium text-slate-700 min-w-[160px]">Menopausa</span>
+              <label className={RL}><input type="radio" value="false" {...register('menopause')} className={RADIO} /> No</label>
+              <label className={RL}><input type="radio" value="true"  {...register('menopause')} className={RADIO} /> Sì</label>
             </div>
-            {menopause === 'true' && <Input name="menopauseProblems" label="Problemi legati alla menopausa" />}
+            {menopause === 'true' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="menopauseProblems" label="Problemi / sintomi correlati" />
+              </>
+            )}
           </div>
 
-          <Textarea name="pregnancies" label="Gravidanze (stato di gravidanza, n° di gravidanze)" rows={2} />
+          <Textarea name="pregnancies" label="Gravidanze (numero, esiti, stato attuale)" rows={2} />
 
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-slate-700 w-32">Uso di contraccettivi:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('contraceptives')} /> No
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('contraceptives')} /> Sì
-              </label>
+          <div className={BOX}>
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-medium text-slate-700 min-w-[160px]">Uso di contraccettivi</span>
+              <label className={RL}><input type="radio" value="false" {...register('contraceptives')} className={RADIO} /> No</label>
+              <label className={RL}><input type="radio" value="true"  {...register('contraceptives')} className={RADIO} /> Sì</label>
             </div>
-            {contraceptives === 'true' && <Input name="contraceptivesProblems" label="Problemi legati all'uso" />}
+            {contraceptives === 'true' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="contraceptivesType" label="Tipo e problemi correlati" />
+              </>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className={BOX}>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-slate-700 w-48">Effettua l'autopalpazione del seno:</span>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('breastExam')} /> Sì
-                </label>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('breastExam')} /> No
-                </label>
+                <span className="text-sm font-medium text-slate-700 min-w-[160px]">Autopalpazione del seno</span>
+                <label className={RL}><input type="radio" value="true"  {...register('breastExam')} className={RADIO} /> Sì</label>
+                <label className={RL}><input type="radio" value="false" {...register('breastExam')} className={RADIO} /> No</label>
               </div>
-              {breastExam === 'false' && <Input name="breastExamReason" label="Perché" />}
+              {breastExam === 'false' && (
+                <>
+                  <div className="border-t border-slate-100" />
+                  <Input name="breastExamReason" label="Motivazione" />
+                </>
+              )}
             </div>
 
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
+            <div className={BOX}>
               <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-slate-700 w-48">Si sottopone regolarmente a test di screening raccomandati:</span>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('screeningTests')} /> Sì
-                </label>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('screeningTests')} /> No
-                </label>
+                <span className="text-sm font-medium text-slate-700 min-w-[160px]">Screening raccomandati (Pap test, mammografia...)</span>
+                <label className={RL}><input type="radio" value="true"  {...register('screeningTests')} className={RADIO} /> Sì</label>
+                <label className={RL}><input type="radio" value="false" {...register('screeningTests')} className={RADIO} /> No</label>
               </div>
-              {screeningTests === 'false' && <Input name="screeningTestsReason" label="Perché" />}
+              {screeningTests === 'false' && (
+                <>
+                  <div className="border-t border-slate-100" />
+                  <Input name="screeningTestsReason" label="Motivazione" />
+                </>
+              )}
             </div>
           </div>
         </div>
 
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4 mt-8">Per assistiti di sesso maschile</h4>
-        
-        <div className={`space-y-6 ${patientGender === 'F' ? 'opacity-50 pointer-events-none' : ''}`}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input name="numberOfChildren" label="N° di figli" type="number" />
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-slate-700 w-48">Effettua l'autopalpazione ai testicoli:</span>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('testiclesExam')} /> Sì
-                </label>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('testiclesExam')} /> No
-                </label>
-              </div>
-              {testiclesExam === 'false' && <Input name="testiclesExamReason" label="Perché" />}
+        <div className={DIVIDER} />
+
+        {/* ── Sezione maschile ── */}
+        <p className={SUB}>Sesso maschile</p>
+        <div className={`space-y-3 transition-opacity ${!isMale ? 'opacity-40 pointer-events-none' : ''}`}>
+
+          <Input name="numberOfChildren" label="Numero di figli" type="number" placeholder="es. 2" />
+
+          <div className={BOX}>
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-medium text-slate-700 min-w-[200px]">Autopalpazione ai testicoli</span>
+              <label className={RL}><input type="radio" value="true"  {...register('testiclesExam')} className={RADIO} /> Sì</label>
+              <label className={RL}><input type="radio" value="false" {...register('testiclesExam')} className={RADIO} /> No</label>
             </div>
+            {testiclesExam === 'false' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="testiclesExamReason" label="Motivazione" />
+              </>
+            )}
           </div>
         </div>
 
-        <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model9Notes" 
-            label="Eventuali note aggiuntive sul Modello di Sessualità e Riproduzione" 
-            rows={3}
-          />
-          
-          <div className="mt-6 p-4 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Valutazione Modello 9</span>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="FUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model9Status')}
-                />
-                FUNZIONALE
+        <div className={DIVIDER} />
+
+        {/* ── Note ── */}
+        <Textarea name="model9Notes" label="Note" rows={3} />
+
+        {/* ── Status bar ── */}
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 9</span>
+          <div className="flex gap-6">
+            {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
+              <label key={v} className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                <input type="radio" value={v} {...register('model9Status')} className={RADIO} />
+                {v}
               </label>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="DISFUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model9Status')}
-                />
-                DISFUNZIONALE
-              </label>
-            </div>
+            ))}
           </div>
         </div>
 
