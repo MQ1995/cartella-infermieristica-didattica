@@ -764,38 +764,35 @@ function gcsRisk(score: number): { label: string; border: string; text: string; 
 // ─────────────────────────────────────────────
 
 const NRS_LEVELS = [
-  { value: '0',  label: 'Nessun dolore',    color: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
-  { value: '1',  label: 'Minimo',           color: 'bg-emerald-50 text-emerald-600 border-emerald-200'  },
-  { value: '2',  label: 'Molto lieve',      color: 'bg-yellow-50 text-yellow-700 border-yellow-200'     },
-  { value: '3',  label: 'Lieve',            color: 'bg-yellow-100 text-yellow-700 border-yellow-300'    },
-  { value: '4',  label: 'Fastidioso',       color: 'bg-amber-100 text-amber-700 border-amber-300'       },
-  { value: '5',  label: 'Moderato',         color: 'bg-amber-200 text-amber-800 border-amber-400'       },
-  { value: '6',  label: 'Piuttosto intenso',color: 'bg-orange-100 text-orange-700 border-orange-300'    },
-  { value: '7',  label: 'Intenso',          color: 'bg-orange-200 text-orange-800 border-orange-400'    },
-  { value: '8',  label: 'Molto intenso',    color: 'bg-rose-100 text-rose-700 border-rose-300'          },
-  { value: '9',  label: 'Fortissimo',       color: 'bg-rose-200 text-rose-700 border-rose-400'          },
-  { value: '10', label: 'Insopportabile',   color: 'bg-rose-300 text-rose-800 border-rose-500'          },
+  { value: '0',  label: 'Nessun dolore',     color: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+  { value: '1',  label: 'Minimo',            color: 'bg-emerald-50 text-emerald-600 border-emerald-200'  },
+  { value: '2',  label: 'Molto lieve',       color: 'bg-yellow-50 text-yellow-700 border-yellow-200'     },
+  { value: '3',  label: 'Lieve',             color: 'bg-yellow-100 text-yellow-700 border-yellow-300'    },
+  { value: '4',  label: 'Fastidioso',        color: 'bg-amber-100 text-amber-700 border-amber-300'       },
+  { value: '5',  label: 'Moderato',          color: 'bg-amber-200 text-amber-800 border-amber-400'       },
+  { value: '6',  label: 'Piuttosto intenso', color: 'bg-orange-100 text-orange-700 border-orange-300'    },
+  { value: '7',  label: 'Intenso',           color: 'bg-orange-200 text-orange-800 border-orange-400'    },
+  { value: '8',  label: 'Molto intenso',     color: 'bg-rose-100 text-rose-700 border-rose-300'          },
+  { value: '9',  label: 'Fortissimo',        color: 'bg-rose-200 text-rose-700 border-rose-400'          },
+  { value: '10', label: 'Insopportabile',    color: 'bg-rose-300 text-rose-800 border-rose-500'          },
 ] as const;
+
+// Solid bg colors for slider segments (must be full class strings for Tailwind)
+const NRS_BG = [
+  'bg-emerald-400', 'bg-emerald-300', 'bg-yellow-300', 'bg-yellow-400',
+  'bg-amber-400',   'bg-amber-500',   'bg-orange-400', 'bg-orange-500',
+  'bg-rose-400',    'bg-rose-500',    'bg-rose-600',
+];
+// Hex values for range input accent-color
+const NRS_ACCENT = [
+  '#34d399','#6ee7b7','#fde047','#facc15',
+  '#fbbf24','#f59e0b','#fb923c','#f97316',
+  '#fb7185','#f43f5e','#e11d48',
+];
 
 function nrsColor(value: string)  { return NRS_LEVELS.find(l => l.value === value)?.color ?? 'bg-slate-100 text-slate-500 border-slate-200'; }
 function nrsLabel(value: string)  { return NRS_LEVELS.find(l => l.value === value)?.label ?? ''; }
 
-function nrsBorderColor(value: string): string {
-  const n = parseInt(value);
-  if (n === 0)   return 'border-emerald-500';
-  if (n <= 3)    return 'border-yellow-400';
-  if (n <= 6)    return 'border-amber-500';
-  if (n <= 8)    return 'border-orange-500';
-  return 'border-rose-500';
-}
-function nrsTextColor(value: string): string {
-  const n = parseInt(value);
-  if (n === 0)   return 'text-emerald-700';
-  if (n <= 3)    return 'text-yellow-700';
-  if (n <= 6)    return 'text-amber-700';
-  if (n <= 8)    return 'text-orange-700';
-  return 'text-rose-700';
-}
 
 function PainCard({ index, onRemove, locked, onToggleLock }: {
   index: number;
@@ -809,8 +806,8 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
 
   const date  = useWatch({ name: `${prefix}.date` });
   const time  = useWatch({ name: `${prefix}.time` }) as string | undefined;
-  const score = useWatch({ name: `${prefix}.score` }) as string | undefined;
-  const hasScore = score !== undefined && score !== '';
+  const score = useWatch({ name: `${prefix}.score` }) as string;
+  const n     = parseInt(score);
 
   const dateLabel = date
     ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
@@ -825,17 +822,15 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
         className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
-        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${
-          hasScore ? nrsColor(score!) : 'bg-slate-100 text-slate-400 border-slate-200'
-        }`}>
-          {hasScore ? score : index + 1}
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${nrsColor(score)}`}>
+          {score !== '' ? score : index + 1}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
         </div>
-        {hasScore && (
-          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${nrsColor(score!)}`}>
-            {nrsLabel(score!)} ({score}/10)
+        {score !== '' && (
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${nrsColor(score)}`}>
+            {nrsLabel(score)} ({score}/10)
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
@@ -877,26 +872,49 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
               </div>
             </div>
 
-            {/* NRS grid */}
+            {/* NRS Slider */}
             <div>
-              <p className="text-xs font-semibold text-slate-600 mb-2">Intensità del dolore (NRS 0–10)</p>
-              <div className="grid grid-cols-2 gap-1.5">
-                {NRS_LEVELS.map(level => {
-                  const isSelected = score === level.value;
-                  return (
-                    <label key={level.value} className="cursor-pointer">
-                      <input type="radio" value={level.value} {...register(`${prefix}.score`)} className="sr-only" />
-                      <span className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all ${
-                        isSelected
-                          ? `${level.color} font-semibold shadow-sm`
-                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                      }`}>
-                        <span className="font-mono font-bold w-5 flex-shrink-0 text-right">{level.value}</span>
-                        <span className="text-xs leading-tight">{level.label}</span>
-                      </span>
-                    </label>
-                  );
-                })}
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Intensità del dolore (NRS 0–10)</p>
+
+              {/* Score display */}
+              <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 mb-4 transition-all ${nrsColor(score)}`}>
+                <span className="text-3xl font-black tabular-nums w-8 text-center leading-none">
+                  {score !== '' ? score : '–'}
+                </span>
+                <div className="h-8 w-px bg-current opacity-20" />
+                <span className="font-semibold text-sm">
+                  {score !== '' ? nrsLabel(score) : 'Muovi lo slider per selezionare'}
+                </span>
+              </div>
+
+              {/* Colored segment track */}
+              <div className="flex gap-0.5 mb-1.5">
+                {NRS_LEVELS.map((level, i) => (
+                  <div
+                    key={level.value}
+                    className={`flex-1 h-2.5 rounded-full transition-all duration-150 ${
+                      score !== '' && i <= n ? NRS_BG[i] : 'bg-slate-200'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Range input */}
+              <input
+                type="range"
+                min="0"
+                max="10"
+                step="1"
+                {...register(`${prefix}.score`)}
+                style={{ accentColor: score !== '' ? NRS_ACCENT[n] : undefined }}
+                className="w-full h-2 cursor-pointer disabled:cursor-not-allowed"
+              />
+
+              {/* Step labels */}
+              <div className="flex justify-between text-xs text-slate-400 mt-0.5 px-0.5">
+                {NRS_LEVELS.map(level => (
+                  <span key={level.value} className="w-0 flex justify-center select-none">{level.value}</span>
+                ))}
               </div>
             </div>
 
@@ -920,19 +938,6 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
                 placeholder={locked ? '—' : 'Carattere, irradiazione, fattori aggravanti/allevianti, terapia somministrata...'}
                 className={TA}
               />
-            </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              hasScore ? nrsBorderColor(score!) : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">NRS Dolore</span>
-              <span className={`text-sm font-bold ${hasScore ? nrsTextColor(score!) : 'text-slate-400'}`}>
-                {hasScore
-                  ? `${nrsLabel(score!)} — ${score}/10`
-                  : 'Selezionare un livello'
-                }
-              </span>
             </div>
 
           </div>
@@ -1966,14 +1971,14 @@ export default function ScalesTab() {
   const addPainEval = () => appendPain({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
-    score: '', location: '', notes: '',
+    score: '0', location: '', notes: '',
   });
 
   const painEvals = useWatch({ name: 'painEvaluations' }) as Array<Record<string, string>> | undefined;
   useEffect(() => {
     if (!painEvals) return;
     for (let i = painEvals.length - 1; i >= 0; i--) {
-      if (painEvals[i].score !== undefined && painEvals[i].score !== '') {
+      if (painEvals[i].score !== undefined && painEvals[i].score !== '' && !isNaN(parseInt(painEvals[i].score))) {
         setValue('painNrs', painEvals[i].score);
         return;
       }
