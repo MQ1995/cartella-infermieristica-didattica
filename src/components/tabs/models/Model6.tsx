@@ -1,294 +1,283 @@
-import { LockableSection } from '../../ui/LockableSection';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
+import { LockableSection } from '../../ui/LockableSection';
+
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
+const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const CB      = 'w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500';
+const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
 
 export default function Model6() {
-  const { watch, register } = useFormContext();
-  
-  const orientation = watch('orientation');
-  const collaboration = watch('collaboration');
-  const speech = watch('speech');
-  const memory = watch('memory');
-  const concentration = watch('concentration');
-  const vision = watch('vision');
-  const hearing = watch('hearing');
-  const pain = watch('pain');
+  const { register } = useFormContext();
+
+  const orientation    = useWatch({ name: 'orientation' });
+  const collaboration  = useWatch({ name: 'collaboration' });
+  const speech         = useWatch({ name: 'speech' });
+  const attitude       = useWatch({ name: 'attitude' });
+  const memory         = useWatch({ name: 'memory' });
+  const concentration  = useWatch({ name: 'concentration' });
+  const vision         = useWatch({ name: 'vision' });
+  const hearing        = useWatch({ name: 'hearing' });
+  const pain           = useWatch({ name: 'pain' });
 
   return (
-    <LockableSection title="6. Modello Cognitivo e Percettivo">
-      
-      <div className="space-y-8">
-        <div>
-          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Stato di Coscienza e Neurologico</h4>
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-            <div className="flex flex-wrap gap-4 items-center">
-              <span className="text-sm font-medium text-slate-700">Stato di coscienza:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="Vigile" className="text-emerald-600 focus:ring-emerald-500" {...register('consciousness')} /> Vigile
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="Confuso" className="text-emerald-600 focus:ring-emerald-500" {...register('consciousness')} /> Confuso
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="Soporoso" className="text-emerald-600 focus:ring-emerald-500" {...register('consciousness')} /> Soporoso
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="Stuporoso" className="text-emerald-600 focus:ring-emerald-500" {...register('consciousness')} /> Stuporoso
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="Coma" className="text-emerald-600 focus:ring-emerald-500" {...register('consciousness')} /> Coma
-              </label>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input name="avpuScore" label="Valutazione dello stato neurologico: Scala AVPU" />
-              <Input name="gcsScore" label="Punteggio GCS (se necessario)" />
-            </div>
+    <LockableSection title="6. Cognitivo e percettivo">
+      <div className="space-y-5">
 
-            <div className="flex flex-wrap gap-4 items-center">
-              <span className="text-sm font-medium text-slate-700">Altre valutazioni:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="checkbox" value="Agitato" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('otherNeurologicalEvaluations')} /> Agitato
+        {/* ── Stato di coscienza ── */}
+        <p className={SUB}>Stato di coscienza</p>
+        <div className={BOX}>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {['Vigile', 'Confuso', 'Soporoso', 'Stuporoso', 'Coma'].map(v => (
+              <label key={v} className={RL}>
+                <input type="radio" value={v} {...register('consciousness')} className={RADIO} /> {v}
               </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="checkbox" value="Sedato" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('otherNeurologicalEvaluations')} /> Sedato
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="checkbox" value="Altro" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('otherNeurologicalEvaluations')} /> Altro
-              </label>
-              <Input name="rassScore" label="(Scala di RASS allegata)" className="max-w-[150px] text-xs" />
+            ))}
+          </div>
+          <div className="border-t border-slate-100" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Input name="avpuScore" label="Scala AVPU" placeholder="es. A, V, P, U" />
+            <Input name="gcsScore"  label="GCS (se applicabile)" placeholder="es. 15" type="number" />
+            <Input name="rassScore" label="RASS (se applicabile)" placeholder="es. 0" />
+          </div>
+          <div className="border-t border-slate-100" />
+          <div>
+            <p className="text-sm font-medium text-slate-700 mb-2">Altre valutazioni</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {['Agitato', 'Sedato'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="checkbox" value={v} {...register('otherNeurologicalEvaluations')} className={CB} /> {v}
+                </label>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Orientamento</h4>
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-slate-700 w-32">Orientato:</span>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500" {...register('orientation')} /> Sì
-                </label>
-                <label className="flex items-center gap-1 cursor-pointer text-sm">
-                  <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500" {...register('orientation')} /> No
-                </label>
-              </div>
+        <div className={DIVIDER} />
 
-              {orientation === 'false' && (
-                <div className="space-y-4 pt-2 border-t border-slate-100">
-                  <div className="flex flex-col gap-2">
-                    <span className="text-sm font-medium text-slate-700 block">Specificare:</span>
-                    <div className="flex gap-4">
-                      <label className="flex items-center gap-1 text-sm text-slate-600 cursor-pointer">
-                        <input type="checkbox" value="Tempo" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('disorientationTypes')} /> Tempo
+        {/* ── Orientamento e collaborazione ── */}
+        <p className={SUB}>Orientamento e collaborazione</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Orientato nel tempo / spazio / sul sé</p>
+            <div className="flex gap-5">
+              <label className={RL}><input type="radio" value="true"  {...register('orientation')} className={RADIO} /> Sì</label>
+              <label className={RL}><input type="radio" value="false" {...register('orientation')} className={RADIO} /> No</label>
+            </div>
+            {orientation === 'false' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <div>
+                  <p className="text-xs text-slate-500 mb-2">Disorientato rispetto a:</p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2">
+                    {['Tempo', 'Spazio', 'Sul sé'].map(v => (
+                      <label key={v} className={RL}>
+                        <input type="checkbox" value={v} {...register('disorientationTypes')} className={CB} /> {v}
                       </label>
-                      <label className="flex items-center gap-1 text-sm text-slate-600 cursor-pointer">
-                        <input type="checkbox" value="Spazio" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('disorientationTypes')} /> Spazio
-                      </label>
-                      <label className="flex items-center gap-1 text-sm text-slate-600 cursor-pointer">
-                        <input type="checkbox" value="Sul sé" className="text-emerald-600 focus:ring-emerald-500 rounded" {...register('disorientationTypes')} /> Sul sé
-                      </label>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 pt-2">
-                    <label className="flex items-center gap-1 text-sm text-slate-600 cursor-pointer">
-                      <input type="radio" value="Temporaneo" className="text-emerald-600 focus:ring-emerald-500" {...register('disorientationDuration')} /> Temporaneo
-                    </label>
-                    <label className="flex items-center gap-1 text-sm text-slate-600 cursor-pointer">
-                      <input type="radio" value="Permanente" className="text-emerald-600 focus:ring-emerald-500" {...register('disorientationDuration')} /> Permanente
-                    </label>
+                    ))}
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="flex gap-5">
+                  <label className={RL}><input type="radio" value="Temporaneo"  {...register('disorientationDuration')} className={RADIO} /> Temporaneo</label>
+                  <label className={RL}><input type="radio" value="Permanente"  {...register('disorientationDuration')} className={RADIO} /> Permanente</label>
+                </div>
+              </>
+            )}
           </div>
 
-          <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Collaborazione</h4>
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-              <div className="flex flex-col gap-3">
-                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                  <input type="radio" value="Collaborante con tutti" className="text-emerald-600 focus:ring-emerald-500" {...register('collaboration')} />
-                  Collaborante con tutti
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Collaborazione</p>
+            <div className="space-y-2">
+              {['Collaborante con tutti', 'Collaborante solo con familiari', 'Parzialmente collaborante', 'Non collaborante'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('collaboration')} className={RADIO} /> {v}
                 </label>
-                {collaboration === 'Collaborante con tutti' && <Input name="collaborationDetails" label="Specificare in cosa" />}
-                
-                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                  <input type="radio" value="Collaborante solo con familiari" className="text-emerald-600 focus:ring-emerald-500" {...register('collaboration')} />
-                  Collaborante solo con i familiari
-                </label>
-                {collaboration === 'Collaborante solo con familiari' && <Input name="collaborationFamilyDetails" label="Specificare" />}
-                
-                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                  <input type="radio" value="Parzialmente collaborante" className="text-emerald-600 focus:ring-emerald-500" {...register('collaboration')} />
-                  Parzialmente collaborante
-                </label>
-                {collaboration === 'Parzialmente collaborante' && <Input name="collaborationPartialDetails" label="Specificare" />}
-                
-                <label className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer">
-                  <input type="radio" value="Non collaborante" className="text-emerald-600 focus:ring-emerald-500" {...register('collaboration')} />
-                  Non collaborante
-                </label>
-                
-                <label className="flex flex-col gap-1 text-sm text-slate-700 cursor-pointer">
-                  <div className="flex items-center gap-2">
-                    <input type="radio" value="Altro" className="text-emerald-600 focus:ring-emerald-500" {...register('collaboration')} />
-                    Altro
-                  </div>
-                  {collaboration === 'Altro' && <Input name="collaborationOtherDetails" label="Specificare" />}
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Linguaggio</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 border border-slate-200 rounded-lg">
-            <Input name="spokenLanguage" label="Lingua parlata" />
-            
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-slate-700">Eloquio:</span>
-              <div className="flex flex-wrap gap-4">
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Normale" className="text-emerald-600" {...register('speech')} /> Normale</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Disartria" className="text-emerald-600" {...register('speech')} /> Disartria</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Afasia" className="text-emerald-600" {...register('speech')} /> Afasia</label>
-              </div>
-              {speech === 'Afasia' && <Input name="aphasiaType" label="Specificare tipo" />}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-slate-700">Comprensione:</span>
-              <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Buona" className="text-emerald-600" {...register('comprehension')} /> Buona</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Parzialmente compromessa" className="text-emerald-600" {...register('comprehension')} /> Parzialmente compromessa</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Totalmente compromessa" className="text-emerald-600" {...register('comprehension')} /> Totalmente compromessa</label>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-medium text-slate-700">Atteggiamento al colloquio:</span>
-              <div className="grid grid-cols-2 gap-2">
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Disponibile" className="text-emerald-600" {...register('attitude')} /> Disponibile</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Interessato" className="text-emerald-600" {...register('attitude')} /> Interessato</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Taciturno" className="text-emerald-600" {...register('attitude')} /> Taciturno</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Indifferente" className="text-emerald-600" {...register('attitude')} /> Indifferente</label>
-                <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Aggressivo" className="text-emerald-600" {...register('attitude')} /> Aggressivo</label>
-                <div className="flex items-center gap-1 text-sm cursor-pointer">
-                  <input type="radio" value="Altro" className="text-emerald-600" {...register('attitude')} /> Altro
-                  {watch('attitude') === 'Altro' && <Input name="attitudeOther" label="" placeholder="Specificare" className="w-full" />}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Altre Abilità Cognitive</h4>
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium text-slate-700">Memoria:</span>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Normale" className="text-emerald-600" {...register('memory')} /> Normale</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Alterata" className="text-emerald-600" {...register('memory')} /> Alterata</label>
-                </div>
-                {memory === 'Alterata' && <Input name="memoryAlterationDetails" label="Specificare" />}
-              </div>
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                <span className="text-sm font-medium text-slate-700">Capacità di mantenere la concentrazione:</span>
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Normale" className="text-emerald-600" {...register('concentration')} /> Normale</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Alterata" className="text-emerald-600" {...register('concentration')} /> Alterata</label>
-                </div>
-                {concentration === 'Alterata' && <Input name="concentrationAlterationDetails" label="Specificare" />}
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Sensi</h4>
-            <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-medium text-slate-700">Vista:</span>
-                <div className="flex flex-wrap gap-4">
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Normale" className="text-emerald-600" {...register('vision')} /> Normale</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Occhiali" className="text-emerald-600" {...register('vision')} /> Occhiali</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Lenti a contatto" className="text-emerald-600" {...register('vision')} /> Lenti a contatto</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Alterazioni" className="text-emerald-600" {...register('vision')} /> Alterazioni</label>
-                </div>
-                {vision === 'Alterazioni' && <Input name="visionAlterationDetails" label="Specificare" />}
-              </div>
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                <span className="text-sm font-medium text-slate-700">Udito:</span>
-                <div className="flex flex-wrap gap-4">
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Normale" className="text-emerald-600" {...register('hearing')} /> Normale</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Protesi" className="text-emerald-600" {...register('hearing')} /> Protesi</label>
-                  <label className="flex items-center gap-1 text-sm cursor-pointer"><input type="radio" value="Alterazioni" className="text-emerald-600" {...register('hearing')} /> Alterazioni</label>
-                </div>
-                {hearing === 'Alterazioni' && <Input name="hearingAlterationDetails" label="Specificare" />}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mb-4">Dolore</h4>
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-slate-700 w-48">Il paziente riferisce dolore?</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('pain')} /> No
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('pain')} /> Sì
+              ))}
+              <label className={RL}>
+                <input type="radio" value="Altro" {...register('collaboration')} className={RADIO} /> Altro
               </label>
             </div>
-
-            {pain === 'true' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-slate-200 pt-2">
-                <Input name="painLocation" label="Sede" />
-                <Input name="painTime" label="Tempo (comparsa e durata)" />
-                <Input name="painQuality" label="Qualità" />
-                <Input name="painFactors" label="Fattori aggravanti o allevianti" />
-                <Input name="painNrs" label="Intensità del dolore (NRS da 0 a 10) / Altra Scala" type="number" />
-                <Textarea name="painTreatment" label="Trattamento farmacologico e non farmacologico in corso" rows={2} />
-              </div>
+            {collaboration && collaboration !== 'Non collaborante' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="collaborationDetails" label="Specificare" />
+              </>
             )}
           </div>
         </div>
 
-        <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model6Notes" 
-            label="Eventuali note aggiuntive sul Modello Cognitivo e Percettivo" 
-            rows={3}
-          />
-          
-          <div className="mt-6 p-4 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Valutazione Modello 6</span>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="FUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model6Status')}
-                />
-                FUNZIONALE
-              </label>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="DISFUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model6Status')}
-                />
-                DISFUNZIONALE
-              </label>
+        <div className={DIVIDER} />
+
+        {/* ── Linguaggio ── */}
+        <p className={SUB}>Linguaggio</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Eloquio</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {['Normale', 'Disartria', 'Afasia'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('speech')} className={RADIO} /> {v}
+                </label>
+              ))}
             </div>
+            {speech === 'Afasia' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="aphasiaType" label="Tipo di afasia" />
+              </>
+            )}
+          </div>
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Comprensione</p>
+            <div className="space-y-2">
+              {['Buona', 'Parzialmente compromessa', 'Totalmente compromessa'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('comprehension')} className={RADIO} /> {v}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className={`${BOX} md:col-span-2`}>
+            <p className="text-sm font-medium text-slate-700">Atteggiamento al colloquio</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {['Disponibile', 'Interessato', 'Taciturno', 'Indifferente', 'Aggressivo', 'Altro'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('attitude')} className={RADIO} /> {v}
+                </label>
+              ))}
+            </div>
+            {attitude === 'Altro' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="attitudeOther" label="Specificare" />
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Abilità cognitive ── */}
+        <p className={SUB}>Abilità cognitive</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Memoria</p>
+            <div className="flex gap-5">
+              <label className={RL}><input type="radio" value="Normale"  {...register('memory')} className={RADIO} /> Normale</label>
+              <label className={RL}><input type="radio" value="Alterata" {...register('memory')} className={RADIO} /> Alterata</label>
+            </div>
+            {memory === 'Alterata' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="memoryAlterationDetails" label="Specificare" />
+              </>
+            )}
+          </div>
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Concentrazione</p>
+            <div className="flex gap-5">
+              <label className={RL}><input type="radio" value="Normale"  {...register('concentration')} className={RADIO} /> Normale</label>
+              <label className={RL}><input type="radio" value="Alterata" {...register('concentration')} className={RADIO} /> Alterata</label>
+            </div>
+            {concentration === 'Alterata' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="concentrationAlterationDetails" label="Specificare" />
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Sensi ── */}
+        <p className={SUB}>Sensi</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Vista</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {['Normale', 'Occhiali', 'Lenti a contatto', 'Alterazioni'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('vision')} className={RADIO} /> {v}
+                </label>
+              ))}
+            </div>
+            {vision === 'Alterazioni' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="visionAlterationDetails" label="Specificare" />
+              </>
+            )}
+          </div>
+
+          <div className={BOX}>
+            <p className="text-sm font-medium text-slate-700">Udito</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              {['Normale', 'Protesi acustica', 'Alterazioni'].map(v => (
+                <label key={v} className={RL}>
+                  <input type="radio" value={v} {...register('hearing')} className={RADIO} /> {v}
+                </label>
+              ))}
+            </div>
+            {hearing === 'Alterazioni' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Input name="hearingAlterationDetails" label="Specificare" />
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Dolore ── */}
+        <p className={SUB}>Dolore</p>
+        <div className={BOX}>
+          <div className="flex items-center gap-6">
+            <span className="text-sm font-medium text-slate-700 min-w-[200px]">Il paziente riferisce dolore?</span>
+            <label className={RL}><input type="radio" value="false" {...register('pain')} className={RADIO} /> No</label>
+            <label className={RL}><input type="radio" value="true"  {...register('pain')} className={RADIO} /> Sì</label>
+          </div>
+          {pain === 'true' && (
+            <>
+              <div className="border-t border-slate-100" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Input name="painLocation" label="Sede" />
+                <Input name="painTime"     label="Comparsa e durata" />
+                <Input name="painQuality"  label="Qualità / carattere" placeholder="es. urente, costrittivo" />
+                <Input name="painFactors"  label="Fattori aggravanti / allevianti" />
+                <Input name="painNrs"      label="Intensità NRS (0–10)" type="number" placeholder="0–10" />
+                <Textarea name="painTreatment" label="Trattamento in corso (farmacologico / non farmacologico)" rows={2} />
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Note ── */}
+        <Textarea name="model6Notes" label="Note" rows={3} />
+
+        {/* ── Status bar ── */}
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 6</span>
+          <div className="flex gap-6">
+            {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
+              <label key={v} className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                <input type="radio" value={v} {...register('model6Status')} className={RADIO} />
+                {v}
+              </label>
+            ))}
           </div>
         </div>
 
