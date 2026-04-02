@@ -753,10 +753,10 @@ const GCS_MOTOR = [
 ] as const;
 
 function gcsRisk(score: number): { label: string; border: string; text: string; badge: string; num: string } {
-  if (score <= 8)  return { label: 'Coma grave',          border: 'border-rose-500',    text: 'text-rose-700',    badge: 'bg-rose-100 text-rose-700 border-rose-200',          num: 'bg-rose-100 text-rose-700'    };
-  if (score <= 12) return { label: 'Coma moderato',        border: 'border-amber-500',   text: 'text-amber-700',   badge: 'bg-amber-100 text-amber-700 border-amber-200',        num: 'bg-amber-100 text-amber-700'  };
-  if (score <= 14) return { label: 'Alterazione lieve',    border: 'border-amber-300',   text: 'text-amber-600',   badge: 'bg-amber-50 text-amber-600 border-amber-200',         num: 'bg-amber-50 text-amber-600'   };
-  return                   { label: 'Coscienza normale',   border: 'border-emerald-500', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',  num: 'bg-emerald-100 text-emerald-700' };
+  if (score <= 8)  return { label: 'TBI Grave (Coma)',    border: 'border-rose-500',    text: 'text-rose-700',    badge: 'bg-rose-100 text-rose-700 border-rose-200',           num: 'bg-rose-100 text-rose-700'       };
+  if (score <= 12) return { label: 'TBI Moderato',         border: 'border-amber-500',   text: 'text-amber-700',   badge: 'bg-amber-100 text-amber-700 border-amber-200',         num: 'bg-amber-100 text-amber-700'     };
+  if (score <= 14) return { label: 'TBI Lieve',            border: 'border-amber-300',   text: 'text-amber-600',   badge: 'bg-amber-50 text-amber-600 border-amber-200',          num: 'bg-amber-50 text-amber-600'      };
+  return                   { label: 'Coscienza integra',   border: 'border-emerald-500', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700 border-emerald-200',   num: 'bg-emerald-100 text-emerald-700' };
 }
 
 function GcsCard({ index, onRemove, locked, onToggleLock }: {
@@ -1999,10 +1999,10 @@ export default function ScalesTab() {
               <table className="w-full text-xs border-collapse">
                 <tbody>
                   {[
-                    ['3–8',   'Coma grave'],
-                    ['9–12',  'Coma moderato'],
-                    ['13–14', 'Alterazione lieve'],
-                    ['15',    'Coscienza normale'],
+                    ['3–8',   'TBI Grave (Coma)'],
+                    ['9–12',  'TBI Moderato'],
+                    ['13–14', 'TBI Lieve'],
+                    ['15',    'Coscienza integra'],
                   ].map(([range, label]) => (
                     <tr key={range}>
                       <td className="pr-3 font-mono font-bold">{range}</td>
