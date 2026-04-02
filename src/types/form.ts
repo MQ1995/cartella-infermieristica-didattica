@@ -140,6 +140,18 @@ export interface NursingAssessment {
   pressureUlcerRiskFactorsDetails: string;
 
   throatScaleScore: string;
+  throatEvaluations: Array<{
+    date: string;
+    lips: string;
+    teeth: string;
+    gums: string;
+    mucosa: string;
+    tongue: string;
+    saliva: string;
+    pharynx: string;
+    voice: string;
+    swallowing: string;
+  }>;
   model2Notes: string;
   model2Status: string;
 
@@ -828,6 +840,7 @@ export const defaultValues: NursingAssessment = {
   model11Status: '',
 
   mustEvaluations: [],
+  throatEvaluations: [],
   medications: [],
   dailyAssessments: [],
   devices: [],
