@@ -682,6 +682,186 @@ function borgTextColor(value: string): string {
 }
 
 // ─────────────────────────────────────────────
+// AVPU
+// ─────────────────────────────────────────────
+
+const AVPU_LEVELS = [
+  {
+    value: 'A',
+    title: 'A — Alert',
+    desc: 'Sveglio, vigile, orientato nel tempo e nello spazio',
+    color: 'bg-emerald-100 text-emerald-700 border-emerald-300',
+    border: 'border-emerald-500',
+    text: 'text-emerald-700',
+  },
+  {
+    value: 'V',
+    title: 'V — Voice',
+    desc: 'Risponde agli stimoli vocali',
+    color: 'bg-amber-100 text-amber-700 border-amber-300',
+    border: 'border-amber-400',
+    text: 'text-amber-700',
+  },
+  {
+    value: 'P',
+    title: 'P — Pain',
+    desc: 'Risponde solo agli stimoli dolorosi',
+    color: 'bg-orange-100 text-orange-700 border-orange-300',
+    border: 'border-orange-500',
+    text: 'text-orange-700',
+  },
+  {
+    value: 'U',
+    title: 'U — Unresponsive',
+    desc: 'Non risponde ad alcuno stimolo',
+    color: 'bg-rose-100 text-rose-700 border-rose-300',
+    border: 'border-rose-500',
+    text: 'text-rose-700',
+  },
+] as const;
+
+function avpuLevel(value: string) {
+  return AVPU_LEVELS.find(l => l.value === value);
+}
+
+function AvpuCard({ index, onRemove, locked, onToggleLock }: {
+  index: number;
+  onRemove: () => void;
+  locked: boolean;
+  onToggleLock: () => void;
+}) {
+  const [expanded, setExpanded] = useState(true);
+  const { register } = useFormContext();
+  const prefix = `avpuEvaluations.${index}`;
+
+  const date  = useWatch({ name: `${prefix}.date` });
+  const time  = useWatch({ name: `${prefix}.time` }) as string | undefined;
+  const score = useWatch({ name: `${prefix}.score` }) as string | undefined;
+
+  const level = score ? avpuLevel(score) : null;
+
+  const dateLabel = date
+    ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
+    : `Valutazione ${index + 1}`;
+
+  return (
+    <div className={`border rounded-xl overflow-hidden transition-all ${
+      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+    }`}>
+      {/* Header */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${
+          level ? level.color : 'bg-slate-100 text-slate-400 border-slate-200'
+        }`}>
+          {level ? score : index + 1}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
+        </div>
+        {level && (
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${level.color}`}>
+            {level.title}
+          </span>
+        )}
+        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={onToggleLock}
+            title={locked ? 'Sblocca' : 'Blocca'}
+            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
+          >
+            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
+              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
+            </span>
+          </button>
+          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
+          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
+            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Body */}
+      {expanded && (
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+          <div className="p-5 space-y-4">
+
+            {/* Data e ora */}
+            <div className="flex gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+                <input type="date" {...register(`${prefix}.date`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+                <input type="time" {...register(`${prefix}.time`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
+            </div>
+
+            {/* AVPU options */}
+            <div>
+              <p className="text-xs font-semibold text-slate-600 mb-2">Livello di coscienza</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {AVPU_LEVELS.map(lvl => {
+                  const isSelected = score === lvl.value;
+                  return (
+                    <label key={lvl.value} className="cursor-pointer">
+                      <input type="radio" value={lvl.value} {...register(`${prefix}.score`)} className="sr-only" />
+                      <span className={`flex items-start gap-3 px-4 py-3 rounded-lg border text-sm transition-all ${
+                        isSelected
+                          ? `${lvl.color} font-semibold shadow-sm`
+                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                      }`}>
+                        <span className="font-mono font-bold text-base leading-none mt-0.5 w-4 flex-shrink-0">
+                          {lvl.value}
+                        </span>
+                        <span className="flex flex-col gap-0.5">
+                          <span className="font-semibold">{lvl.title.split(' — ')[1]}</span>
+                          <span className="text-xs font-normal opacity-75">{lvl.desc}</span>
+                        </span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Note */}
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+              <textarea
+                {...register(`${prefix}.notes`)}
+                rows={2}
+                placeholder={locked ? '—' : 'Osservazioni aggiuntive...'}
+                className={TA}
+              />
+            </div>
+
+            {/* Score bar */}
+            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
+              level ? level.border : 'border-slate-300'
+            }`}>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Scala AVPU</span>
+              <span className={`text-sm font-bold ${level ? level.text : 'text-slate-400'}`}>
+                {level ? level.title : 'Selezionare un livello'}
+              </span>
+            </div>
+
+          </div>
+        </fieldset>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // BorgCard
 // ─────────────────────────────────────────────
 
@@ -1331,6 +1511,30 @@ export default function ScalesTab() {
     }
   }, [barthelEvals, setValue]);
 
+  // ── AVPU ────────────────────────────────────
+  const { fields: avpuFields, append: appendAvpu, remove: removeAvpu } = useFieldArray({ control, name: 'avpuEvaluations' });
+  const [lockedAvpu, setLockedAvpu] = useState<Set<number>>(new Set());
+  const toggleLockAvpu = (i: number) => setLockedAvpu(prev => {
+    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
+  });
+  const addAvpuEval = () => appendAvpu({
+    date: new Date().toISOString().slice(0, 10),
+    time: new Date().toTimeString().slice(0, 5),
+    score: '', notes: '',
+  });
+
+  // Auto-update avpuScore (used in Model6) from last completed evaluation
+  const avpuEvals = useWatch({ name: 'avpuEvaluations' }) as Array<Record<string, string>> | undefined;
+  useEffect(() => {
+    if (!avpuEvals) return;
+    for (let i = avpuEvals.length - 1; i >= 0; i--) {
+      if (avpuEvals[i].score) {
+        setValue('avpuScore', avpuEvals[i].score);
+        return;
+      }
+    }
+  }, [avpuEvals, setValue]);
+
   // ── Borg ────────────────────────────────────
   const { fields: borgFields, append: appendBorg, remove: removeBorg } = useFieldArray({ control, name: 'borgEvaluations' });
   const [lockedBorg, setLockedBorg] = useState<Set<number>>(new Set());
@@ -1541,6 +1745,56 @@ export default function ScalesTab() {
                 onRemove={() => remove(index)}
                 locked={lockedRows.has(index)}
                 onToggleLock={() => toggleLock(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── AVPU ── */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
+            Scala AVPU (Livello di Coscienza)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {[
+                    ['A', 'Alert — Vigile e orientato'],
+                    ['V', 'Voice — Risponde alla voce'],
+                    ['P', 'Pain — Risponde al dolore'],
+                    ['U', 'Unresponsive — Non risponde'],
+                  ].map(([val, label]) => (
+                    <tr key={val}>
+                      <td className="pr-3 font-mono font-bold">{val}</td>
+                      <td>{label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
+          </h3>
+          <button
+            type="button"
+            onClick={addAvpuEval}
+            className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
+          >
+            <Plus size={16} /> Aggiungi valutazione
+          </button>
+        </div>
+        {avpuFields.length === 0 ? (
+          <div className="text-sm text-slate-500 italic p-6 bg-slate-50 border border-slate-200 rounded-lg text-center print:hidden">
+            Nessuna valutazione inserita. Clicca "Aggiungi valutazione" per iniziare.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {avpuFields.map((field, index) => (
+              <AvpuCard
+                key={field.id}
+                index={index}
+                onRemove={() => removeAvpu(index)}
+                locked={lockedAvpu.has(index)}
+                onToggleLock={() => toggleLockAvpu(index)}
               />
             ))}
           </div>
