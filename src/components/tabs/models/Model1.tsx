@@ -6,7 +6,7 @@ import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../../ui/ConfirmDeleteButton';
 import { LockableSection } from '../../ui/LockableSection';
 
-const SUB = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const SUB = 'text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 mb-4';
 const DIVIDER = 'border-t border-slate-200 my-5';
 const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default';
 

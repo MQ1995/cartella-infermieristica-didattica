@@ -4,7 +4,7 @@ import { Select } from '../../ui/Select';
 import { Textarea } from '../../ui/Textarea';
 import { LockableSection } from '../../ui/LockableSection';
 
-const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const SUB     = 'text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 mb-4';
 const DIVIDER = 'border-t border-slate-200 my-5';
 const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
 const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700'; // radio label
