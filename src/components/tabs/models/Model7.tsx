@@ -1,101 +1,123 @@
-import { LockableSection } from '../../ui/LockableSection';
-import { useFormContext } from 'react-hook-form';
-import { Select } from '../../ui/Select';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
+import { Select } from '../../ui/Select';
+import { LockableSection } from '../../ui/LockableSection';
+
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
+const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const CB      = 'w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500';
+const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
 
 export default function Model7() {
-  const { watch, register } = useFormContext();
+  const { register } = useFormContext();
 
-  const interviewAttitude = watch('interviewAttitude');
+  const bodyImageChange   = useWatch({ name: 'bodyImageChange' });
+  const interviewAttitude = useWatch({ name: 'interviewAttitude' }) as string[] | undefined;
 
   return (
-    <LockableSection title="7. Modello di Percezione e Concetto del Sé">
-      
-      <div className="space-y-6">
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2">Dati Soggettivi</h4>
-        <Textarea 
-          name="selfDescription" 
-          label="Come descrive se stesso? Ha notato qualche cambiamento nel modo in cui si sente rispetto a se stesso o al suo corpo da quando è iniziata la malattia?" 
-          rows={4}
-        />
+    <LockableSection title="7. Percezione e concetto di sé">
+      <div className="space-y-5">
 
-        <h4 className="font-semibold text-slate-700 border-b border-slate-200 pb-2 mt-8">Esame Fisico</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 rounded-lg border border-slate-200">
-          <Select 
-            name="eyeContact" 
-            label="Contatto oculare" 
-            options={[
-              { label: 'Presente', value: 'Presente' },
-              { label: 'A tratti assente', value: 'A tratti assente' },
-              { label: 'Assente', value: 'Assente' }
-            ]} 
+        {/* ── Dati soggettivi ── */}
+        <p className={SUB}>Dati soggettivi</p>
+        <div className="space-y-3">
+          <Textarea
+            name="selfDescription"
+            label="Come descrive se stesso? Ha notato cambiamenti nel modo in cui si percepisce da quando è iniziata la malattia?"
+            rows={3}
           />
-          
-          <Textarea 
-            name="voicePatterns" 
-            label="Modelli della voce e della parola" 
+          <Textarea
+            name="selfEfficacy"
+            label="Come si sente rispetto alla propria capacità di gestire la situazione?"
+            rows={2}
+          />
+
+          <div className={BOX}>
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-medium text-slate-700 min-w-[240px]">Ha notato cambiamenti nell'immagine corporea?</span>
+              <label className={RL}><input type="radio" value="false" {...register('bodyImageChange')} className={RADIO} /> No</label>
+              <label className={RL}><input type="radio" value="true"  {...register('bodyImageChange')} className={RADIO} /> Sì</label>
+            </div>
+            {bodyImageChange === 'true' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Textarea name="bodyImageChangeDetails" label="Descrizione" rows={2} />
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Esame fisico / osservazione ── */}
+        <p className={SUB}>Esame fisico e osservazione</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <Select
+            name="eyeContact"
+            label="Contatto oculare"
+            options={[
+              { label: 'Presente',          value: 'Presente' },
+              { label: 'A tratti assente',  value: 'A tratti assente' },
+              { label: 'Assente',           value: 'Assente' },
+            ]}
+          />
+
+          <Input name="voicePatterns" label="Modelli della voce e della parola" placeholder="es. tono basso, voce incerta" />
+        </div>
+
+        <div className={BOX}>
+          <p className="text-sm font-medium text-slate-700">Atteggiamento al colloquio</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {['Rilassato', 'Nervoso', 'Assertivo', 'Passivo', 'Spaventato', 'Ansioso', 'Depresso', 'Altro'].map(v => (
+              <label key={v} className={RL}>
+                <input type="checkbox" value={v} {...register('interviewAttitude')} className={CB} /> {v}
+              </label>
+            ))}
+          </div>
+          {interviewAttitude?.includes('Altro') && (
+            <>
+              <div className="border-t border-slate-100" />
+              <Input name="interviewAttitudeOther" label="Specificare" />
+            </>
+          )}
+        </div>
+
+        <div className={DIVIDER} />
+
+        {/* ── Aspetti emotivi ── */}
+        <p className={SUB}>Aspetti emotivi</p>
+        <div className="space-y-3">
+          <Textarea
+            name="emotionalState"
+            label="Stato emotivo percepito (ansia, paura, speranza, rassegnazione...)"
+            rows={2}
+          />
+          <Textarea
+            name="copingStrategies"
+            label="Strategie di coping abituali e risorse personali"
             rows={2}
           />
         </div>
 
-        <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3 mt-4">
-          <label className="text-sm font-semibold text-slate-700 block mb-2">Atteggiamento al colloquio:</label>
-          <div className="flex flex-wrap gap-4">
-            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" value="Rilassato" className="text-emerald-600 focus:ring-emerald-500" {...register('interviewAttitude')} /> Rilassato
-            </label>
-            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" value="Nervoso" className="text-emerald-600 focus:ring-emerald-500" {...register('interviewAttitude')} /> Nervoso
-            </label>
-            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" value="Assertivo" className="text-emerald-600 focus:ring-emerald-500" {...register('interviewAttitude')} /> Assertivo
-            </label>
-            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" value="Passivo" className="text-emerald-600 focus:ring-emerald-500" {...register('interviewAttitude')} /> Passivo
-            </label>
-            <div className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" value="Altro" className="text-emerald-600 focus:ring-emerald-500" {...register('interviewAttitude')} /> Altro
-              {interviewAttitude === 'Altro' && (
-                <input
-                  type="text"
-                  className="ml-2 px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white"
-                  placeholder="Specificare"
-                  {...register('interviewAttitudeOther')}
-                />
-              )}
-            </div>
-          </div>
-        </div>
+        <div className={DIVIDER} />
 
-        <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model7Notes" 
-            label="Eventuali note aggiuntive sul Modello di Percezione e Concetto di sé" 
-            rows={3}
-          />
-          
-          <div className="mt-6 p-4 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Valutazione Modello 7</span>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="FUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model7Status')}
-                />
-                FUNZIONALE
+        {/* ── Note ── */}
+        <Textarea name="model7Notes" label="Note" rows={3} />
+
+        {/* ── Status bar ── */}
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 7</span>
+          <div className="flex gap-6">
+            {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
+              <label key={v} className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                <input type="radio" value={v} {...register('model7Status')} className={RADIO} />
+                {v}
               </label>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="DISFUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model7Status')}
-                />
-                DISFUNZIONALE
-              </label>
-            </div>
+            ))}
           </div>
         </div>
 
