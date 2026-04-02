@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import React from 'react';
 import { Info } from 'lucide-react';
 
 interface Props {
-  content: string;
+  content: React.ReactNode;
 }
 
 export function InfoTooltip({ content }: Props) {

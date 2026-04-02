@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useFormContext, useWatch, useFieldArray } from 'react-hook-form';
 import { Plus, ChevronDown, ChevronUp, Lock, LockOpen } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { InfoTooltip } from '../ui/InfoTooltip';
 
 const RADIO = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
 const RL    = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
@@ -645,8 +646,26 @@ export default function ScalesTab() {
       {/* ── Braden ── */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala Braden (Rischio Lesioni da Pressione)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {[
+                    ['≤ 9',    'Rischio Altissimo'],
+                    ['10–12',  'Rischio Alto'],
+                    ['13–14',  'Rischio Moderato'],
+                    ['15–18',  'Rischio Basso'],
+                    ['≥ 19',   'Nessun Rischio'],
+                  ].map(([range, label]) => (
+                    <tr key={range}>
+                      <td className="pr-3 font-mono font-bold">{range}</td>
+                      <td>{label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
           </h3>
           <button
             type="button"
@@ -678,8 +697,23 @@ export default function ScalesTab() {
       {/* ── Conley ── */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala Conley (Rischio Cadute)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {[
+                    ['0–1', 'Non a rischio'],
+                    ['≥ 2', 'A rischio di caduta'],
+                  ].map(([range, label]) => (
+                    <tr key={range}>
+                      <td className="pr-3 font-mono font-bold">{range}</td>
+                      <td>{label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
           </h3>
           <button
             type="button"
@@ -711,8 +745,24 @@ export default function ScalesTab() {
       {/* ── MUST ── */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala MUST (Rischio Malnutrizione)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {[
+                    ['0',   'Rischio Basso'],
+                    ['1',   'Rischio Medio'],
+                    ['≥ 2', 'Rischio Alto'],
+                  ].map(([range, label]) => (
+                    <tr key={range}>
+                      <td className="pr-3 font-mono font-bold">{range}</td>
+                      <td>{label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
           </h3>
           <button
             type="button"
