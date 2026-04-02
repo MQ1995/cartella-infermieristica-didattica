@@ -49,6 +49,15 @@ export interface NursingAssessment {
   conleyScore: number;
   fallRisk: boolean;
   fallRiskScaleUsed: string;
+  conleyEvaluations: Array<{
+    date: string;
+    conley1: string;
+    conley2: string;
+    conley3: string;
+    conley4: string;
+    conley5: string;
+    conley6: string;
+  }>;
 
   // MODEL 2
   eatingHabits: string;
@@ -516,6 +525,7 @@ export const defaultValues: NursingAssessment = {
   conleyScore: 0,
   fallRisk: false,
   fallRiskScaleUsed: '',
+  conleyEvaluations: [],
   
   eatingHabits: '',
   dietaryRestrictions: '',
