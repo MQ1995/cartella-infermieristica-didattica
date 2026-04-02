@@ -149,11 +149,11 @@ export default function Model6() {
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               {['Disponibile', 'Interessato', 'Taciturno', 'Indifferente', 'Aggressivo', 'Altro'].map(v => (
                 <label key={v} className={RL}>
-                  <input type="radio" value={v} {...register('attitude')} className={RADIO} /> {v}
+                  <input type="checkbox" value={v} {...register('attitude')} className={CB} /> {v}
                 </label>
               ))}
             </div>
-            {attitude === 'Altro' && (
+            {(attitude as string[] | undefined)?.includes('Altro') && (
               <>
                 <div className="border-t border-slate-100" />
                 <Input name="attitudeOther" label="Specificare" />
