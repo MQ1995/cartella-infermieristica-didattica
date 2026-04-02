@@ -100,12 +100,12 @@ export default function Model1() {
           <div className="overflow-x-auto rounded-lg border border-slate-200">
             <table className="w-full table-fixed text-sm">
               <colgroup>
-                <col className="w-[25%]" />
-                <col className="w-[25%]" />
-                <col className="w-[15%]" />
-                <col className="w-[15%]" />
-                <col className="w-[15%]" />
-                <col className="w-10" />
+                <col className="w-[24%]" />
+                <col className="w-[24%]" />
+                <col className="w-[16%]" />
+                <col className="w-[16%]" />
+                <col className="w-[12%]" />
+                <col className="w-20" />
               </colgroup>
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-600">
