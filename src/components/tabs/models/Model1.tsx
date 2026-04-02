@@ -98,15 +98,23 @@ export default function Model1() {
           </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-slate-200">
-            <table className="w-full text-sm">
+            <table className="w-full table-fixed text-sm">
+              <colgroup>
+                <col className="w-[25%]" />
+                <col className="w-[25%]" />
+                <col className="w-[15%]" />
+                <col className="w-[15%]" />
+                <col className="w-[15%]" />
+                <col className="w-10" />
+              </colgroup>
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-600">
                   <th className="px-2 py-2 text-left font-semibold">Farmaco</th>
                   <th className="px-2 py-2 text-left font-semibold">Motivo</th>
-                  <th className="px-2 py-2 text-left font-semibold w-28">Dose/die</th>
-                  <th className="px-2 py-2 text-left font-semibold w-28">Orari</th>
-                  <th className="px-2 py-2 text-left font-semibold w-28">Via</th>
-                  <th className="px-2 py-2 print:hidden w-10" />
+                  <th className="px-2 py-2 text-left font-semibold">Dose/die</th>
+                  <th className="px-2 py-2 text-left font-semibold">Orari</th>
+                  <th className="px-2 py-2 text-left font-semibold">Via</th>
+                  <th className="px-2 py-2 print:hidden" />
                 </tr>
               </thead>
               <tbody>
@@ -155,7 +163,7 @@ export default function Model1() {
         <Textarea name="model1Notes" label="Note" rows={3} />
 
         {/* ── Status bar ── */}
-        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white border border-slate-200 rounded-lg">
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 1</span>
           <div className="flex gap-6">
             {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
