@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
-import { Plus, ChevronDown, ChevronUp, Lock, LockOpen } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Lock, LockOpen, GripVertical } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Textarea } from '../ui/Textarea';
 import { Input } from '../ui/Input';
@@ -22,36 +22,81 @@ const STATUS_BADGE: Record<string, string> = {
   'Peggiorato':           'bg-rose-100 text-rose-700 border-rose-200',
 };
 
+const PRIORITY_OPTIONS = ['', 'Alta', 'Media', 'Bassa'] as const;
+type Priority = typeof PRIORITY_OPTIONS[number];
+
+const PRIORITY_BADGE: Record<string, string> = {
+  'Alta':  'bg-rose-100 text-rose-700 border-rose-200',
+  'Media': 'bg-amber-100 text-amber-700 border-amber-200',
+  'Bassa': 'bg-sky-100 text-sky-700 border-sky-200',
+};
+
+const PRIORITY_NUMBER: Record<string, string> = {
+  'Alta':  'bg-rose-100 text-rose-700',
+  'Media': 'bg-amber-100 text-amber-700',
+  'Bassa': 'bg-sky-100 text-sky-600',
+  '':      'bg-emerald-100 text-emerald-700',
+};
+
 const LABEL = 'text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block';
 const TA = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default';
 
-function PlanCard({ index, onRemove, locked, onToggleLock }: {
+function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOver, onDrop, isDraggingOver }: {
   index: number;
   onRemove: () => void;
   locked: boolean;
   onToggleLock: () => void;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDrop: () => void;
+  isDraggingOver: boolean;
 }) {
   const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
-  const prefix = `carePlans.${index}`;
-  const problem = useWatch({ name: `${prefix}.problem` });
-  const status  = useWatch({ name: `${prefix}.status` });
+  const prefix   = `carePlans.${index}`;
+  const problem  = useWatch({ name: `${prefix}.problem` });
+  const status   = useWatch({ name: `${prefix}.status` });
+  const priority = useWatch({ name: `${prefix}.priority` }) as Priority;
 
   const preview = problem
     ? problem.slice(0, 90) + (problem.length > 90 ? '…' : '')
     : 'Nuovo problema / rischio';
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'}`}>
+    <div
+      draggable
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      className={`border rounded-xl overflow-hidden transition-all ${
+        isDraggingOver ? 'border-emerald-400 ring-2 ring-emerald-200' :
+        locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      }`}
+    >
       {/* Header */}
       <div
         className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
         onClick={() => setExpanded(e => !e)}
       >
+        {/* Drag handle */}
+        <div
+          className="flex-shrink-0 text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing print:hidden"
+          onClick={e => e.stopPropagation()}
+        >
+          <GripVertical size={16} />
+        </div>
+
         {/* Number badge */}
-        <div className="flex-shrink-0 w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 font-bold text-sm flex items-center justify-center select-none">
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${PRIORITY_NUMBER[priority ?? '']}`}>
           {index + 1}
         </div>
+
+        {/* Priority badge */}
+        {priority && (
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${PRIORITY_BADGE[priority]}`}>
+            {priority}
+          </span>
+        )}
 
         {/* Problem preview */}
         <div className="flex-1 min-w-0">
@@ -93,6 +138,37 @@ function PlanCard({ index, onRemove, locked, onToggleLock }: {
       {expanded && (
         <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
           <div className="p-5 space-y-5">
+
+            {/* Priorità */}
+            <div className="flex items-center gap-3">
+              <label className={`${LABEL} mb-0`}>Priorità</label>
+              <div className="flex gap-2">
+                {(['Alta', 'Media', 'Bassa'] as const).map(p => (
+                  <label key={p} className="cursor-pointer">
+                    <input type="radio" value={p} {...register(`${prefix}.priority`)} className="sr-only" />
+                    <span className={`inline-block px-3 py-1 rounded-full border text-xs font-semibold transition-all ${
+                      priority === p
+                        ? PRIORITY_BADGE[p]
+                        : 'bg-white text-slate-400 border-slate-200 hover:border-slate-300'
+                    }`}>
+                      {p}
+                    </span>
+                  </label>
+                ))}
+                {priority && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // clear priority by registering empty value
+                    }}
+                    className="text-xs text-slate-400 hover:text-slate-600 px-1"
+                    title="Rimuovi priorità"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
 
             {/* 1 — Diagnosi / problema PES */}
             <div>
@@ -171,8 +247,10 @@ function PlanCard({ index, onRemove, locked, onToggleLock }: {
 
 export default function CarePlanTab() {
   const { control } = useFormContext();
-  const { fields, append, remove } = useFieldArray({ control, name: 'carePlans' });
+  const { fields, append, remove, move } = useFieldArray({ control, name: 'carePlans' });
   const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
+  const dragIndex = useRef<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const toggleLock = (i: number) => setLockedRows(prev => {
     const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
@@ -180,8 +258,32 @@ export default function CarePlanTab() {
 
   const addProblem = () => append({
     problem: '', objective: '', plannedInterventions: '',
-    implementedInterventions: '', evaluation: '', status: '',
+    implementedInterventions: '', evaluation: '', status: '', priority: '',
   });
+
+  const handleDragStart = (index: number) => {
+    dragIndex.current = index;
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDrop = (toIndex: number) => {
+    if (dragIndex.current !== null && dragIndex.current !== toIndex) {
+      move(dragIndex.current, toIndex);
+      // Adjust locked rows
+      setLockedRows(prev => {
+        const arr = fields.map((_, i) => prev.has(i));
+        const [item] = arr.splice(dragIndex.current!, 1);
+        arr.splice(toIndex, 0, item);
+        return new Set(arr.map((v, i) => v ? i : -1).filter(i => i >= 0));
+      });
+    }
+    dragIndex.current = null;
+    setDragOverIndex(null);
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -206,7 +308,10 @@ export default function CarePlanTab() {
             Nessun problema inserito. Clicca "Aggiungi problema" per iniziare.
           </div>
         ) : (
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            onDragEnd={() => { dragIndex.current = null; setDragOverIndex(null); }}
+          >
             {fields.map((field, index) => (
               <PlanCard
                 key={field.id}
@@ -214,6 +319,10 @@ export default function CarePlanTab() {
                 onRemove={() => remove(index)}
                 locked={lockedRows.has(index)}
                 onToggleLock={() => toggleLock(index)}
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDrop={() => handleDrop(index)}
+                isDraggingOver={dragOverIndex === index && dragIndex.current !== index}
               />
             ))}
           </div>
