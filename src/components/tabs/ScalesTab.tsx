@@ -696,11 +696,12 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
   const prefix = `borgEvaluations.${index}`;
 
   const date  = useWatch({ name: `${prefix}.date` });
+  const time  = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const score = useWatch({ name: `${prefix}.score` }) as string | undefined;
   const hasScore = score !== undefined && score !== '';
 
   const dateLabel = date
-    ? new Date(date + 'T00:00:00').toLocaleDateString('it-IT')
+    ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
     : `Valutazione ${index + 1}`;
 
   return (
@@ -748,14 +749,24 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
         <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
           <div className="p-5 space-y-4">
 
-            {/* Data */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
-              <input
-                type="date"
-                {...register(`${prefix}.date`)}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
-              />
+            {/* Data e ora */}
+            <div className="flex gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+                <input
+                  type="date"
+                  {...register(`${prefix}.date`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+                <input
+                  type="time"
+                  {...register(`${prefix}.time`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
             </div>
 
             {/* Borg grid */}
@@ -945,6 +956,7 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
   const prefix = `throatEvaluations.${index}`;
 
   const date   = useWatch({ name: `${prefix}.date` });
+  const time   = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const values = useWatch({ name: THROAT_ITEMS.map(i => `${prefix}.${i.key}`) }) as (string | undefined)[];
 
   const allAnswered = values.every(v => v !== undefined && v !== '');
@@ -952,7 +964,7 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
   const risk  = score !== null ? throatRiskLevel(score) : null;
 
   const dateLabel = date
-    ? new Date(date + 'T00:00:00').toLocaleDateString('it-IT')
+    ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
     : `Valutazione ${index + 1}`;
 
   return (
@@ -1000,14 +1012,24 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
         <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
           <div className="p-5 space-y-4">
 
-            {/* Data */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
-              <input
-                type="date"
-                {...register(`${prefix}.date`)}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
-              />
+            {/* Data e ora */}
+            <div className="flex gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+                <input
+                  type="date"
+                  {...register(`${prefix}.date`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+                <input
+                  type="time"
+                  {...register(`${prefix}.time`)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                />
+              </div>
             </div>
 
             {/* Items grid */}
@@ -1317,6 +1339,7 @@ export default function ScalesTab() {
   });
   const addBorgEval = () => appendBorg({
     date: new Date().toISOString().slice(0, 10),
+    time: new Date().toTimeString().slice(0, 5),
     score: '', notes: '',
   });
 
@@ -1328,6 +1351,7 @@ export default function ScalesTab() {
   });
   const addThroatEval = () => appendThroat({
     date: new Date().toISOString().slice(0, 10),
+    time: new Date().toTimeString().slice(0, 5),
     lips: '', teeth: '', gums: '', mucosa: '', tongue: '',
     saliva: '', pharynx: '', voice: '', swallowing: '',
   });

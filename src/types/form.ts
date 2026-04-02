@@ -142,6 +142,7 @@ export interface NursingAssessment {
   throatScaleScore: string;
   borgEvaluations: Array<{
     date: string;
+    time: string;
     score: string;
     notes: string;
   }>;
@@ -162,6 +163,7 @@ export interface NursingAssessment {
 
   throatEvaluations: Array<{
     date: string;
+    time: string;
     lips: string;
     teeth: string;
     gums: string;
