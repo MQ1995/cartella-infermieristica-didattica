@@ -333,8 +333,8 @@ export default function Model2() {
         <p className={SUB}>Valutazione rischi</p>
 
         {/* Malnutrizione */}
-        <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 space-y-3">
-          <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">Rischio malnutrizione</span>
+        <div className="rounded-lg border border-slate-200 p-4 space-y-3">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio malnutrizione</span>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             <Input name="malnutritionTool" label="Strumento utilizzato" placeholder="es. MUST, NRS-2002" />
             <div className="space-y-1">
@@ -351,8 +351,8 @@ export default function Model2() {
         </div>
 
         {/* Lesioni da pressione */}
-        <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 space-y-3">
-          <span className="text-xs font-semibold text-amber-700 uppercase tracking-wider">Rischio lesioni da pressione — Scala Braden</span>
+        <div className="rounded-lg border border-slate-200 p-4 space-y-3">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio lesioni da pressione — Scala Braden</span>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input name="bradenScore"       label="Punteggio Braden (calcolato in Scale Valutazione)" readOnly />
             <Input name="pressureUlcerRisk" label="Livello di rischio"                                readOnly />
