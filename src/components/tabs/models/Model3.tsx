@@ -35,8 +35,10 @@ export default function Model3() {
   const urinaryStomaMgmt        = useWatch({ name: 'urinaryStomaManagement' });
 
   const bowelAlterations        = useWatch({ name: 'bowelAlterations' });
-  const bowelAlterationsTypes   = useWatch({ name: 'bowelAlterationsTypes' }) ?? [];
-  const otherUrinaryAlterations = useWatch({ name: 'otherUrinaryAlterations' }) ?? [];
+  const bowelAlterationsTypesRaw   = useWatch({ name: 'bowelAlterationsTypes' });
+  const bowelAlterationsTypes      = Array.isArray(bowelAlterationsTypesRaw) ? bowelAlterationsTypesRaw : [];
+  const otherUrinaryAlterationsRaw = useWatch({ name: 'otherUrinaryAlterations' });
+  const otherUrinaryAlterations    = Array.isArray(otherUrinaryAlterationsRaw) ? otherUrinaryAlterationsRaw : [];
   const stoolCharacteristics    = useWatch({ name: 'stoolCharacteristics' });
   const peristalsis             = useWatch({ name: 'peristalsis' });
   const bowelIncontinenceAids   = useWatch({ name: 'bowelIncontinenceAids' });

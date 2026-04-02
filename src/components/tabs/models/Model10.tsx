@@ -14,7 +14,8 @@ export default function Model10() {
   const { register } = useFormContext();
 
   const lifeChanges        = useWatch({ name: 'lifeChanges' });
-  const copingStrategies10 = useWatch({ name: 'copingStrategies10' }) as string[] | undefined ?? [];
+  const copingStrategies10Raw = useWatch({ name: 'copingStrategies10' });
+  const copingStrategies10 = Array.isArray(copingStrategies10Raw) ? copingStrategies10Raw : [];
 
   return (
     <LockableSection title="10. Coping e tolleranza allo stress">

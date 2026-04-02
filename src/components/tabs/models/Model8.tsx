@@ -16,7 +16,8 @@ export default function Model8() {
 
   const occupationalRole = useWatch({ name: 'occupationalRole' });
   const livingSituation  = useWatch({ name: 'livingSituation' });
-  const supportSystem    = useWatch({ name: 'supportSystem' }) as string[] | undefined ?? [];
+  const supportSystemRaw = useWatch({ name: 'supportSystem' });
+  const supportSystem    = Array.isArray(supportSystemRaw) ? supportSystemRaw : [];
 
   return (
     <LockableSection title="8. Ruoli e relazioni">
