@@ -2063,7 +2063,7 @@ export default function ScalesTab() {
     <div className="space-y-8 animate-in fade-in duration-300">
 
       {/* ── Braden ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala Braden (Rischio Lesioni da Pressione)
@@ -2114,7 +2114,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── Conley ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala Conley (Rischio Cadute)
@@ -2162,7 +2162,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── MUST ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala MUST (Rischio Malnutrizione)
@@ -2212,7 +2212,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── GCS ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Glasgow Coma Scale (GCS)
@@ -2262,7 +2262,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── AVPU ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala AVPU (Livello di Coscienza)
@@ -2312,7 +2312,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── Borg ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala di Borg (Dispnea / Sforzo percepito)
@@ -2363,7 +2363,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── Barthel ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Indice di Barthel (ADL)
@@ -2414,7 +2414,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── Pain ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala NRS (Valutazione del Dolore)
@@ -2464,7 +2464,7 @@ export default function ScalesTab() {
       </div>
 
       {/* ── THROAT ── */}
-      <div className="space-y-4">
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
         <div className="flex justify-between items-center">
           <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
             Scala THROAT (Salute del Cavo Orale)
