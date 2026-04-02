@@ -641,18 +641,18 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
 // ─────────────────────────────────────────────
 
 const BORG_LEVELS = [
-  { value: '0',   label: 'Nessuna',                  color: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
-  { value: '0.5', label: 'Molto, molto lieve',        color: 'bg-emerald-50 text-emerald-600 border-emerald-200'  },
-  { value: '1',   label: 'Molto lieve',               color: 'bg-teal-50 text-teal-600 border-teal-200'           },
-  { value: '2',   label: 'Lieve',                     color: 'bg-yellow-50 text-yellow-700 border-yellow-200'     },
-  { value: '3',   label: 'Moderata',                  color: 'bg-amber-50 text-amber-600 border-amber-200'        },
-  { value: '4',   label: 'Piuttosto intensa',         color: 'bg-amber-100 text-amber-700 border-amber-300'       },
-  { value: '5',   label: 'Intensa',                   color: 'bg-orange-100 text-orange-700 border-orange-300'    },
-  { value: '6',   label: '—',                         color: 'bg-orange-100 text-orange-700 border-orange-300'    },
-  { value: '7',   label: 'Molto intensa',             color: 'bg-rose-100 text-rose-600 border-rose-300'          },
-  { value: '8',   label: '—',                         color: 'bg-rose-100 text-rose-600 border-rose-300'          },
-  { value: '9',   label: 'Molto, molto intensa',      color: 'bg-rose-200 text-rose-700 border-rose-400'          },
-  { value: '10',  label: 'Massimale',                 color: 'bg-rose-300 text-rose-800 border-rose-500'          },
+  { value: '0',   label: 'Nullo',                color: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+  { value: '0.5', label: 'Estremamente lieve',   color: 'bg-emerald-50 text-emerald-600 border-emerald-200'  },
+  { value: '1',   label: 'Molto lieve',          color: 'bg-teal-50 text-teal-600 border-teal-200'           },
+  { value: '2',   label: 'Lieve',                color: 'bg-yellow-50 text-yellow-700 border-yellow-200'     },
+  { value: '3',   label: 'Discreto',             color: 'bg-amber-50 text-amber-600 border-amber-200'        },
+  { value: '4',   label: 'Piuttosto intenso',    color: 'bg-amber-100 text-amber-700 border-amber-300'       },
+  { value: '5',   label: 'Intenso',              color: 'bg-orange-100 text-orange-700 border-orange-300'    },
+  { value: '6',   label: 'Intenso',              color: 'bg-orange-100 text-orange-700 border-orange-300'    },
+  { value: '7',   label: 'Molto intenso',        color: 'bg-rose-100 text-rose-600 border-rose-300'          },
+  { value: '8',   label: '—',                    color: 'bg-rose-100 text-rose-600 border-rose-300'          },
+  { value: '9',   label: 'Quasi insopportabile', color: 'bg-rose-200 text-rose-700 border-rose-400'          },
+  { value: '10',  label: 'Insopportabile',       color: 'bg-rose-300 text-rose-800 border-rose-500'          },
 ] as const;
 
 function borgColor(value: string): string {
