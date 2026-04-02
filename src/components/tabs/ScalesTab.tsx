@@ -637,6 +637,187 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
 }
 
 // ─────────────────────────────────────────────
+// Borg items
+// ─────────────────────────────────────────────
+
+const BORG_LEVELS = [
+  { value: '0',   label: 'Nessuna',                  color: 'bg-emerald-100 text-emerald-700 border-emerald-300' },
+  { value: '0.5', label: 'Molto, molto lieve',        color: 'bg-emerald-50 text-emerald-600 border-emerald-200'  },
+  { value: '1',   label: 'Molto lieve',               color: 'bg-teal-50 text-teal-600 border-teal-200'           },
+  { value: '2',   label: 'Lieve',                     color: 'bg-yellow-50 text-yellow-700 border-yellow-200'     },
+  { value: '3',   label: 'Moderata',                  color: 'bg-amber-50 text-amber-600 border-amber-200'        },
+  { value: '4',   label: 'Piuttosto intensa',         color: 'bg-amber-100 text-amber-700 border-amber-300'       },
+  { value: '5',   label: 'Intensa',                   color: 'bg-orange-100 text-orange-700 border-orange-300'    },
+  { value: '6',   label: '—',                         color: 'bg-orange-100 text-orange-700 border-orange-300'    },
+  { value: '7',   label: 'Molto intensa',             color: 'bg-rose-100 text-rose-600 border-rose-300'          },
+  { value: '8',   label: '—',                         color: 'bg-rose-100 text-rose-600 border-rose-300'          },
+  { value: '9',   label: 'Molto, molto intensa',      color: 'bg-rose-200 text-rose-700 border-rose-400'          },
+  { value: '10',  label: 'Massimale',                 color: 'bg-rose-300 text-rose-800 border-rose-500'          },
+] as const;
+
+function borgColor(value: string): string {
+  return BORG_LEVELS.find(l => l.value === value)?.color ?? 'bg-slate-100 text-slate-500 border-slate-200';
+}
+
+function borgLabel(value: string): string {
+  return BORG_LEVELS.find(l => l.value === value)?.label ?? '';
+}
+
+function borgBorderColor(value: string): string {
+  const n = parseFloat(value);
+  if (n === 0)    return 'border-emerald-500';
+  if (n <= 2)     return 'border-teal-400';
+  if (n <= 4)     return 'border-amber-400';
+  if (n <= 6)     return 'border-orange-400';
+  return 'border-rose-500';
+}
+
+function borgTextColor(value: string): string {
+  const n = parseFloat(value);
+  if (n === 0)    return 'text-emerald-700';
+  if (n <= 2)     return 'text-teal-700';
+  if (n <= 4)     return 'text-amber-700';
+  if (n <= 6)     return 'text-orange-700';
+  return 'text-rose-700';
+}
+
+// ─────────────────────────────────────────────
+// BorgCard
+// ─────────────────────────────────────────────
+
+function BorgCard({ index, onRemove, locked, onToggleLock }: {
+  index: number;
+  onRemove: () => void;
+  locked: boolean;
+  onToggleLock: () => void;
+}) {
+  const [expanded, setExpanded] = useState(true);
+  const { register } = useFormContext();
+  const prefix = `borgEvaluations.${index}`;
+
+  const date  = useWatch({ name: `${prefix}.date` });
+  const score = useWatch({ name: `${prefix}.score` }) as string | undefined;
+  const hasScore = score !== undefined && score !== '';
+
+  const dateLabel = date
+    ? new Date(date + 'T00:00:00').toLocaleDateString('it-IT')
+    : `Valutazione ${index + 1}`;
+
+  return (
+    <div className={`border rounded-xl overflow-hidden transition-all ${
+      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+    }`}>
+      {/* Header */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${
+          hasScore ? borgColor(score!) : 'bg-slate-100 text-slate-400 border-slate-200'
+        }`}>
+          {hasScore ? score : index + 1}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
+        </div>
+        {hasScore && (
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${borgColor(score!)}`}>
+            {borgLabel(score!)} ({score})
+          </span>
+        )}
+        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={onToggleLock}
+            title={locked ? 'Sblocca' : 'Blocca'}
+            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
+          >
+            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
+              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
+            </span>
+          </button>
+          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
+          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
+            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Body */}
+      {expanded && (
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+          <div className="p-5 space-y-4">
+
+            {/* Data */}
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
+              <input
+                type="date"
+                {...register(`${prefix}.date`)}
+                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+              />
+            </div>
+
+            {/* Borg grid */}
+            <div>
+              <p className="text-xs font-semibold text-slate-600 mb-2">Intensità percepita della dispnea / sforzo</p>
+              <div className="grid grid-cols-2 gap-1.5">
+                {BORG_LEVELS.map(level => {
+                  const isSelected = score === level.value;
+                  return (
+                    <label key={level.value} className="cursor-pointer">
+                      <input
+                        type="radio"
+                        value={level.value}
+                        {...register(`${prefix}.score`)}
+                        className="sr-only"
+                      />
+                      <span className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all ${
+                        isSelected
+                          ? `${level.color} font-semibold shadow-sm`
+                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                      }`}>
+                        <span className="font-mono font-bold w-6 flex-shrink-0 text-right">{level.value}</span>
+                        <span className="text-xs leading-tight">{level.label}</span>
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Note */}
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+              <textarea
+                {...register(`${prefix}.notes`)}
+                rows={2}
+                placeholder={locked ? '—' : 'Osservazioni (es. a riposo, durante deambulazione, dopo fisioterapia...)'}
+                className={TA}
+              />
+            </div>
+
+            {/* Score bar */}
+            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
+              hasScore ? borgBorderColor(score!) : 'border-slate-300'
+            }`}>
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Scala di Borg</span>
+              <span className={`text-sm font-bold ${hasScore ? borgTextColor(score!) : 'text-slate-400'}`}>
+                {hasScore
+                  ? `${borgLabel(score!)} — Punteggio ${score}/10`
+                  : 'Selezionare un livello'
+                }
+              </span>
+            </div>
+
+          </div>
+        </fieldset>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // THROAT items
 // ─────────────────────────────────────────────
 
@@ -1128,6 +1309,17 @@ export default function ScalesTab() {
     }
   }, [barthelEvals, setValue]);
 
+  // ── Borg ────────────────────────────────────
+  const { fields: borgFields, append: appendBorg, remove: removeBorg } = useFieldArray({ control, name: 'borgEvaluations' });
+  const [lockedBorg, setLockedBorg] = useState<Set<number>>(new Set());
+  const toggleLockBorg = (i: number) => setLockedBorg(prev => {
+    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
+  });
+  const addBorgEval = () => appendBorg({
+    date: new Date().toISOString().slice(0, 10),
+    score: '', notes: '',
+  });
+
   // ── THROAT ──────────────────────────────────
   const { fields: throatFields, append: appendThroat, remove: removeThroat } = useFieldArray({ control, name: 'throatEvaluations' });
   const [lockedThroat, setLockedThroat] = useState<Set<number>>(new Set());
@@ -1325,6 +1517,57 @@ export default function ScalesTab() {
                 onRemove={() => remove(index)}
                 locked={lockedRows.has(index)}
                 onToggleLock={() => toggleLock(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Borg ── */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
+            Scala di Borg (Dispnea / Sforzo percepito)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {[
+                    ['0',     'Nessuna'],
+                    ['0.5–1', 'Molto lieve'],
+                    ['2–3',   'Lieve – Moderata'],
+                    ['4–6',   'Intensa'],
+                    ['7–10',  'Molto intensa – Massimale'],
+                  ].map(([range, label]) => (
+                    <tr key={range}>
+                      <td className="pr-3 font-mono font-bold">{range}</td>
+                      <td>{label}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
+          </h3>
+          <button
+            type="button"
+            onClick={addBorgEval}
+            className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
+          >
+            <Plus size={16} /> Aggiungi valutazione
+          </button>
+        </div>
+        {borgFields.length === 0 ? (
+          <div className="text-sm text-slate-500 italic p-6 bg-slate-50 border border-slate-200 rounded-lg text-center print:hidden">
+            Nessuna valutazione inserita. Clicca "Aggiungi valutazione" per iniziare.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {borgFields.map((field, index) => (
+              <BorgCard
+                key={field.id}
+                index={index}
+                onRemove={() => removeBorg(index)}
+                locked={lockedBorg.has(index)}
+                onToggleLock={() => toggleLockBorg(index)}
               />
             ))}
           </div>

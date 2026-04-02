@@ -140,6 +140,12 @@ export interface NursingAssessment {
   pressureUlcerRiskFactorsDetails: string;
 
   throatScaleScore: string;
+  borgEvaluations: Array<{
+    date: string;
+    score: string;
+    notes: string;
+  }>;
+
   barthelEvaluations: Array<{
     date: string;
     feeding: string;
@@ -854,6 +860,7 @@ export const defaultValues: NursingAssessment = {
   model11Status: '',
 
   mustEvaluations: [],
+  borgEvaluations: [],
   barthelEvaluations: [],
   throatEvaluations: [],
   medications: [],
