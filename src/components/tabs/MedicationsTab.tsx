@@ -129,7 +129,7 @@ export default function MedicationsTab() {
                         <td colSpan={TIME_SLOTS.length + 5} className="px-3 pb-2 border-l-4 border-amber-400">
                           <textarea
                             {...register(`medications.${index}.notes`)}
-                            placeholder="Note aggiuntive per questo farmaco..."
+                            placeholder={locked ? 'Nessuna nota presente per questo farmaco.' : 'Note aggiuntive per questo farmaco...'}
                             rows={2}
                             disabled={locked}
                             className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"

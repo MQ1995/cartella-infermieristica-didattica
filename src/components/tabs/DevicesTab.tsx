@@ -124,7 +124,7 @@ function DevicesSection() {
                         <td colSpan={6} className="px-3 pb-2 border-l-4 border-amber-400">
                           <textarea
                             {...register(`devices.${index}.notes`)}
-                            placeholder="Note aggiuntive per questo presidio..."
+                            placeholder={locked ? 'Nessuna nota presente per questo presidio.' : 'Note aggiuntive per questo presidio...'}
                             rows={2}
                             disabled={locked}
                             className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
