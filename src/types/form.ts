@@ -443,6 +443,15 @@ export interface NursingAssessment {
     notes: string;
   }>;
 
+  // Scale MUST
+  mustEvaluations: Array<{
+    date: string;
+    step1Bmi: string;
+    step2WeightLoss: string;
+    step3AcuteDisease: string;
+    notes: string;
+  }>;
+
   // Monitoraggio parametri vitali
   vitalSigns: Array<{
     date: string;
@@ -798,6 +807,7 @@ export const defaultValues: NursingAssessment = {
   model11Notes: '',
   model11Status: '',
 
+  mustEvaluations: [],
   medications: [],
   dailyAssessments: [],
   devices: [],
