@@ -8,6 +8,7 @@ import { LockableSection } from '../../ui/LockableSection';
 
 const SUB = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
 const DIVIDER = 'border-t border-slate-200 my-5';
+const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default';
 
 export default function Model1() {
   const { register, control } = useFormContext();
@@ -98,33 +99,25 @@ export default function Model1() {
           </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-slate-200">
-            <table className="w-full table-fixed text-sm">
-              <colgroup>
-                <col className="w-[24%]" />
-                <col className="w-[24%]" />
-                <col className="w-[16%]" />
-                <col className="w-[16%]" />
-                <col className="w-[12%]" />
-                <col className="w-20" />
-              </colgroup>
+            <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200 text-slate-600">
                   <th className="px-2 py-2 text-left font-semibold">Farmaco</th>
                   <th className="px-2 py-2 text-left font-semibold">Motivo</th>
-                  <th className="px-2 py-2 text-left font-semibold">Dose/die</th>
-                  <th className="px-2 py-2 text-left font-semibold">Orari</th>
-                  <th className="px-2 py-2 text-left font-semibold">Via</th>
-                  <th className="px-2 py-2 print:hidden" />
+                  <th className="px-2 py-2 text-left font-semibold w-28">Dose/die</th>
+                  <th className="px-2 py-2 text-left font-semibold w-24">Orari</th>
+                  <th className="px-2 py-2 text-left font-semibold w-24">Via</th>
+                  <th className="px-2 py-2 print:hidden w-10" />
                 </tr>
               </thead>
               <tbody>
                 {fields.map((field, index) => (
                   <tr key={field.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-middle">
-                    <td className="px-2 py-1.5"><Input name={`homeTherapy.${index}.drug`}     label="" placeholder="es. Ramipril" /></td>
-                    <td className="px-2 py-1.5"><Input name={`homeTherapy.${index}.reason`}   label="" placeholder="es. Ipertensione" /></td>
-                    <td className="px-2 py-1.5"><Input name={`homeTherapy.${index}.dose`}     label="" placeholder="es. 5 mg" /></td>
-                    <td className="px-2 py-1.5"><Input name={`homeTherapy.${index}.schedule`} label="" placeholder="es. 8:00" /></td>
-                    <td className="px-2 py-1.5"><Input name={`homeTherapy.${index}.route`}    label="" placeholder="es. OS" /></td>
+                    <td className="px-2 py-1.5"><input {...register(`homeTherapy.${index}.drug`)}     placeholder="es. Ramipril"     className={INPUT_CLS} /></td>
+                    <td className="px-2 py-1.5"><input {...register(`homeTherapy.${index}.reason`)}   placeholder="es. Ipertensione" className={INPUT_CLS} /></td>
+                    <td className="px-2 py-1.5"><input {...register(`homeTherapy.${index}.dose`)}     placeholder="es. 5 mg"         className={INPUT_CLS} /></td>
+                    <td className="px-2 py-1.5"><input {...register(`homeTherapy.${index}.schedule`)} placeholder="es. 8:00"         className={INPUT_CLS} /></td>
+                    <td className="px-2 py-1.5"><input {...register(`homeTherapy.${index}.route`)}    placeholder="es. OS"           className={INPUT_CLS} /></td>
                     <td className="px-2 py-1.5 print:hidden">
                       <ConfirmDeleteButton onConfirm={() => remove(index)} size={16} />
                     </td>
