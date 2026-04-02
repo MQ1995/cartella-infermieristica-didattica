@@ -41,7 +41,7 @@ const PRIORITY_NUMBER: Record<string, string> = {
 const LABEL = 'text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block';
 const TA = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default';
 
-function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOver, onDrop, isDraggingOver }: {
+function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOver, onDrop, isDraggingOver, isDragging }: {
   index: number;
   onRemove: () => void;
   locked: boolean;
@@ -50,6 +50,7 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
   onDragOver: (e: React.DragEvent) => void;
   onDrop: () => void;
   isDraggingOver: boolean;
+  isDragging: boolean;
 }) {
   const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
@@ -69,8 +70,9 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
       onDragOver={onDragOver}
       onDrop={onDrop}
       className={`border rounded-xl overflow-hidden transition-all ${
+        isDragging     ? 'opacity-40 scale-[0.98] border-slate-300 shadow-lg rotate-1' :
         isDraggingOver ? 'border-emerald-400 ring-2 ring-emerald-200' :
-        locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+        locked         ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
       }`}
     >
       {/* Header */}
@@ -250,6 +252,7 @@ export default function CarePlanTab() {
   const { fields, append, remove, move } = useFieldArray({ control, name: 'carePlans' });
   const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
   const dragIndex = useRef<number | null>(null);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const toggleLock = (i: number) => setLockedRows(prev => {
@@ -263,6 +266,7 @@ export default function CarePlanTab() {
 
   const handleDragStart = (index: number) => {
     dragIndex.current = index;
+    setDraggingIndex(index);
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
@@ -282,6 +286,7 @@ export default function CarePlanTab() {
       });
     }
     dragIndex.current = null;
+    setDraggingIndex(null);
     setDragOverIndex(null);
   };
 
@@ -310,7 +315,7 @@ export default function CarePlanTab() {
         ) : (
           <div
             className="space-y-4"
-            onDragEnd={() => { dragIndex.current = null; setDragOverIndex(null); }}
+            onDragEnd={() => { dragIndex.current = null; setDraggingIndex(null); setDragOverIndex(null); }}
           >
             {fields.map((field, index) => (
               <PlanCard
@@ -323,6 +328,7 @@ export default function CarePlanTab() {
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDrop={() => handleDrop(index)}
                 isDraggingOver={dragOverIndex === index && dragIndex.current !== index}
+                isDragging={draggingIndex === index}
               />
             ))}
           </div>
