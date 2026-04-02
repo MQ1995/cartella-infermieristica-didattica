@@ -140,6 +140,20 @@ export interface NursingAssessment {
   pressureUlcerRiskFactorsDetails: string;
 
   throatScaleScore: string;
+  barthelEvaluations: Array<{
+    date: string;
+    feeding: string;
+    bathing: string;
+    grooming: string;
+    dressing: string;
+    bowel: string;
+    bladder: string;
+    toilet: string;
+    transfer: string;
+    mobility: string;
+    stairs: string;
+  }>;
+
   throatEvaluations: Array<{
     date: string;
     lips: string;
@@ -840,6 +854,7 @@ export const defaultValues: NursingAssessment = {
   model11Status: '',
 
   mustEvaluations: [],
+  barthelEvaluations: [],
   throatEvaluations: [],
   medications: [],
   dailyAssessments: [],
