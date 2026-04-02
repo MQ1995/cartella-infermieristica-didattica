@@ -913,6 +913,7 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
                     [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
                     [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-[3px]
                     [&::-webkit-slider-thumb]:border-[color:var(--thumb-border)]
+                    [&::-webkit-slider-thumb]:mt-1
                     [&::-moz-range-track]:bg-transparent
                     [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full
                     [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md
