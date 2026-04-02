@@ -650,7 +650,7 @@ const BORG_LEVELS = [
   { value: '5',   label: 'Intenso',              color: 'bg-orange-100 text-orange-700 border-orange-300'    },
   { value: '6',   label: 'Intenso',              color: 'bg-orange-100 text-orange-700 border-orange-300'    },
   { value: '7',   label: 'Molto intenso',        color: 'bg-rose-100 text-rose-600 border-rose-300'          },
-  { value: '8',   label: '—',                    color: 'bg-rose-100 text-rose-600 border-rose-300'          },
+  { value: '8',   label: 'Molto intenso',        color: 'bg-rose-100 text-rose-600 border-rose-300'          },
   { value: '9',   label: 'Quasi insopportabile', color: 'bg-rose-200 text-rose-700 border-rose-400'          },
   { value: '10',  label: 'Insopportabile',       color: 'bg-rose-300 text-rose-800 border-rose-500'          },
 ] as const;
