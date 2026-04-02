@@ -189,7 +189,7 @@ export default function CarePlanTab() {
       {/* ── Pianificazione assistenziale ── */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200">
             Pianificazione assistenziale
           </h3>
           <button

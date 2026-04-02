@@ -34,7 +34,7 @@ function DevicesSection() {
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Presidi</h3>
+        <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200">Presidi</h3>
         <button
           type="button"
           onClick={addRow}
@@ -345,7 +345,7 @@ function WoundCareSection() {
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-center">
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Lesioni cutanee e medicazioni</h3>
+        <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200">Lesioni cutanee e medicazioni</h3>
         <button
           type="button"
           onClick={addWound}
