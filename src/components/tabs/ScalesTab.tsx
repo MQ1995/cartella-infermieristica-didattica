@@ -1,10 +1,23 @@
 import { useEffect } from "react";
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Select } from '../ui/Select';
 import { LockableSection } from '../ui/LockableSection';
 
+const RADIO = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const RL    = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
+const SUB   = 'text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 mb-4';
+
+const CONLEY_ITEMS = [
+  { name: 'conley1', label: 'È caduto nel corso degli ultimi tre mesi?',                           pts: 2, section: 'Precedenti cadute' },
+  { name: 'conley2', label: 'Ha avuto vertigini o capogiri?',                                       pts: 1, section: null },
+  { name: 'conley3', label: 'Ha avuto perdite di urine/feci recandosi in bagno?',                   pts: 1, section: null },
+  { name: 'conley4', label: 'Presenta compromissione della marcia o andatura instabile?',           pts: 1, section: 'Stato cognitivo e comportamentale' },
+  { name: 'conley5', label: 'È agitato o irrequieto?',                                              pts: 2, section: null },
+  { name: 'conley6', label: 'Presenta mancanza del senso del pericolo o deterioramento del giudizio?', pts: 3, section: null },
+] as const;
+
 export default function ScalesTab() {
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, register } = useFormContext();
 
   // Braden Scale Logic
   const sensory = watch('bradenSensory') || '0';
@@ -40,21 +53,19 @@ export default function ScalesTab() {
   const pressureUlcerRisk = watch('pressureUlcerRisk');
 
   // Conley Scale Logic
-  const c1 = watch('conley1') === 'true' ? 2 : 0;
-  const c2 = watch('conley2') === 'true' ? 1 : 0;
-  const c3 = watch('conley3') === 'true' ? 1 : 0;
-  const c4 = watch('conley4') === 'true' ? 1 : 0;
-  const c5 = watch('conley5') === 'true' ? 2 : 0;
-  const c6 = watch('conley6') === 'true' ? 3 : 0;
+  const conleyValues = useWatch({ name: CONLEY_ITEMS.map(i => i.name) }) as (string | undefined)[];
+  const allAnswered = conleyValues.every(v => v === 'true' || v === 'false');
+  const conleyScore = allAnswered
+    ? CONLEY_ITEMS.reduce((sum, item, idx) => sum + (conleyValues[idx] === 'true' ? item.pts : 0), 0)
+    : null;
+  const fallRisk = conleyScore !== null ? conleyScore >= 2 : null;
 
   useEffect(() => {
-    const total = c1 + c2 + c3 + c4 + c5 + c6;
-    setValue('conleyScore', total);
-    setValue('fallRisk', total >= 2);
-  }, [c1, c2, c3, c4, c5, c6, setValue]);
-
-  const conleyScore = watch('conleyScore');
-  const fallRisk = watch('fallRisk');
+    if (conleyScore !== null) {
+      setValue('conleyScore', conleyScore);
+      setValue('fallRisk', fallRisk);
+    }
+  }, [conleyScore, fallRisk, setValue]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -140,68 +151,42 @@ export default function ScalesTab() {
         headerRight={
           <div className="text-right">
             <div className="text-sm text-slate-500">Punteggio Totale</div>
-            <div className={`text-2xl font-bold ${fallRisk ? 'text-rose-600' : 'text-emerald-600'}`}>
-              {conleyScore}
+            <div className={`text-2xl font-bold ${conleyScore === null ? 'text-slate-300' : fallRisk ? 'text-rose-600' : 'text-emerald-600'}`}>
+              {conleyScore ?? '—'}
             </div>
-            <div className="text-xs font-medium uppercase tracking-wider">
-              {fallRisk ? 'A Rischio (>= 2)' : 'Non a Rischio'}
+            <div className="text-xs font-medium uppercase tracking-wider text-slate-500">
+              {conleyScore === null ? 'Compilare tutti i campi' : fallRisk ? 'A rischio (≥ 2)' : 'Non a rischio'}
             </div>
           </div>
         }
       >
-
-        <div className="space-y-4 bg-white p-4 rounded-lg border border-slate-200">
-          <h4 className="font-medium text-slate-800 border-b border-slate-100 pb-2 mb-3">Precedenti Cadute</h4>
-          
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm text-slate-700">È caduto nel corso degli ultimi tre mesi? (2 pt)</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="true" {...watch('conley1') === 'true' ? {checked: true} : {}} onChange={(e) => setValue('conley1', e.target.value)} /> Sì</label>
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="false" {...watch('conley1') === 'false' ? {checked: true} : {}} onChange={(e) => setValue('conley1', e.target.value)} /> No</label>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between py-2 border-t border-slate-100">
-            <span className="text-sm text-slate-700">Ha mai avuto vertigini o capogiri? (1 pt)</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="true" {...watch('conley2') === 'true' ? {checked: true} : {}} onChange={(e) => setValue('conley2', e.target.value)} /> Sì</label>
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="false" {...watch('conley2') === 'false' ? {checked: true} : {}} onChange={(e) => setValue('conley2', e.target.value)} /> No</label>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between py-2 border-t border-slate-100">
-            <span className="text-sm text-slate-700">Perdita di urine/feci recandosi in bagno? (1 pt)</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="true" {...watch('conley3') === 'true' ? {checked: true} : {}} onChange={(e) => setValue('conley3', e.target.value)} /> Sì</label>
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="false" {...watch('conley3') === 'false' ? {checked: true} : {}} onChange={(e) => setValue('conley3', e.target.value)} /> No</label>
-            </div>
-          </div>
-
-          <h4 className="font-medium text-slate-800 border-b border-slate-100 pb-2 mb-3 mt-6">Deterioramento Cognitivo</h4>
-          
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm text-slate-700">Compromissione della marcia / instabile (1 pt)</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="true" {...watch('conley4') === 'true' ? {checked: true} : {}} onChange={(e) => setValue('conley4', e.target.value)} /> Sì</label>
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="false" {...watch('conley4') === 'false' ? {checked: true} : {}} onChange={(e) => setValue('conley4', e.target.value)} /> No</label>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between py-2 border-t border-slate-100">
-            <span className="text-sm text-slate-700">Agitato / Irrequieto (2 pt)</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="true" {...watch('conley5') === 'true' ? {checked: true} : {}} onChange={(e) => setValue('conley5', e.target.value)} /> Sì</label>
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="false" {...watch('conley5') === 'false' ? {checked: true} : {}} onChange={(e) => setValue('conley5', e.target.value)} /> No</label>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between py-2 border-t border-slate-100">
-            <span className="text-sm text-slate-700">Mancanza del senso del pericolo / deterioramento giudizio (3 pt)</span>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="true" {...watch('conley6') === 'true' ? {checked: true} : {}} onChange={(e) => setValue('conley6', e.target.value)} /> Sì</label>
-              <label className="flex items-center gap-1 text-sm"><input type="radio" value="false" {...watch('conley6') === 'false' ? {checked: true} : {}} onChange={(e) => setValue('conley6', e.target.value)} /> No</label>
-            </div>
-          </div>
+        <div className="space-y-5">
+          {(() => {
+            let lastSection: string | null = null;
+            return CONLEY_ITEMS.map((item) => {
+              const showHeader = item.section !== null && item.section !== lastSection;
+              if (item.section !== null) lastSection = item.section;
+              return (
+                <div key={item.name}>
+                  {showHeader && <p className={SUB}>{item.section}</p>}
+                  <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100 last:border-0">
+                    <span className="text-sm text-slate-700 flex-1">
+                      {item.label}
+                      <span className="ml-1.5 text-xs font-semibold text-slate-400">+{item.pts} pt</span>
+                    </span>
+                    <div className="flex gap-5 flex-shrink-0">
+                      <label className={RL}>
+                        <input type="radio" value="true"  {...register(item.name)} className={RADIO} /> Sì
+                      </label>
+                      <label className={RL}>
+                        <input type="radio" value="false" {...register(item.name)} className={RADIO} /> No
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              );
+            });
+          })()}
         </div>
       </LockableSection>
     </div>
