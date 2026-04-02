@@ -1,96 +1,107 @@
-import { LockableSection } from '../../ui/LockableSection';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/Input';
 import { Textarea } from '../../ui/Textarea';
+import { LockableSection } from '../../ui/LockableSection';
+
+const SUB     = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
+const BOX     = 'rounded-lg border border-slate-200 p-3 space-y-3';
+const RADIO   = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
+const RL      = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
 
 export default function Model11() {
-  const { watch, register } = useFormContext();
+  const { register } = useFormContext();
 
-  const religiousConflicts = watch('religiousConflicts');
-  const religiousRestrictionsModel11 = watch('religiousRestrictionsModel11');
-  const religiousAssistance = watch('religiousAssistance');
+  const religiousConflicts    = useWatch({ name: 'religiousConflicts' });
+  const religiousRestrictions = useWatch({ name: 'religiousRestrictions' });
+  const religiousAssistance   = useWatch({ name: 'religiousAssistance' });
 
   return (
-    <LockableSection title="11. Modello di Valori e Convinzioni
-        (compilare solo se pertinente)">
-      
-      <div className="space-y-6">
-        <Textarea 
-          name="lifeGoalsSatisfaction" 
-          label="Grado di soddisfazione rispetto ai progetti di vita ritenuti più importanti e al loro raggiungimento:" 
-          rows={4}
+    <LockableSection title="11. Valori e convinzioni (compilare se pertinente)">
+      <div className="space-y-5">
+
+        {/* ── Valori e progetto di vita ── */}
+        <p className={SUB}>Valori e progetto di vita</p>
+        <Textarea
+          name="lifeGoalsSatisfaction"
+          label="Grado di soddisfazione rispetto ai progetti di vita ritenuti più importanti e al loro raggiungimento"
+          rows={3}
         />
-        
-        <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-4">
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-slate-700 w-3/4">I suoi valori/credo religiosi entrano in conflitto con le scelte terapeutiche, le procedure mediche e i processi assistenziali?</span>
-            <label className="flex items-center gap-1 cursor-pointer text-sm">
-              <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('religiousConflicts')} /> No
-            </label>
-            <label className="flex items-center gap-1 cursor-pointer text-sm">
-              <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('religiousConflicts')} /> Sì
-            </label>
+        <Textarea
+          name="meaningOfIllness"
+          label="Significato attribuito alla malattia e al ricovero"
+          rows={2}
+        />
+
+        <div className={DIVIDER} />
+
+        {/* ── Religione e cultura ── */}
+        <p className={SUB}>Religione e cultura</p>
+        <div className="space-y-3">
+
+          <div className={BOX}>
+            <div className="flex items-center gap-6">
+              <span className="text-sm font-medium text-slate-700 min-w-[280px]">
+                Valori / credo religiosi in conflitto con le scelte terapeutiche o assistenziali?
+              </span>
+              <label className={RL}><input type="radio" value="false" {...register('religiousConflicts')} className={RADIO} /> No</label>
+              <label className={RL}><input type="radio" value="true"  {...register('religiousConflicts')} className={RADIO} /> Sì</label>
+            </div>
+            {religiousConflicts === 'true' && (
+              <>
+                <div className="border-t border-slate-100" />
+                <Textarea name="religiousConflictsReason" label="Descrivere il conflitto" rows={2} />
+              </>
+            )}
           </div>
-          {religiousConflicts === 'true' && <Input name="religiousConflictsReason" label="Perché" />}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+            <div className={BOX}>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-slate-700 min-w-[180px]">Restrizioni legate a religione / cultura</span>
+                <label className={RL}><input type="radio" value="false" {...register('religiousRestrictions')} className={RADIO} /> No</label>
+                <label className={RL}><input type="radio" value="true"  {...register('religiousRestrictions')} className={RADIO} /> Sì</label>
+              </div>
+              {religiousRestrictions === 'true' && (
+                <>
+                  <div className="border-t border-slate-100" />
+                  <Input name="religiousRestrictionsDetails" label="Specificare (es. alimentari, rituali...)" />
+                </>
+              )}
+            </div>
+
+            <div className={BOX}>
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium text-slate-700 min-w-[180px]">Richiesta di assistenza religiosa</span>
+                <label className={RL}><input type="radio" value="false" {...register('religiousAssistance')} className={RADIO} /> No</label>
+                <label className={RL}><input type="radio" value="true"  {...register('religiousAssistance')} className={RADIO} /> Sì</label>
+              </div>
+              {religiousAssistance === 'true' && (
+                <>
+                  <div className="border-t border-slate-100" />
+                  <Input name="religiousAssistanceDetails" label="Specificare" />
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-slate-700 w-48">Restrizioni legate alla religione/cultura:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('religiousRestrictionsModel11')} /> No
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('religiousRestrictionsModel11')} /> Sì
-              </label>
-            </div>
-            {religiousRestrictionsModel11 === 'true' && <Input name="religiousRestrictionsDetails" label="Specificare" />}
-          </div>
+        <div className={DIVIDER} />
 
-          <div className="bg-white p-4 border border-slate-200 rounded-lg space-y-3">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-slate-700 w-48">Richieste di assistenza religiosa:</span>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="false" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('religiousAssistance')} /> No
-              </label>
-              <label className="flex items-center gap-1 cursor-pointer text-sm">
-                <input type="radio" value="true" className="text-emerald-600 focus:ring-emerald-500 w-4 h-4" {...register('religiousAssistance')} /> Sì
-              </label>
-            </div>
-            {religiousAssistance === 'true' && <Input name="religiousAssistanceDetails" label="Specificare" />}
-          </div>
-        </div>
+        {/* ── Note ── */}
+        <Textarea name="model11Notes" label="Note" rows={3} />
 
-        <div className="pt-6 mt-6 border-t border-slate-200">
-          <Textarea 
-            name="model11Notes" 
-            label="Eventuali note aggiuntive sul Modello di Valori e Convinzioni" 
-            rows={3}
-          />
-          
-          <div className="mt-6 p-4 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
-            <span className="text-sm font-bold text-slate-800 uppercase tracking-wider">Valutazione Modello 11</span>
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="FUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model11Status')}
-                />
-                FUNZIONALE
+        {/* ── Status bar ── */}
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 border-emerald-600 rounded-r-lg">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Valutazione modello 11</span>
+          <div className="flex gap-6">
+            {['FUNZIONALE', 'DISFUNZIONALE'].map(v => (
+              <label key={v} className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer">
+                <input type="radio" value={v} {...register('model11Status')} className={RADIO} />
+                {v}
               </label>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 cursor-pointer hover:text-emerald-700 transition-colors">
-                <input 
-                  type="radio" 
-                  value="DISFUNZIONALE" 
-                  className="text-emerald-600 focus:ring-emerald-500 w-5 h-5 border-slate-300" 
-                  {...register('model11Status')}
-                />
-                DISFUNZIONALE
-              </label>
-            </div>
+            ))}
           </div>
         </div>
 
