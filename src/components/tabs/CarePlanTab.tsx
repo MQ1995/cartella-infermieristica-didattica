@@ -275,12 +275,12 @@ export default function CarePlanTab() {
   };
 
   const handleDrop = (toIndex: number) => {
-    if (dragIndex.current !== null && dragIndex.current !== toIndex) {
-      move(dragIndex.current, toIndex);
-      // Adjust locked rows
+    const fromIndex = dragIndex.current;
+    if (fromIndex !== null && fromIndex !== toIndex) {
+      move(fromIndex, toIndex);
       setLockedRows(prev => {
         const arr = fields.map((_, i) => prev.has(i));
-        const [item] = arr.splice(dragIndex.current!, 1);
+        const [item] = arr.splice(fromIndex, 1);
         arr.splice(toIndex, 0, item);
         return new Set(arr.map((v, i) => v ? i : -1).filter(i => i >= 0));
       });
