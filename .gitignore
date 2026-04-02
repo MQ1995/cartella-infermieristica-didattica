@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Tauri build output (very large — Rust compilation artifacts)
+src-tauri/target/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
