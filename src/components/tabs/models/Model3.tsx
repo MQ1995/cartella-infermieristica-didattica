@@ -52,8 +52,8 @@ export default function Model3() {
         {/* ══ ELIMINAZIONE URINARIA ══ */}
         <p className={SUB}>Eliminazione urinaria</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="urinationType"
               label="Minzione"
@@ -67,7 +67,7 @@ export default function Model3() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Input name="diuresis24h" label="Diuresi 24 h (ml)" type="number" />
             <div className="space-y-1">
               <span className="text-sm font-medium text-slate-700 block">Alterazione diuresi</span>
@@ -124,20 +124,18 @@ export default function Model3() {
         )}
 
         {/* Caratteristiche urine */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <Select
-              name="urineCharacteristics"
-              label="Caratteristiche delle urine"
-              options={[
-                { label: 'Nella norma',  value: 'Normali' },
-                { label: 'Alterazioni',  value: 'Alterazioni' },
-              ]}
-            />
-            {urineCharacteristics === 'Alterazioni' && (
-              <Textarea name="urineAlterationsDescription" label="Descrivere le alterazioni" rows={2} />
-            )}
-          </div>
+        <div className="rounded-lg border border-slate-200 p-3 space-y-3">
+          <Select
+            name="urineCharacteristics"
+            label="Caratteristiche delle urine"
+            options={[
+              { label: 'Nella norma',  value: 'Normali' },
+              { label: 'Alterazioni',  value: 'Alterazioni' },
+            ]}
+          />
+          {urineCharacteristics === 'Alterazioni' && (
+            <Textarea name="urineAlterationsDescription" label="Descrivere le alterazioni" rows={2} />
+          )}
         </div>
 
         {/* Presidi urinari */}
@@ -188,9 +186,11 @@ export default function Model3() {
         {/* ══ ELIMINAZIONE INTESTINALE ══ */}
         <p className={SUB}>Eliminazione intestinale</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input name="bowelFrequency"      label="Frequenza abituale" placeholder="es. 1 volta/die" />
-          <Input name="lastBowelMovement"   label="Data ultima evacuazione" type="date" />
+        <div className="rounded-lg border border-slate-200 p-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input name="bowelFrequency"    label="Frequenza abituale" placeholder="es. 1 volta/die" />
+            <Input name="lastBowelMovement" label="Data ultima evacuazione" type="date" />
+          </div>
         </div>
 
         {/* Alterazioni intestinali */}
@@ -223,23 +223,25 @@ export default function Model3() {
         </div>
 
         {/* Caratteristiche feci */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <Select
-              name="stoolCharacteristics"
-              label="Caratteristiche delle feci"
-              options={[
-                { label: 'Nella norma', value: 'Normali' },
-                { label: 'Alterazioni', value: 'Alterazioni' },
-              ]}
-            />
-            {stoolCharacteristics === 'Alterazioni' && (
-              <Input name="stoolAlterationsDetails" label="Descrivere le alterazioni" />
-            )}
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Input name="bristolScale" label="Scala Bristol (tipo)" />
-            <Input name="romaIIIScale" label="Scala Roma III" />
+        <div className="rounded-lg border border-slate-200 p-3 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="space-y-3">
+              <Select
+                name="stoolCharacteristics"
+                label="Caratteristiche delle feci"
+                options={[
+                  { label: 'Nella norma', value: 'Normali' },
+                  { label: 'Alterazioni', value: 'Alterazioni' },
+                ]}
+              />
+              {stoolCharacteristics === 'Alterazioni' && (
+                <Input name="stoolAlterationsDetails" label="Descrivere le alterazioni" />
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <Input name="bristolScale" label="Scala Bristol (tipo)" />
+              <Input name="romaIIIScale" label="Scala Roma III" />
+            </div>
           </div>
         </div>
 
