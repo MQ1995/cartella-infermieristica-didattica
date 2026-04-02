@@ -1,4 +1,4 @@
-import { useFormContext, useFieldArray } from 'react-hook-form';
+import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Textarea } from '../ui/Textarea';
@@ -6,150 +6,205 @@ import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { LockableSection } from '../ui/LockableSection';
 
-export default function InitialAssessmentSection() {
-  const { control, watch } = useFormContext();
-  const { fields, append, remove } = useFieldArray({ control, name: 'pastMedicalHistory' });
+const SUB = 'text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3';
+const DIVIDER = 'border-t border-slate-200 my-5';
 
-  const admissionType = watch('admissionType');
-  const origin = watch('origin');
-  const dataSource = watch('dataSource');
+// ── Presa in carico ───────────────────────────────────────────────────────────
+
+function PrisaInCaricoSection() {
+  return (
+    <LockableSection title="Presa in carico">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Input name="careStartDate" label="Inizio presa in carico" type="date" />
+        <Input name="careEndDate" label="Fine presa in carico" type="date" />
+        <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
+      </div>
+    </LockableSection>
+  );
+}
+
+// ── Paziente e ricovero ───────────────────────────────────────────────────────
+
+function PatientAndAdmissionSection() {
+  const admissionType = useWatch({ name: 'admissionType' });
+  const origin        = useWatch({ name: 'origin' });
 
   return (
-    <div className="space-y-8">
+    <LockableSection title="Persona assistita e ricovero">
 
-      <LockableSection title="Accertamento infermieristico iniziale">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Giornate di presa in carico</label>
-            <div className="flex gap-2 items-center">
-              <div className="flex-1"><Input name="careStartDate" label="Da" type="date" /></div>
-              <div className="flex-1"><Input name="careEndDate" label="A" type="date" /></div>
-            </div>
-          </div>
-          <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
-        </div>
-      </LockableSection>
+      {/* Dati anagrafici */}
+      <p className={SUB}>Dati anagrafici</p>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <Select
+          name="patientGender"
+          label="Genere"
+          options={[
+            { label: 'Maschile',  value: 'M' },
+            { label: 'Femminile', value: 'F' },
+            { label: 'Altro',     value: 'Altro' },
+          ]}
+        />
+        <Input name="patientAge"    label="Età"            type="number" />
+        <Input name="nationality"   label="Nazionalità"    />
+        <Input name="patientLanguage" label="Lingua parlata" />
+        <Select
+          name="maritalStatus"
+          label="Stato civile"
+          options={[
+            { label: 'Nubile / Celibe',        value: 'Celibe' },
+            { label: 'Coniugato/a',             value: 'Coniugato' },
+            { label: 'Separato/a – Divorziato/a', value: 'Separato' },
+            { label: 'Vedovo/a',                value: 'Vedovo' },
+          ]}
+        />
+        <Input name="referencePerson" label="Persona di riferimento (grado parentela)" />
+      </div>
 
-      <LockableSection title="Dati persona assistita e ricovero">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Select
-            name="patientGender"
-            label="Genere"
-            options={[
-              { label: 'Maschile', value: 'M' },
-              { label: 'Femminile', value: 'F' },
-              { label: 'Altro', value: 'Altro' }
-            ]}
-          />
-          <Input name="patientAge" label="Età" type="number" />
-          <Input name="nationality" label="Nazionalità" />
-          <Input name="patientLanguage" label="Lingua parlata" />
-          <Select
-            name="maritalStatus"
-            label="Stato civile"
-            options={[
-              { label: 'Nubile/Celibe', value: 'Celibe' },
-              { label: 'Coniugato/a', value: 'Coniugato' },
-              { label: 'Separato/Divorziato', value: 'Separato' },
-              { label: 'Vedovo/a', value: 'Vedovo' }
-            ]}
-          />
-          <Input name="referencePerson" label="Persona di riferimento (grado parentela)" />
-        </div>
+      <div className={DIVIDER} />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-          <Input name="admissionDate" label="Data e ora di ricovero" type="datetime-local" />
-          <Select
-            name="admissionType"
-            label="Tipo di ricovero"
-            options={[
-              { label: 'programmato', value: 'Programmato' },
-              { label: 'urgente', value: 'Urgente' },
-              { label: 'TSO', value: 'TSO' },
-              { label: 'trasferimento interno', value: 'Trasferimento interno' }
-            ]}
-          />
-          {admissionType === 'Trasferimento interno' && (
-            <Input name="admissionTransferFrom" label="da (specificare)" placeholder="es. Pronto Soccorso" />
-          )}
-          <Select
-            name="origin"
-            label="Trasferimento da"
-            options={[
-              { label: 'Casa', value: 'Casa' },
-              { label: 'Altro ente', value: 'Altro ente' },
-            ]}
-          />
-          {origin === 'Altro ente' && (
-            <Input name="originOther" label="Specificare ente" placeholder="es. Casa di cura, RSA..." />
-          )}
-          <Select
-            name="arrivalMode"
-            label="Modalità di arrivo"
-            options={[
-              { label: 'a piedi', value: 'Piedi' },
-              { label: 'sedia a rotelle', value: 'Carrozzina' },
-              { label: 'barella', value: 'Barella' }
-            ]}
-          />
-        </div>
-
-        <div className="space-y-4 mt-4">
-          <Input name="medicalDiagnosis" label="Diagnosi medica di ingresso" className="w-full" />
-          <Textarea name="admissionReason" label="Motivo del ricovero (descrizione delle circostanze che hanno causato il ricovero)" rows={3} />
-        </div>
-      </LockableSection>
-
-      <LockableSection
-        title="Anamnesi patologica remota e ricoveri pregressi"
-        headerAction={
-          <button
-            type="button"
-            onClick={() => append({ date: '', pathology: '' })}
-            className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors"
-          >
-            <Plus size={16} /> Aggiungi riga
-          </button>
-        }
-      >
-        {fields.length === 0 ? (
-          <div className="text-sm text-slate-500 italic p-4 bg-white border border-slate-200 rounded-lg text-center">
-            Nessuna anamnesi pregressa inserita. Clicca "Aggiungi Riga" per iniziare.
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <div className="grid grid-cols-[150px_1fr_40px] gap-2 mb-2 font-medium text-slate-700 text-sm px-2">
-              <div>Data / Anno</div>
-              <div>Patologia / Ricoveri Pregressi</div>
-              <div className="print:hidden" />
-            </div>
-            {fields.map((field, index) => (
-              <div key={field.id} className="grid grid-cols-[150px_1fr_auto] gap-2 items-center bg-white border border-slate-200 p-2 rounded-md">
-                <Input name={`pastMedicalHistory.${index}.date`} label="" placeholder="Anno/Data" />
-                <Input name={`pastMedicalHistory.${index}.pathology`} label="" placeholder="Descrizione" />
-                <ConfirmDeleteButton onConfirm={() => remove(index)} size={18} />
-              </div>
-            ))}
-          </div>
+      {/* Ricovero */}
+      <p className={SUB}>Dati di ricovero</p>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <Input name="admissionDate" label="Data e ora di ricovero" type="datetime-local" />
+        <Select
+          name="admissionType"
+          label="Tipo di ricovero"
+          options={[
+            { label: 'Programmato',         value: 'Programmato' },
+            { label: 'Urgente',             value: 'Urgente' },
+            { label: 'TSO',                 value: 'TSO' },
+            { label: 'Trasferimento interno', value: 'Trasferimento interno' },
+          ]}
+        />
+        {admissionType === 'Trasferimento interno' && (
+          <Input name="admissionTransferFrom" label="Trasferito da" placeholder="es. Pronto Soccorso, TI" />
         )}
+        <Select
+          name="origin"
+          label="Provenienza"
+          options={[
+            { label: 'Domicilio',      value: 'Domicilio' },
+            { label: 'Pronto Soccorso', value: 'Pronto Soccorso' },
+            { label: 'RSA / Casa di cura', value: 'RSA' },
+            { label: 'Altro ente',     value: 'Altro ente' },
+          ]}
+        />
+        {origin === 'Altro ente' && (
+          <Input name="originOther" label="Specificare ente" placeholder="es. struttura riabilitativa" />
+        )}
+        <Select
+          name="arrivalMode"
+          label="Modalità di arrivo"
+          options={[
+            { label: 'A piedi',             value: 'Piedi' },
+            { label: 'Sedia a rotelle',     value: 'Carrozzina' },
+            { label: 'Barella / lettino',   value: 'Barella' },
+          ]}
+        />
+      </div>
 
-        <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-4 items-end">
-          <Select
-            name="dataSource"
-            label="I dati sono stati forniti:"
-            className="w-full md:max-w-md"
-            options={[
-              { label: 'dalla persona ricoverata', value: 'Paziente' },
-              { label: 'parenti/accompagnatori', value: 'Parenti' },
-              { label: 'altro (specificare)', value: 'Altro' }
-            ]}
-          />
-          {dataSource === 'Altro' && (
-            <Input name="dataSourceOther" label="Specificare fonte" className="flex-1 min-w-[200px]" />
-          )}
+      <div className={DIVIDER} />
+
+      {/* Diagnosi e motivo */}
+      <p className={SUB}>Diagnosi e motivo del ricovero</p>
+      <div className="space-y-4">
+        <Input name="medicalDiagnosis" label="Diagnosi medica di ingresso" />
+        <Textarea
+          name="admissionReason"
+          label="Motivo del ricovero (circostanze che hanno determinato il ricovero)"
+          rows={3}
+        />
+      </div>
+
+    </LockableSection>
+  );
+}
+
+// ── Anamnesi ──────────────────────────────────────────────────────────────────
+
+function AnamnesisSection() {
+  const { control } = useFormContext();
+  const { fields, append, remove } = useFieldArray({ control, name: 'pastMedicalHistory' });
+  const dataSource = useWatch({ name: 'dataSource' });
+
+  return (
+    <LockableSection
+      title="Anamnesi patologica remota e ricoveri pregressi"
+      headerAction={
+        <button
+          type="button"
+          onClick={() => append({ date: '', pathology: '' })}
+          className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors"
+        >
+          <Plus size={16} /> Aggiungi riga
+        </button>
+      }
+    >
+      {fields.length === 0 ? (
+        <div className="text-sm text-slate-500 italic p-5 bg-white border border-slate-200 rounded-lg text-center print:hidden">
+          Nessuna anamnesi inserita. Clicca "Aggiungi riga" per iniziare.
         </div>
-      </LockableSection>
+      ) : (
+        <div className="overflow-hidden rounded-lg border border-slate-200">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200 text-slate-600">
+                <th className="px-3 py-2 text-left font-semibold w-36">Anno / Data</th>
+                <th className="px-3 py-2 text-left font-semibold">Patologia / ricovero pregresso</th>
+                <th className="px-3 py-2 print:hidden w-10" />
+              </tr>
+            </thead>
+            <tbody>
+              {fields.map((field, index) => (
+                <tr key={field.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 align-middle">
+                  <td className="px-2 py-1.5">
+                    <Input name={`pastMedicalHistory.${index}.date`} label="" placeholder="es. 2018" />
+                  </td>
+                  <td className="px-2 py-1.5">
+                    <Input name={`pastMedicalHistory.${index}.pathology`} label="" placeholder="es. Appendicectomia, ipertensione arteriosa" />
+                  </td>
+                  <td className="px-2 py-1.5 print:hidden">
+                    <ConfirmDeleteButton onConfirm={() => remove(index)} size={16} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
+      <div className={DIVIDER} />
+
+      {/* Fonte dati */}
+      <p className={SUB}>Fonte dei dati</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+        <Select
+          name="dataSource"
+          label="I dati sono stati forniti da:"
+          options={[
+            { label: 'Persona ricoverata',        value: 'Paziente' },
+            { label: 'Parenti / accompagnatori',  value: 'Parenti' },
+            { label: 'Documentazione clinica',    value: 'Documentazione' },
+            { label: 'Altro (specificare)',        value: 'Altro' },
+          ]}
+        />
+        {dataSource === 'Altro' && (
+          <Input name="dataSourceOther" label="Specificare fonte" />
+        )}
+      </div>
+
+    </LockableSection>
+  );
+}
+
+// ── Main export ───────────────────────────────────────────────────────────────
+
+export default function InitialAssessmentSection() {
+  return (
+    <div className="space-y-6">
+      <PrisaInCaricoSection />
+      <PatientAndAdmissionSection />
+      <AnamnesisSection />
     </div>
   );
 }
