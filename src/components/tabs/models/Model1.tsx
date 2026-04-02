@@ -58,20 +58,20 @@ export default function Model1() {
 
         {/* ── Fattori di rischio ── */}
         <p className={SUB}>Fattori di rischio</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="alcoholConsumption" label="Consumo di alcool" />
             {alcoholConsumption && (
               <Input name="alcoholDetails" label="Specificare (tipo e quantità)" />
             )}
           </div>
-          <div className="space-y-2">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="smoking" label="Fumo" />
             {smoking && (
               <Input name="smokingDetails" label="Specificare (tipo e quantità)" />
             )}
           </div>
-          <div className="space-y-2">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="allergies" label="Allergie note" />
             {allergies && (
               <Input name="allergyDetails" label="Specificare (farmaci, alimenti, altro)" />
@@ -132,22 +132,24 @@ export default function Model1() {
 
         {/* ── Rischio caduta ── */}
         <p className={SUB}>Valutazione rischio caduta</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-          <div className="space-y-1">
-            <span className="text-sm font-medium text-slate-700">Paziente a rischio caduta</span>
-            <div className="flex items-center gap-4 pt-1">
-              <label className="flex items-center gap-1.5 cursor-pointer text-sm text-slate-700">
-                <input type="radio" value="true"  {...register('fallRisk')} className="w-4 h-4 text-emerald-600 focus:ring-emerald-500" /> Sì
-              </label>
-              <label className="flex items-center gap-1.5 cursor-pointer text-sm text-slate-700">
-                <input type="radio" value="false" {...register('fallRisk')} className="w-4 h-4 text-emerald-600 focus:ring-emerald-500" /> No
-              </label>
+        <div className="rounded-lg border border-slate-200 p-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-slate-700">Paziente a rischio caduta</span>
+              <div className="flex items-center gap-4 pt-1">
+                <label className="flex items-center gap-1.5 cursor-pointer text-sm text-slate-700">
+                  <input type="radio" value="true"  {...register('fallRisk')} className="w-4 h-4 text-emerald-600 focus:ring-emerald-500" /> Sì
+                </label>
+                <label className="flex items-center gap-1.5 cursor-pointer text-sm text-slate-700">
+                  <input type="radio" value="false" {...register('fallRisk')} className="w-4 h-4 text-emerald-600 focus:ring-emerald-500" /> No
+                </label>
+              </div>
             </div>
+            <Input name="fallRiskScaleUsed" label="Scala utilizzata" placeholder="es. Conley, Morse, Hendrich II" />
+            {isFallRisk && (
+              <Input name="conleyScore" label="Punteggio" type="number" placeholder="es. 3" />
+            )}
           </div>
-          <Input name="fallRiskScaleUsed" label="Scala utilizzata" placeholder="es. Conley, Morse, Hendrich II" />
-          {isFallRisk && (
-            <Input name="conleyScore" label="Punteggio" type="number" placeholder="es. 3" />
-          )}
         </div>
 
         <div className={DIVIDER} />

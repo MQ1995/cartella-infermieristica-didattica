@@ -47,8 +47,8 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="weightChange"
               label="Variazione di peso negli ultimi 3–6 mesi"
@@ -63,7 +63,7 @@ export default function Model2() {
             )}
           </div>
 
-          <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="appetite"
               label="Appetito"
@@ -131,8 +131,8 @@ export default function Model2() {
 
         {/* ── 3. Dentatura, deglutizione e nutrizione ── */}
         <p className={SUB}>Dentatura, deglutizione e nutrizione artificiale</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="dentition"
               label="Dentatura"
@@ -147,7 +147,7 @@ export default function Model2() {
               <Input name="dentitionProsthesisType" label="Tipo di protesi" />
             )}
           </div>
-          <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="swallowing"
               label="Deglutizione"
@@ -170,8 +170,8 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="enteralNutrition"
               label="Nutrizione enterale"
@@ -189,7 +189,7 @@ export default function Model2() {
               </div>
             )}
           </div>
-          <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="parenteralNutrition"
               label="Nutrizione parenterale"
@@ -207,8 +207,8 @@ export default function Model2() {
 
         {/* ── 4. Stato dei tessuti e cute ── */}
         <p className={SUB}>Stato dei tessuti e cute</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="skinTemperature"
               label="Temperatura cutanea"
@@ -221,7 +221,7 @@ export default function Model2() {
             {skinTemperature === 'Freddo' && <Input name="skinColdLocation" label="Sede" />}
             {skinTemperature === 'Caldo'  && <Input name="skinWarmLocation" label="Sede" />}
           </div>
-          <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="skinColor"
               label="Colorito cutaneo"
@@ -235,7 +235,7 @@ export default function Model2() {
             />
             {skinColor === 'Altro' && <Input name="skinColorOther" label="Specificare" />}
           </div>
-          <div className="space-y-3">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="skinTurgor"
               label="Turgore cutaneo"
@@ -256,16 +256,16 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="itching" label="Prurito" />
             {itching && <Input name="itchingLocation" label="Sede" />}
           </div>
-          <div className="space-y-2">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="erythema" label="Eritema" />
             {erythema && <Input name="erythemaLocation" label="Sede" />}
           </div>
-          <div className="space-y-2">
+          <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="edema" label="Edema" />
             {edema && (
               <div className="grid grid-cols-2 gap-2">
@@ -276,9 +276,11 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-          <Input name="tc"                       label="TC — sede e misurazione" />
-          <Input name="skinAppendagesAlterations" label="Alterazioni annessi cutanei (unghie, capelli)" />
+        <div className="rounded-lg border border-slate-200 p-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Input name="tc"                       label="TC — sede e misurazione" />
+            <Input name="skinAppendagesAlterations" label="Alterazioni annessi cutanei (unghie, capelli)" />
+          </div>
         </div>
 
         {/* Accessi vascolari */}
