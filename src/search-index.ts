@@ -1,4 +1,4 @@
-export type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'diary' | 'medications' | 'devices' | 'careplan';
+export type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'diary' | 'medications' | 'devices' | 'careplan' | 'procedures';
 export type AssessmentSubTab = 'initial' | 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6' | 'model7' | 'model8' | 'model9' | 'model10' | 'model11';
 
 export interface SearchEntry {
@@ -185,6 +185,13 @@ export const SEARCH_INDEX: SearchEntry[] = [
     tab: 'scales',
     keywords: ['nrs', 'dolore', 'intensità dolore', 'numeric rating scale', 'vas', 'scala analogica', 'dolore acuto', 'dolore cronico'],
   },
+  {
+    id: 'scales-bristol',
+    label: 'Scala di Bristol — Caratteristiche delle Feci',
+    breadcrumb: 'Scale Valutazione',
+    tab: 'scales',
+    keywords: ['bristol', 'feci', 'defecazione', 'stitichezza', 'diarrea', 'stipsi', 'alvo', 'evacuazione', 'bristol stool scale', 'consistenza feci'],
+  },
 
   // ── Monitoraggio ────────────────────────────────────────────────────────
   {
@@ -250,6 +257,29 @@ export const SEARCH_INDEX: SearchEntry[] = [
     breadcrumb: 'Piano Assistenza',
     tab: 'careplan',
     keywords: ['piano assistenza', 'pes', 'diagnosi infermieristica', 'obiettivi', 'interventi', 'valutazione', 'problema', 'eziologia', 'segni e sintomi', 'priorità', 'dimissione', 'fine presa in carico'],
+  },
+
+  // ── Procedure Speciali ───────────────────────────────────────────────────
+  {
+    id: 'procedures-endoscopia',
+    label: 'Scheda Endoscopia',
+    breadcrumb: 'Procedure Speciali',
+    tab: 'procedures',
+    keywords: ['endoscopia', 'egds', 'gastroscopia', 'colonscopia', 'broncoscopia', 'rss', 'endoscopio', 'sedazione', 'preparazione intestinale', 'consenso', 'digiuno', 'profilassi antibiotica'],
+  },
+  {
+    id: 'procedures-dialisi',
+    label: 'Scheda Dialisi',
+    breadcrumb: 'Procedure Speciali',
+    tab: 'procedures',
+    keywords: ['dialisi', 'emodialisi', 'dialisi peritoneale', 'fistola', 'cvc', 'ultrafiltrazione', 'emofiltrazione', 'emodiafiltrazione', 'bicarbonato', 'peso secco', 'accesso vascolare', 'seduta dialitica', 'qb', 'qd'],
+  },
+  {
+    id: 'procedures-blocco',
+    label: 'Scheda Blocco Operatorio',
+    breadcrumb: 'Procedure Speciali',
+    tab: 'procedures',
+    keywords: ['blocco operatorio', 'sala operatoria', 'intervento chirurgico', 'anestesia', 'spinale', 'peridurale', 'intubazione', 'tubo orotracheale', 'maschera laringea', 'decubito', 'emotrasfusione', 'garze', 'drenaggi', 'fili epicardici', 'referto operatorio'],
   },
 ];
 

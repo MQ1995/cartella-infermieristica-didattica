@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
-import { Plus, ChevronDown, ChevronUp, Lock, LockOpen } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Input } from '../ui/Input';
 import { InfoTooltip } from '../ui/InfoTooltip';
@@ -78,16 +80,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
         </div>
 
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca giornata' : 'Blocca giornata'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} title={locked ? 'Sblocca giornata' : 'Blocca giornata'} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -175,13 +168,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
 export default function FluidBalanceSection() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'fluidBalanceDays' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
-
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev);
-    next.has(i) ? next.delete(i) : next.add(i);
-    return next;
-  });
+  const { toggleLock, isLocked } = useRowLocks();
 
   const addDay = () => {
     const today = new Date().toISOString().slice(0, 10);
@@ -216,7 +203,7 @@ export default function FluidBalanceSection() {
               key={field.id}
               index={index}
               onRemove={() => remove(index)}
-              locked={lockedRows.has(index)}
+              locked={isLocked(index)}
               onToggleLock={() => toggleLock(index)}
             />
           ))}

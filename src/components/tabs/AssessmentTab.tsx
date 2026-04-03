@@ -1,4 +1,4 @@
-import { ClipboardList, Heart, Utensils, Toilet, Dumbbell, BedDouble, Brain, MirrorRound, Users, VenusAndMars, Anchor, Church } from 'lucide-react';
+import { ClipboardList, Heart, Utensils, Toilet, Dumbbell, BedDouble, Brain, MirrorRound, Users, VenusAndMars, Anchor, Church, ChevronLeft, ChevronRight } from 'lucide-react';
 import InitialAssessmentSection from './InitialAssessmentSection';
 import Model1 from './models/Model1';
 import Model2 from './models/Model2';
@@ -40,16 +40,16 @@ export default function AssessmentTab({ activeSubTab, setActiveSubTab }: Props) 
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
-      <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2 print:hidden">
+      <div className="flex flex-wrap gap-1 bg-slate-100 rounded-lg p-1 w-fit print:hidden">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={(e) => { e.preventDefault(); setActiveSubTab(tab.id); }}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-t-lg font-medium text-sm transition-colors border-b-2 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
               activeSubTab === tab.id
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-600'
-                : 'text-slate-500 border-transparent hover:bg-slate-50 hover:text-slate-700'
+                ? 'bg-white text-emerald-700 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
             }`}
           >
             {tab.icon}{tab.label}
@@ -97,6 +97,38 @@ export default function AssessmentTab({ activeSubTab, setActiveSubTab }: Props) 
 
         </div>
       </div>
+
+      {/* Navigation buttons */}
+      {(() => {
+        const ids = tabs.map(t => t.id);
+        const currentIndex = ids.indexOf(activeSubTab);
+        const prev = currentIndex > 0 ? tabs[currentIndex - 1] : null;
+        const next = currentIndex < ids.length - 1 ? tabs[currentIndex + 1] : null;
+        return (
+          <div className="flex justify-between items-center pt-6 border-t border-slate-200 mt-6 print:hidden">
+            {prev ? (
+              <button
+                type="button"
+                onClick={() => setActiveSubTab(prev.id)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+              >
+                <ChevronLeft size={16} />
+                <span className="flex items-center gap-1.5">{prev.icon}{prev.label}</span>
+              </button>
+            ) : <div />}
+            {next && (
+              <button
+                type="button"
+                onClick={() => setActiveSubTab(next.id)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+              >
+                <span className="flex items-center gap-1.5">{next.icon}{next.label}</span>
+                <ChevronRight size={16} />
+              </button>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }

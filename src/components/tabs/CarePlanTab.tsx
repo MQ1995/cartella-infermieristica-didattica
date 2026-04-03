@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
-import { Plus, ChevronDown, ChevronUp, Lock, LockOpen, GripVertical } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { Textarea } from '../ui/Textarea';
 import { Input } from '../ui/Input';
@@ -39,7 +41,27 @@ const PRIORITY_NUMBER: Record<string, string> = {
 };
 
 const LABEL = 'text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block';
-const TA = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default';
+const TA = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]';
+
+function ETextarea({ name, rows, placeholder }: { name: string; rows?: number; placeholder?: string }) {
+  const { register } = useFormContext();
+  const value = useWatch({ name });
+  const isEmpty = value === '' || value === null || value === undefined;
+  return (
+    <div className="relative">
+      <textarea
+        {...register(name)}
+        rows={rows}
+        placeholder={placeholder}
+        data-empty={isEmpty ? '' : undefined}
+        className={TA}
+      />
+      {isEmpty && (
+        <span className="field-empty-dash absolute top-2 left-3 text-sm text-slate-300 pointer-events-none opacity-0 print:hidden">—</span>
+      )}
+    </div>
+  );
+}
 
 function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOver, onDrop, isDraggingOver, isDragging }: {
   index: number;
@@ -72,7 +94,7 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
       className={`border rounded-xl overflow-hidden transition-all ${
         isDragging     ? 'opacity-40 scale-[0.98] border-slate-300 shadow-lg rotate-1' :
         isDraggingOver ? 'border-emerald-400 ring-2 ring-emerald-200' :
-        locked         ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+        locked         ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
       }`}
     >
       {/* Header */}
@@ -119,16 +141,7 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
 
         {/* Actions */}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -138,7 +151,7 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-5">
 
             {/* Priorità */}
@@ -175,22 +188,20 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
             {/* 1 — Diagnosi / problema PES */}
             <div>
               <label className={LABEL}>Problema / diagnosi infermieristica (PES)</label>
-              <textarea
-                {...register(`${prefix}.problem`)}
+              <ETextarea
+                name={`${prefix}.problem`}
                 rows={3}
                 placeholder="Es. Dolore acuto correlato a intervento chirurgico come evidenziato da..."
-                className={TA}
               />
             </div>
 
             {/* 2 — Obiettivi */}
             <div>
               <label className={LABEL}>Obiettivi (SMART)</label>
-              <textarea
-                {...register(`${prefix}.objective`)}
+              <ETextarea
+                name={`${prefix}.objective`}
                 rows={2}
                 placeholder="Es. Il paziente riferirà un dolore ≤ 3/10 NRS entro 24 h dalla somministrazione analgesica."
-                className={TA}
               />
             </div>
 
@@ -198,20 +209,18 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className={LABEL}>Interventi pianificati</label>
-                <textarea
-                  {...register(`${prefix}.plannedInterventions`)}
+                <ETextarea
+                  name={`${prefix}.plannedInterventions`}
                   rows={5}
                   placeholder={"• Monitoraggio del dolore ogni 4 h (NRS)\n• Somministrazione analgesici prescritti\n• Posizionamento antalgico\n• Educazione al paziente"}
-                  className={TA}
                 />
               </div>
               <div>
                 <label className={LABEL}>Interventi attuati</label>
-                <textarea
-                  {...register(`${prefix}.implementedInterventions`)}
+                <ETextarea
+                  name={`${prefix}.implementedInterventions`}
                   rows={5}
                   placeholder={"gg/mm/aa 08:00 — Monitoraggio NRS: 6/10\ngg/mm/aa 08:15 — Somministrato paracetamolo 1 g EV\ngg/mm/aa 10:00 — NRS rivalutato: 3/10"}
-                  className={TA}
                 />
               </div>
             </div>
@@ -220,18 +229,18 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
               <div className="md:col-span-2">
                 <label className={LABEL}>Valutazione e rivalutazione</label>
-                <textarea
-                  {...register(`${prefix}.evaluation`)}
+                <ETextarea
+                  name={`${prefix}.evaluation`}
                   rows={3}
                   placeholder="gg/mm/aa 12:00 — Obiettivo raggiunto. Dolore stabile a 2/10 NRS. Piano mantenuto."
-                  className={TA}
                 />
               </div>
               <div>
                 <label className={LABEL}>Stato del problema</label>
                 <select
                   {...register(`${prefix}.status`)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!status ? '' : undefined}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
                 >
                   {STATUS_OPTIONS.map(o => (
                     <option key={o.value} value={o.value}>{o.label}</option>
@@ -250,14 +259,10 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
 export default function CarePlanTab() {
   const { control } = useFormContext();
   const { fields, append, remove, move } = useFieldArray({ control, name: 'carePlans' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
+  const { toggleLock, isLocked, remapLocks } = useRowLocks();
   const dragIndex = useRef<number | null>(null);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
 
   const addProblem = () => append({
     problem: '', objective: '', plannedInterventions: '',
@@ -278,12 +283,7 @@ export default function CarePlanTab() {
     const fromIndex = dragIndex.current;
     if (fromIndex !== null && fromIndex !== toIndex) {
       move(fromIndex, toIndex);
-      setLockedRows(prev => {
-        const arr = fields.map((_, i) => prev.has(i));
-        const [item] = arr.splice(fromIndex, 1);
-        arr.splice(toIndex, 0, item);
-        return new Set(arr.map((v, i) => v ? i : -1).filter(i => i >= 0));
-      });
+      remapLocks(fromIndex, toIndex, fields.length);
     }
     dragIndex.current = null;
     setDraggingIndex(null);
@@ -322,7 +322,7 @@ export default function CarePlanTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => remove(index)}
-                locked={lockedRows.has(index)}
+                locked={isLocked(index)}
                 onToggleLock={() => toggleLock(index)}
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={(e) => handleDragOver(e, index)}

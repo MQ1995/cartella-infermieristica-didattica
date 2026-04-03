@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useFormContext, useFieldArray, useWatch } from 'react-hook-form';
-import { Plus, ChevronDown, ChevronUp, Lock, LockOpen, AlertTriangle } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 
 function DayEntry({ index, onRemove, locked, onToggleLock }: {
   index: number;
@@ -31,7 +33,7 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700 text-sm">{formatDate(date)}</span>
             {newProblems && (
-              <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-full">
+              <span className="flex items-center gap-1 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
                 <AlertTriangle size={10} /> Nuovi problemi
               </span>
             )}
@@ -42,16 +44,7 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
         </div>
 
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca giornata' : 'Blocca giornata'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} title={locked ? 'Sblocca giornata' : 'Blocca giornata'} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -61,14 +54,15 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
 
       {/* Expanded content */}
       {expanded && (
-        <div className={`border-t border-slate-200 bg-slate-50 p-4 space-y-4 ${locked ? 'opacity-60' : ''}`}>
-          <fieldset disabled={locked} className={locked ? 'pointer-events-none' : ''}>
+        <div className="border-t border-slate-200 bg-slate-50 p-4 space-y-4">
+          <fieldset disabled={locked} className={locked ? 'cursor-not-allowed select-none' : ''}>
             <div className="flex flex-col space-y-1 mb-4">
               <label className="text-sm font-medium text-slate-700">Data</label>
               <input
                 {...register(`${prefix}.date`)}
                 type="date"
-                className="w-40 px-3 py-2 bg-white border border-slate-300 rounded-md text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-transparent disabled:border-transparent disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
+                data-empty={!date ? '' : undefined}
+                className="w-40 px-3 py-2 bg-white border border-slate-300 rounded-md text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 disabled:bg-transparent disabled:border-transparent disabled:[-webkit-text-fill-color:theme(colors.slate.800)] disabled:cursor-not-allowed"
               />
             </div>
 
@@ -104,13 +98,7 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
 export default function DailyAssessmentTab() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'dailyAssessments' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
-
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev);
-    next.has(i) ? next.delete(i) : next.add(i);
-    return next;
-  });
+  const { toggleLock, isLocked } = useRowLocks();
 
   const addDay = () => {
     append({ date: new Date().toISOString().slice(0, 10), notes: '', newProblems: '' });
@@ -142,7 +130,7 @@ export default function DailyAssessmentTab() {
               key={field.id}
               index={index}
               onRemove={() => remove(index)}
-              locked={lockedRows.has(index)}
+              locked={isLocked(index)}
               onToggleLock={() => toggleLock(index)}
             />
           ))}

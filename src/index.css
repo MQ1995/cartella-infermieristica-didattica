@@ -21,6 +21,41 @@
   }
 }
 
+/* Locked fieldset: keep text readable (override browser disabled greying) */
+fieldset:disabled input,
+fieldset:disabled textarea,
+fieldset:disabled select {
+  color: #1e293b;
+  -webkit-text-fill-color: #1e293b;
+}
+
+/* Locked fieldset, empty field: hide placeholder (dash will show instead) */
+fieldset:disabled input[data-empty]::placeholder,
+fieldset:disabled textarea[data-empty]::placeholder {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* date/time/datetime-local: browser renders the format hint (gg/mm/aaaa) as text, not ::placeholder.
+   Use data-empty on the element (set via JS) to hide it — works for both fieldset and direct disabled. */
+input[type="date"][data-empty]:disabled,
+input[type="time"][data-empty]:disabled,
+input[type="datetime-local"][data-empty]:disabled {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Locked fieldset, empty select: hide "Seleziona..." text */
+fieldset:disabled select[data-empty] {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Show the "—" dash only when inside a locked fieldset */
+fieldset:disabled .field-empty-dash {
+  opacity: 1;
+}
+
 /* CSS Custom Highlight API — search result highlight */
 ::highlight(search-result) {
   background-color: #fef08a;

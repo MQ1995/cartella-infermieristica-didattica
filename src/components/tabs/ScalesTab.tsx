@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useFormContext, useWatch, useFieldArray } from 'react-hook-form';
-import { Plus, ChevronDown, ChevronUp, Lock, LockOpen } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 import { InfoTooltip } from '../ui/InfoTooltip';
 
 const RADIO = 'w-4 h-4 text-emerald-600 focus:ring-emerald-500';
@@ -126,7 +128,7 @@ function BradenCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -152,16 +154,7 @@ function BradenCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -171,7 +164,7 @@ function BradenCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data */}
@@ -180,7 +173,8 @@ function BradenCard({ index, onRemove, locked, onToggleLock }: {
               <input
                 type="date"
                 {...register(`${prefix}.date`)}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                data-empty={!date ? '' : undefined}
+                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
               />
             </div>
 
@@ -286,7 +280,7 @@ function ConleyCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -311,16 +305,7 @@ function ConleyCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -330,7 +315,7 @@ function ConleyCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-5">
 
             {/* Data */}
@@ -339,7 +324,8 @@ function ConleyCard({ index, onRemove, locked, onToggleLock }: {
               <input
                 type="date"
                 {...register(`${prefix}.date`)}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                data-empty={!date ? '' : undefined}
+                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
               />
             </div>
 
@@ -538,7 +524,7 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -559,16 +545,7 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -578,7 +555,7 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data */}
@@ -587,7 +564,8 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
               <input
                 type="date"
                 {...register(`${prefix}.date`)}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                data-empty={!date ? '' : undefined}
+                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
               />
             </div>
 
@@ -794,6 +772,140 @@ function nrsColor(value: string)  { return NRS_LEVELS.find(l => l.value === valu
 function nrsLabel(value: string)  { return NRS_LEVELS.find(l => l.value === value)?.label ?? ''; }
 
 
+// ─────────────────────────────────────────────
+// Bristol Stool Scale
+// ─────────────────────────────────────────────
+
+const BRISTOL_TYPES = [
+  { type: '1', label: 'Tipo 1', desc: 'Palline separate e dure (difficoltà di espulsione)' },
+  { type: '2', label: 'Tipo 2', desc: 'A forma di salsiccia, grumosa' },
+  { type: '3', label: 'Tipo 3', desc: 'A forma di salsiccia con crepe sulla superficie' },
+  { type: '4', label: 'Tipo 4', desc: 'A forma di salsiccia, liscia e morbida' },
+  { type: '5', label: 'Tipo 5', desc: 'Fiocchi morbidi con bordi netti, facili da evacuare' },
+  { type: '6', label: 'Tipo 6', desc: 'Pezzi soffici con bordi irregolari, feci pastose' },
+  { type: '7', label: 'Tipo 7', desc: 'Acquosa, nessun pezzo solido, completamente liquida' },
+];
+
+function BristolCard({ index, onRemove, locked, onToggleLock }: {
+  index: number;
+  onRemove: () => void;
+  locked: boolean;
+  onToggleLock: () => void;
+}) {
+  const [expanded, setExpanded] = useState(true);
+  const { register, setValue: setVal } = useFormContext();
+  const prefix = `bristolEvaluations.${index}`;
+
+  const date     = useWatch({ name: `${prefix}.date` });
+  const time     = useWatch({ name: `${prefix}.time` }) as string | undefined;
+  const typeVal  = useWatch({ name: `${prefix}.type` }) as string;
+
+  const dateLabel = date
+    ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
+    : `Valutazione ${index + 1}`;
+
+  const selected = BRISTOL_TYPES.find(t => t.type === typeVal);
+
+  return (
+    <div className={`border rounded-xl overflow-hidden transition-all ${
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
+    }`}>
+      {/* Header */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
+        onClick={() => setExpanded(e => !e)}
+      >
+        <div className="flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border bg-slate-100 text-slate-600 border-slate-200">
+          {typeVal ? typeVal : index + 1}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
+          {selected && <p className="text-xs text-slate-400 truncate">{selected.desc}</p>}
+        </div>
+        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
+          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
+          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
+            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Body */}
+      {expanded && (
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
+          <div className="p-5 space-y-4">
+
+            {/* Data e ora */}
+            <div className="flex gap-3">
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+                <input type="date" {...register(`${prefix}.date`)}
+                  data-empty={!date ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+                <input type="time" {...register(`${prefix}.time`)}
+                  data-empty={!time ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            {/* Visual picker */}
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Tipo di feci (Scala di Bristol)</p>
+              <input type="hidden" {...register(`${prefix}.type`)} />
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                {BRISTOL_TYPES.map(({ type, label, desc }) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setVal(`${prefix}.type`, type, { shouldDirty: true })}
+                    className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all text-center ${
+                      typeVal === type
+                        ? 'border-emerald-500 bg-emerald-50 shadow-sm'
+                        : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    <img
+                      src={`/bristol/${type}.svg`}
+                      alt={label}
+                      className="w-full h-14 object-contain"
+                    />
+                    <span className={`text-xs font-bold ${typeVal === type ? 'text-emerald-700' : 'text-slate-600'}`}>
+                      {label}
+                    </span>
+                    <span className="text-[10px] text-slate-400 leading-tight hidden lg:block">{desc}</span>
+                  </button>
+                ))}
+              </div>
+              {selected && (
+                <p className="mt-2 text-sm text-slate-600 bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
+                  <span className="font-semibold">{selected.label}:</span> {selected.desc}
+                </p>
+              )}
+            </div>
+
+            {/* Note */}
+            <div>
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+              <textarea
+                {...register(`${prefix}.notes`)}
+                rows={2}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                placeholder="Osservazioni aggiuntive..."
+              />
+            </div>
+          </div>
+        </fieldset>
+      )}
+    </div>
+  );
+}
+
 function PainCard({ index, onRemove, locked, onToggleLock }: {
   index: number;
   onRemove: () => void;
@@ -815,7 +927,7 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -834,16 +946,7 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -853,7 +956,7 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data e ora */}
@@ -861,13 +964,15 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
               <div>
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
                 <input type="date" {...register(`${prefix}.date`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!date ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
                 <input type="time" {...register(`${prefix}.time`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!time ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -983,7 +1088,7 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -1007,16 +1112,7 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -1026,7 +1122,7 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data e ora */}
@@ -1034,13 +1130,15 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
               <div>
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
                 <input type="date" {...register(`${prefix}.date`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!date ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
                 <input type="time" {...register(`${prefix}.time`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!time ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -1158,7 +1256,7 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -1179,16 +1277,7 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -1198,7 +1287,7 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data e ora */}
@@ -1206,13 +1295,15 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
               <div>
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
                 <input type="date" {...register(`${prefix}.date`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!date ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
               <div>
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
                 <input type="time" {...register(`${prefix}.time`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!time ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -1298,7 +1389,7 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -1319,16 +1410,7 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -1338,7 +1420,7 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data e ora */}
@@ -1348,7 +1430,8 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
                 <input
                   type="date"
                   {...register(`${prefix}.date`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!date ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
               <div>
@@ -1356,7 +1439,8 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
                 <input
                   type="time"
                   {...register(`${prefix}.time`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!time ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -1561,7 +1645,7 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -1582,16 +1666,7 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
           </span>
         )}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -1601,7 +1676,7 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-4">
 
             {/* Data e ora */}
@@ -1611,7 +1686,8 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
                 <input
                   type="date"
                   {...register(`${prefix}.date`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!date ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
               <div>
@@ -1619,7 +1695,8 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
                 <input
                   type="time"
                   {...register(`${prefix}.time`)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                  data-empty={!time ? '' : undefined}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -1706,7 +1783,7 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
 
   return (
     <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-white'
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
     }`}>
       {/* Header */}
       <div
@@ -1734,16 +1811,7 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
 
         {/* Actions */}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca' : 'Blocca'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -1753,7 +1821,7 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'opacity-60 pointer-events-none' : ''}`}>
+        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
           <div className="p-5 space-y-5">
 
             {/* Data */}
@@ -1762,7 +1830,8 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
               <input
                 type="date"
                 {...register(`${prefix}.date`)}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                data-empty={!date ? '' : undefined}
+                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
               />
             </div>
 
@@ -1871,10 +1940,7 @@ export default function ScalesTab() {
 
   // ── Braden ──────────────────────────────────
   const { fields: bradenFields, append: appendBraden, remove: removeBraden } = useFieldArray({ control, name: 'bradenEvaluations' });
-  const [lockedBraden, setLockedBraden] = useState<Set<number>>(new Set());
-  const toggleLockBraden = (i: number) => setLockedBraden(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockBraden, isLocked: isLockedBraden } = useRowLocks();
   const addBradenEval = () => appendBraden({
     date: new Date().toISOString().slice(0, 10),
     sensory: '', moisture: '', activity: '', mobility: '', nutrition: '', friction: '',
@@ -1898,10 +1964,7 @@ export default function ScalesTab() {
 
   // ── Barthel ─────────────────────────────────
   const { fields: barthelFields, append: appendBarthel, remove: removeBarthel } = useFieldArray({ control, name: 'barthelEvaluations' });
-  const [lockedBarthel, setLockedBarthel] = useState<Set<number>>(new Set());
-  const toggleLockBarthel = (i: number) => setLockedBarthel(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockBarthel, isLocked: isLockedBarthel } = useRowLocks();
   const addBarthelEval = () => appendBarthel({
     date: new Date().toISOString().slice(0, 10),
     feeding: '', bathing: '', grooming: '', dressing: '', bowel: '',
@@ -1925,10 +1988,7 @@ export default function ScalesTab() {
 
   // ── GCS ─────────────────────────────────────
   const { fields: gcsFields, append: appendGcs, remove: removeGcs } = useFieldArray({ control, name: 'gcsEvaluations' });
-  const [lockedGcs, setLockedGcs] = useState<Set<number>>(new Set());
-  const toggleLockGcs = (i: number) => setLockedGcs(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockGcs, isLocked: isLockedGcs } = useRowLocks();
   const addGcsEval = () => appendGcs({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -1950,10 +2010,7 @@ export default function ScalesTab() {
 
   // ── AVPU ────────────────────────────────────
   const { fields: avpuFields, append: appendAvpu, remove: removeAvpu } = useFieldArray({ control, name: 'avpuEvaluations' });
-  const [lockedAvpu, setLockedAvpu] = useState<Set<number>>(new Set());
-  const toggleLockAvpu = (i: number) => setLockedAvpu(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockAvpu, isLocked: isLockedAvpu } = useRowLocks();
   const addAvpuEval = () => appendAvpu({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -1974,10 +2031,7 @@ export default function ScalesTab() {
 
   // ── Pain ────────────────────────────────────
   const { fields: painFields, append: appendPain, remove: removePain } = useFieldArray({ control, name: 'painEvaluations' });
-  const [lockedPain, setLockedPain] = useState<Set<number>>(new Set());
-  const toggleLockPain = (i: number) => setLockedPain(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockPain, isLocked: isLockedPain } = useRowLocks();
   const addPainEval = () => appendPain({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -1997,10 +2051,7 @@ export default function ScalesTab() {
 
   // ── Borg ────────────────────────────────────
   const { fields: borgFields, append: appendBorg, remove: removeBorg } = useFieldArray({ control, name: 'borgEvaluations' });
-  const [lockedBorg, setLockedBorg] = useState<Set<number>>(new Set());
-  const toggleLockBorg = (i: number) => setLockedBorg(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockBorg, isLocked: isLockedBorg } = useRowLocks();
   const addBorgEval = () => appendBorg({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -2009,10 +2060,7 @@ export default function ScalesTab() {
 
   // ── THROAT ──────────────────────────────────
   const { fields: throatFields, append: appendThroat, remove: removeThroat } = useFieldArray({ control, name: 'throatEvaluations' });
-  const [lockedThroat, setLockedThroat] = useState<Set<number>>(new Set());
-  const toggleLockThroat = (i: number) => setLockedThroat(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockThroat, isLocked: isLockedThroat } = useRowLocks();
   const addThroatEval = () => appendThroat({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -2035,12 +2083,18 @@ export default function ScalesTab() {
     }
   }, [throatEvals, setValue]);
 
+  // ── Bristol ─────────────────────────────────
+  const { fields: bristolFields, append: appendBristol, remove: removeBristol } = useFieldArray({ control, name: 'bristolEvaluations' });
+  const { toggleLock: toggleLockBristol, isLocked: isLockedBristol } = useRowLocks();
+  const addBristolEval = () => appendBristol({
+    date: new Date().toISOString().slice(0, 10),
+    time: new Date().toTimeString().slice(0, 5),
+    type: '', notes: '',
+  });
+
   // ── Conley ──────────────────────────────────
   const { fields: conleyFields, append: appendConley, remove: removeConley } = useFieldArray({ control, name: 'conleyEvaluations' });
-  const [lockedConley, setLockedConley] = useState<Set<number>>(new Set());
-  const toggleLockConley = (i: number) => setLockedConley(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock: toggleLockConley, isLocked: isLockedConley } = useRowLocks();
   const addConleyEval = () => appendConley({
     date: new Date().toISOString().slice(0, 10),
     conley1: '', conley2: '', conley3: '', conley4: '', conley5: '', conley6: '',
@@ -2048,11 +2102,7 @@ export default function ScalesTab() {
 
   // ── MUST ────────────────────────────────────
   const { fields, append, remove } = useFieldArray({ control, name: 'mustEvaluations' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
-
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock, isLocked } = useRowLocks();
 
   const addEvaluation = () => append({
     date: new Date().toISOString().slice(0, 10),
@@ -2105,7 +2155,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeBraden(index)}
-                locked={lockedBraden.has(index)}
+                locked={isLockedBraden(index)}
                 onToggleLock={() => toggleLockBraden(index)}
               />
             ))}
@@ -2153,7 +2203,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeConley(index)}
-                locked={lockedConley.has(index)}
+                locked={isLockedConley(index)}
                 onToggleLock={() => toggleLockConley(index)}
               />
             ))}
@@ -2203,7 +2253,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => remove(index)}
-                locked={lockedRows.has(index)}
+                locked={isLocked(index)}
                 onToggleLock={() => toggleLock(index)}
               />
             ))}
@@ -2253,7 +2303,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeGcs(index)}
-                locked={lockedGcs.has(index)}
+                locked={isLockedGcs(index)}
                 onToggleLock={() => toggleLockGcs(index)}
               />
             ))}
@@ -2303,7 +2353,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeAvpu(index)}
-                locked={lockedAvpu.has(index)}
+                locked={isLockedAvpu(index)}
                 onToggleLock={() => toggleLockAvpu(index)}
               />
             ))}
@@ -2354,7 +2404,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeBorg(index)}
-                locked={lockedBorg.has(index)}
+                locked={isLockedBorg(index)}
                 onToggleLock={() => toggleLockBorg(index)}
               />
             ))}
@@ -2405,7 +2455,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeBarthel(index)}
-                locked={lockedBarthel.has(index)}
+                locked={isLockedBarthel(index)}
                 onToggleLock={() => toggleLockBarthel(index)}
               />
             ))}
@@ -2455,7 +2505,7 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removePain(index)}
-                locked={lockedPain.has(index)}
+                locked={isLockedPain(index)}
                 onToggleLock={() => toggleLockPain(index)}
               />
             ))}
@@ -2505,8 +2555,53 @@ export default function ScalesTab() {
                 key={field.id}
                 index={index}
                 onRemove={() => removeThroat(index)}
-                locked={lockedThroat.has(index)}
+                locked={isLockedThroat(index)}
                 onToggleLock={() => toggleLockThroat(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Bristol Stool Scale ── */}
+      <div className="space-y-4 border border-slate-200 rounded-xl p-5 bg-white">
+        <div className="flex justify-between items-center">
+          <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 flex items-center gap-1">
+            Scala di Bristol (Caratteristiche delle Feci)
+            <InfoTooltip content={
+              <table className="w-full text-xs border-collapse">
+                <tbody>
+                  {BRISTOL_TYPES.map(({ type, desc }) => (
+                    <tr key={type}>
+                      <td className="pr-3 font-mono font-bold whitespace-nowrap">Tipo {type}</td>
+                      <td>{desc}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            } />
+          </h3>
+          <button
+            type="button"
+            onClick={addBristolEval}
+            className="text-sm bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-md flex items-center gap-1 hover:bg-emerald-100 transition-colors print:hidden"
+          >
+            <Plus size={16} /> Aggiungi valutazione
+          </button>
+        </div>
+        {bristolFields.length === 0 ? (
+          <div className="text-sm text-slate-500 italic p-6 bg-slate-50 border border-slate-200 rounded-lg text-center print:hidden">
+            Nessuna valutazione inserita. Clicca "Aggiungi valutazione" per iniziare.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {bristolFields.map((field, index) => (
+              <BristolCard
+                key={field.id}
+                index={index}
+                onRemove={() => removeBristol(index)}
+                locked={isLockedBristol(index)}
+                onToggleLock={() => toggleLockBristol(index)}
               />
             ))}
           </div>

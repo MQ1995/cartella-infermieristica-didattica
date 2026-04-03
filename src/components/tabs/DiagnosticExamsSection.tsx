@@ -1,18 +1,14 @@
-import { useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, Lock, LockOpen } from 'lucide-react';
+import { Input } from '../ui/Input';
+import { Plus } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 
 export default function DiagnosticExamsSection() {
   const { register, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'diagnosticExams' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
-
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev);
-    next.has(i) ? next.delete(i) : next.add(i);
-    return next;
-  });
+  const { toggleLock, isLocked } = useRowLocks();
 
   const addRow = () => {
     const now = new Date();
@@ -57,26 +53,20 @@ export default function DiagnosticExamsSection() {
             </thead>
             <tbody>
               {fields.map((field, index) => {
-                const locked = lockedRows.has(index);
+                const locked = isLocked(index);
                 return (
                   <tr
                     key={field.id}
                     className={`border-b border-slate-100 last:border-0 align-top ${locked ? '' : 'hover:bg-slate-50'}`}
                   >
                     <td className="px-1 py-1">
-                      <input
-                        {...register(`diagnosticExams.${index}.date`)}
-                        type="date"
-                        disabled={locked}
-                        className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
+                      <Input name={`diagnosticExams.${index}.date`} label="" type="date" disabled={locked}
+                        className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
                       />
                     </td>
                     <td className="px-1 py-1">
-                      <input
-                        {...register(`diagnosticExams.${index}.time`)}
-                        type="time"
-                        disabled={locked}
-                        className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
+                      <Input name={`diagnosticExams.${index}.time`} label="" type="time" disabled={locked}
+                        className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)]"
                       />
                     </td>
                     <td className="px-1 py-1">
@@ -99,16 +89,7 @@ export default function DiagnosticExamsSection() {
                     </td>
                     <td className="px-2 py-1 print:hidden">
                       <div className="flex items-center gap-1 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => toggleLock(index)}
-                          title={locked ? 'Sblocca riga' : 'Blocca riga'}
-                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-                        >
-                          <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-                            {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-                          </span>
-                        </button>
+                        <LockToggle locked={locked} onToggle={() => toggleLock(index)} />
                         {!locked && <ConfirmDeleteButton onConfirm={() => remove(index)} size={15} />}
                       </div>
                     </td>

@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Lock, LockOpen } from 'lucide-react';
+import { Save, Pencil } from 'lucide-react';
+import { LockToggle } from './LockToggle';
 
 interface Props {
   title: string;
   children: React.ReactNode;
-  headerAction?: React.ReactNode;  // shown only when unlocked (e.g. "Aggiungi riga")
-  headerRight?: React.ReactNode;   // always visible (e.g. score display)
+  headerAction?: React.ReactNode;
+  headerRight?: React.ReactNode;
   defaultLocked?: boolean;
 }
 
@@ -13,33 +14,44 @@ export function LockableSection({ title, children, headerAction, headerRight, de
   const [locked, setLocked] = useState(defaultLocked);
 
   return (
-    <section className="bg-slate-50 p-6 rounded-xl border border-emerald-100">
+    <section className={`p-6 rounded-xl border border-emerald-100 transition-colors duration-200 ${locked ? 'bg-slate-100' : 'bg-slate-50'}`}>
       <div className="flex items-center justify-between mb-4 border-b border-emerald-100 pb-2">
         <h3 className="text-lg font-semibold text-emerald-700">{title}</h3>
         <div className="flex items-center gap-3">
           {headerRight}
           <div className="flex items-center gap-2 print:hidden">
             {!locked && headerAction}
-          <button
-            type="button"
-            onClick={() => setLocked(l => !l)}
-            title={locked ? 'Sblocca sezione' : 'Blocca sezione'}
-            className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${
-              locked ? 'bg-amber-400' : 'bg-slate-200'
-            }`}
-          >
-            <span className={`absolute top-0.5 w-5 h-5 rounded-full shadow flex items-center justify-center transition-all duration-200 ${
-              locked ? 'left-6 bg-white text-amber-500' : 'left-0.5 bg-white text-slate-400'
-            }`}>
-              {locked ? <Lock size={11} /> : <LockOpen size={11} />}
-            </span>
-          </button>
+            <LockToggle
+              locked={locked}
+              onToggle={() => setLocked(l => !l)}
+              size="md"
+              title={locked ? 'Sblocca sezione' : 'Blocca sezione'}
+            />
           </div>
         </div>
       </div>
-      <fieldset disabled={locked} className={locked ? 'opacity-60 pointer-events-none select-none' : ''}>
+      <fieldset disabled={locked} className={locked ? 'cursor-not-allowed select-none' : ''}>
         {children}
       </fieldset>
+
+      <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-emerald-100 print:hidden">
+        <button
+          type="button"
+          onClick={() => setLocked(false)}
+          disabled={!locked}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:hover:bg-transparent"
+        >
+          <Pencil size={14} /> Modifica
+        </button>
+        <button
+          type="button"
+          onClick={() => setLocked(true)}
+          disabled={locked}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-emerald-600 text-white hover:bg-emerald-700 disabled:hover:bg-emerald-600"
+        >
+          <Save size={14} /> Salva
+        </button>
+      </div>
     </section>
   );
 }

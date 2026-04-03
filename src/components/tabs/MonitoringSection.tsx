@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, NotebookPen, Lock, LockOpen } from 'lucide-react';
+import { Plus, NotebookPen } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { InfoTooltip } from '../ui/InfoTooltip';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 
 const COLUMNS = [
   { key: 'date',            label: 'Data',      type: 'date',   width: 'w-32' },
@@ -30,18 +32,10 @@ export default function MonitoringSection() {
   const { fields, append, remove } = useFieldArray({ control, name: 'vitalSigns' });
   // tracks rows toggled away from their default state
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
+  const { toggleLock, isLocked: isLockedRow } = useRowLocks();
 
   const toggleNotes = (index: number) => {
     setToggledNotes(prev => {
-      const next = new Set(prev);
-      next.has(index) ? next.delete(index) : next.add(index);
-      return next;
-    });
-  };
-
-  const toggleLock = (index: number) => {
-    setLockedRows(prev => {
       const next = new Set(prev);
       next.has(index) ? next.delete(index) : next.add(index);
       return next;
@@ -96,12 +90,12 @@ export default function MonitoringSection() {
               {fields.map((field, index) => {
                 const hasNote = !!watch(`vitalSigns.${index}.notes`);
                 const isExpanded = hasNote ? !toggledNotes.has(index) : toggledNotes.has(index);
-                const isLocked = lockedRows.has(index);
+                const isLocked = isLockedRow(index);
                 return (
                   <>
-                    <tr key={field.id} className={`${isExpanded ? 'bg-amber-50 border-b-0' : 'border-b border-slate-100 last:border-0 hover:bg-slate-50'} ${isLocked ? 'opacity-60' : ''}`}>
+                    <tr key={field.id} className={`${isExpanded ? 'bg-emerald-50 border-b-0' : 'border-b border-slate-100 last:border-0 hover:bg-slate-50'}`}>
                       {COLUMNS.map((col, colIndex) => (
-                        <td key={col.key} className={`px-1 py-1 ${isExpanded && colIndex === 0 ? 'border-l-4 border-amber-400' : ''}`}>
+                        <td key={col.key} className={`px-1 py-1 ${isExpanded && colIndex === 0 ? 'border-l-4 border-emerald-500' : ''}`}>
                           <input
                             {...register(`vitalSigns.${index}.${col.key}`, {
                               onChange: ('min' in col || 'max' in col) ? (e) => {
@@ -138,35 +132,21 @@ export default function MonitoringSection() {
                               <span className="absolute top-0.5 right-0 w-2 h-2 bg-rose-500 rounded-full" />
                             )}
                           </button>
-                          {/* row lock toggle */}
-                          <button
-                            type="button"
-                            onClick={() => toggleLock(index)}
-                            title={isLocked ? 'Sblocca riga' : 'Blocca riga'}
-                            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${
-                              isLocked ? 'bg-amber-400' : 'bg-slate-200'
-                            }`}
-                          >
-                            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${
-                              isLocked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'
-                            }`}>
-                              {isLocked ? <Lock size={9} /> : <LockOpen size={9} />}
-                            </span>
-                          </button>
+                          <LockToggle locked={isLocked} onToggle={() => toggleLock(index)} />
                           {!isLocked && <ConfirmDeleteButton onConfirm={() => remove(index)} size={15} />}
                         </div>
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr key={`${field.id}-notes`} className="bg-amber-50 border-b border-slate-200">
-                        <td colSpan={COLUMNS.length + 1} className="px-3 pb-2 border-l-4 border-amber-400">
+                      <tr key={`${field.id}-notes`} className="bg-emerald-50 border-b border-slate-200">
+                        <td colSpan={COLUMNS.length + 1} className="px-3 pb-2 border-l-4 border-emerald-500">
                           <div>
                             <textarea
                               {...register(`vitalSigns.${index}.notes`)}
                               placeholder={isLocked ? 'Nessuna nota presente per questa rilevazione.' : 'Note aggiuntive per questa rilevazione...'}
                               rows={2}
                               disabled={isLocked}
-                              className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                              className="w-full px-3 py-2 border border-emerald-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
                             />
                           </div>
                         </td>

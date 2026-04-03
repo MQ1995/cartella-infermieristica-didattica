@@ -12,6 +12,7 @@ const TAB_COLORS: Record<string, string> = {
   medications: 'bg-emerald-400',
   devices:     'bg-orange-400',
   careplan:    'bg-teal-400',
+  procedures:  'bg-indigo-400',
 };
 
 interface Props {

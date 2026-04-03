@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen, NotebookPen, Pill, Bandage, Search } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen, NotebookPen, Pill, Bandage, Search, Syringe } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
 import { SearchDialog } from './components/ui/SearchDialog';
+import { Toast } from './components/ui/Toast';
+import type { ToastType } from './components/ui/Toast';
 import type { SearchEntry, TabId } from './search-index';
 
 // Import Tabs
@@ -19,6 +21,7 @@ import DiagnosticExamsSection from './components/tabs/DiagnosticExamsSection';
 import DailyAssessmentTab from './components/tabs/DailyAssessmentTab';
 import MedicationsTab from './components/tabs/MedicationsTab';
 import DevicesTab from './components/tabs/DevicesTab';
+import SpecialProceduresTab from './components/tabs/SpecialProceduresTab';
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
@@ -28,6 +31,7 @@ function App() {
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [toast, setToast] = useState<ToastType | null>(null);
   const [pendingHighlight, setPendingHighlight] = useState<string | null>(null);
   const pendingScrollRef = useRef<string | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -146,14 +150,32 @@ function App() {
 
   const handleExportJson = () => {
     const data = methods.getValues();
+
+    // Validate required fields before saving
+    const missing = [
+      !data.studentFirstName && 'Nome',
+      !data.studentLastName  && 'Cognome',
+      !data.studentId        && 'Matricola',
+      !data.academicYear     && 'Anno accademico',
+      !data.courseYear       && 'Anno di corso',
+    ].filter(Boolean) as string[];
+
+    if (missing.length > 0) {
+      alert(`Compila i seguenti campi obbligatori prima di salvare:\n• ${missing.join('\n• ')}`);
+      setActiveTab('general');
+      return;
+    }
+
+    const slug = (s: string) => s.replace(/\s+/g, '-').replace(/\//g, '-').toLowerCase();
+    const namePart    = `${slug(data.studentLastName)}-${slug(data.studentFirstName)}`;
+    const idPart      = data.studentId;
+    const yearPart    = slug(data.academicYear);
+    const coursePart  = slug(data.courseYear);
+
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    
-    // Create smart filename based on user inputs
-    const studentPart = data.studentName ? data.studentName.replace(/\s+/g, '-').toLowerCase() : 'studente';
-    const patientPart = data.patientGender && data.patientAge ? `paziente-${data.patientGender}${data.patientAge}` : 'bozza';
-    
-    saveAs(blob, `assessment-${studentPart}-${patientPart}.json`);
+    saveAs(blob, `cartella-${namePart}-${idPart}-${yearPart}-${coursePart}.json`);
     setIsSaved(true);
+    setToast('save');
   };
 
   const handleDeleteAll = () => {
@@ -162,6 +184,7 @@ function App() {
     setIsSaved(true);
     setShowDeleteModal(false);
     setDeleteConfirmed(false);
+    setToast('delete');
   };
 
   const handleImportJson = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,6 +197,7 @@ function App() {
           const parsed = JSON.parse(content);
           methods.reset(parsed);
           setIsSaved(true);
+          setToast('load');
         } catch (err) {
           alert('Invalid file format');
         }
@@ -183,7 +207,7 @@ function App() {
   };
 
   const tabs = [
-    { id: 'general',     label: 'Dati Tirocinio e Studente', icon: <ClipboardList size={18} /> },
+    { id: 'general',     label: 'Dati Generali',             icon: <ClipboardList size={18} /> },
     { id: 'assessment',  label: 'Accertamento',               icon: <Stethoscope size={18} /> },
     { id: 'scales',      label: 'Scale Valutazione',          icon: <Activity size={18} /> },
     { id: 'monitoring',  label: 'Monitoraggio',               icon: <HeartPulse size={18} /> },
@@ -191,6 +215,7 @@ function App() {
     { id: 'medications',  label: 'Farmaci',                    icon: <Pill size={18} /> },
     { id: 'devices',      label: 'Presidi e Medicazioni',      icon: <Bandage size={18} /> },
     { id: 'careplan',     label: 'Piano Assistenza',           icon: <BedDouble size={18} /> },
+    { id: 'procedures',   label: 'Procedure Speciali',          icon: <Syringe size={18} /> },
   ] as const;
 
   return (
@@ -208,17 +233,6 @@ function App() {
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => setSearchOpen(true)}
-                className="bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50"
-                title="Cerca (⌘K)"
-              >
-                <Search size={16} />
-                <span className="hidden sm:inline text-white/80">Cerca</span>
-                <kbd className="hidden lg:inline-flex items-center px-1 py-0.5 text-xs text-white/50 border border-white/20 rounded font-mono ml-1">⌘K</kbd>
-              </button>
-
               <div className="w-px h-6 bg-white/20" />
 
               <label className="cursor-pointer bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50">
@@ -259,6 +273,18 @@ function App() {
           {/* Sidebar Nav */}
           <aside className={`flex-shrink-0 print:hidden transition-all duration-200 ${sidebarCollapsed ? 'w-full md:w-14' : 'w-full md:w-64'}`}>
             <div className="md:sticky md:top-24 md:h-[calc(100vh-7rem)] flex flex-col">
+              {!sidebarCollapsed && (
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(true)}
+                  className="mb-2 flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-500 hover:text-slate-700 hover:border-slate-300 text-sm transition-colors shadow-sm w-full"
+                  title="Cerca (⌘K)"
+                >
+                  <Search size={15} className="flex-shrink-0" />
+                  <span className="flex-1 text-left">Cerca...</span>
+                  <kbd className="inline-flex items-center px-1 py-0.5 text-xs text-slate-400 border border-slate-200 rounded font-mono">⌘K</kbd>
+                </button>
+              )}
               <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0 flex-1">
                 {tabs.map((tab) => (
                   <button
@@ -320,13 +346,19 @@ function App() {
               <div id="tc-devices" className={activeTab === 'devices' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <DevicesTab />
               </div>
-              <div id="tc-careplan" className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
+              <div id="tc-careplan" className={activeTab === 'careplan' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <CarePlanTab />
+              </div>
+              <div id="tc-procedures" className={activeTab === 'procedures' ? 'block' : 'hidden print:block'}>
+                <SpecialProceduresTab />
               </div>
             </form>
           </div>
         </main>
       </div>
+      {/* Toast notifications */}
+      {toast && <Toast type={toast} onDone={() => setToast(null)} />}
+
       {/* Search dialog */}
       {searchOpen && (
         <SearchDialog onNavigate={handleNavigate} onClose={() => setSearchOpen(false)} />

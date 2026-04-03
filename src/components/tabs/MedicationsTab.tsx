@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, Lock, LockOpen, NotebookPen } from 'lucide-react';
+import { Plus, NotebookPen } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
 
 const TIME_SLOTS = [
   { key: 'ora8',  label: '8:00'  },
@@ -17,12 +19,9 @@ const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm fo
 export default function MedicationsTab() {
   const { register, watch, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'medications' });
-  const [lockedRows,  setLockedRows]  = useState<Set<number>>(new Set());
+  const { toggleLock, isLocked } = useRowLocks();
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
 
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
   const toggleNotes = (i: number) => setToggledNotes(prev => {
     const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
   });
@@ -69,13 +68,13 @@ export default function MedicationsTab() {
             </thead>
             <tbody>
               {fields.map((field, index) => {
-                const locked = lockedRows.has(index);
+                const locked = isLocked(index);
                 const hasNote = !!watch(`medications.${index}.notes`);
                 const isExpanded = hasNote ? !toggledNotes.has(index) : toggledNotes.has(index);
                 return (
                   <>
-                    <tr key={field.id} className={`border-b border-slate-100 last:border-0 align-middle ${isExpanded ? 'bg-amber-50 border-b-0' : ''} ${locked ? 'opacity-60' : (!isExpanded ? 'hover:bg-slate-50' : '')}`}>
-                      <td className={`px-1 py-1 ${isExpanded ? 'border-l-4 border-amber-400' : ''}`}>
+                    <tr key={field.id} className={`border-b border-slate-100 last:border-0 align-middle ${isExpanded ? 'bg-emerald-50 border-b-0' : (!locked ? 'hover:bg-slate-50' : '')}`}>
+                      <td className={`px-1 py-1 ${isExpanded ? 'border-l-4 border-emerald-500' : ''}`}>
                         <input {...register(`medications.${index}.drug`)} placeholder={locked ? '—' : 'Nome farmaco'} disabled={locked} className={INPUT_CLS} />
                       </td>
                       <td className="px-1 py-1">
@@ -110,29 +109,20 @@ export default function MedicationsTab() {
                               <span className="absolute top-0.5 right-0 w-2 h-2 bg-rose-500 rounded-full" />
                             )}
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => toggleLock(index)}
-                            title={locked ? 'Sblocca riga' : 'Blocca riga'}
-                            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-                          >
-                            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-                              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-                            </span>
-                          </button>
+                          <LockToggle locked={locked} onToggle={() => toggleLock(index)} />
                           {!locked && <ConfirmDeleteButton onConfirm={() => remove(index)} size={15} />}
                         </div>
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr key={`${field.id}-notes`} className="bg-amber-50 border-b border-slate-200">
-                        <td colSpan={TIME_SLOTS.length + 5} className="px-3 pb-2 border-l-4 border-amber-400">
+                      <tr key={`${field.id}-notes`} className="bg-emerald-50 border-b border-slate-200">
+                        <td colSpan={TIME_SLOTS.length + 5} className="px-3 pb-2 border-l-4 border-emerald-500">
                           <textarea
                             {...register(`medications.${index}.notes`)}
                             placeholder={locked ? 'Nessuna nota presente per questo farmaco.' : 'Note aggiuntive per questo farmaco...'}
                             rows={2}
                             disabled={locked}
-                            className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                            className="w-full px-3 py-2 border border-emerald-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
                           />
                         </td>
                       </tr>

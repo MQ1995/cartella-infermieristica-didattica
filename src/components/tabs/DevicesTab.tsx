@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { Plus, Lock, LockOpen, NotebookPen, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, NotebookPen, ChevronDown, ChevronUp } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
+import { LockToggle } from '../ui/LockToggle';
+import { useRowLocks } from '../../hooks/useRowLocks';
+import { Input } from '../ui/Input';
 
 const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default disabled:text-slate-800';
 
@@ -17,12 +20,9 @@ const TISSUE_TYPES = [
 function DevicesSection() {
   const { register, watch, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'devices' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
+  const { toggleLock, isLocked } = useRowLocks();
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
 
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
   const toggleNotes = (i: number) => setToggledNotes(prev => {
     const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
   });
@@ -63,16 +63,16 @@ function DevicesSection() {
             </thead>
             <tbody>
               {fields.map((field, index) => {
-                const locked = lockedRows.has(index);
+                const locked = isLocked(index);
                 const hasNote = !!watch(`devices.${index}.notes`);
                 const isExpanded = hasNote ? !toggledNotes.has(index) : toggledNotes.has(index);
                 return (
                   <>
                     <tr
                       key={field.id}
-                      className={`border-b border-slate-100 last:border-0 align-middle ${isExpanded ? 'bg-amber-50 border-b-0' : ''} ${locked ? 'opacity-60' : (!isExpanded ? 'hover:bg-slate-50' : '')}`}
+                      className={`border-b border-slate-100 last:border-0 align-middle ${isExpanded ? 'bg-emerald-50 border-b-0' : (!locked ? 'hover:bg-slate-50' : '')}`}
                     >
-                      <td className={`px-1 py-1 ${isExpanded ? 'border-l-4 border-amber-400' : ''}`}>
+                      <td className={`px-1 py-1 ${isExpanded ? 'border-l-4 border-emerald-500' : ''}`}>
                         <input {...register(`devices.${index}.deviceType`)} placeholder={locked ? '—' : 'es. CVC, SNG, drenaggio'} disabled={locked} className={INPUT_CLS} />
                       </td>
                       <td className="px-2 py-1 text-center">
@@ -84,10 +84,10 @@ function DevicesSection() {
                         />
                       </td>
                       <td className="px-1 py-1">
-                        <input {...register(`devices.${index}.placementDate`)} type="date" disabled={locked} className={INPUT_CLS} style={locked ? { WebkitTextFillColor: 'rgb(30 41 59)' } : undefined} />
+                        <Input name={`devices.${index}.placementDate`} label="" type="date" disabled={locked} className={INPUT_CLS} />
                       </td>
                       <td className="px-1 py-1">
-                        <input {...register(`devices.${index}.renewalDate`)} type="date" disabled={locked} className={INPUT_CLS} style={locked ? { WebkitTextFillColor: 'rgb(30 41 59)' } : undefined} />
+                        <Input name={`devices.${index}.renewalDate`} label="" type="date" disabled={locked} className={INPUT_CLS} />
                       </td>
                       <td className="px-1 py-1">
                         <input {...register(`devices.${index}.dressingType`)} placeholder={locked ? '—' : 'es. medicazione sterile'} disabled={locked} className={INPUT_CLS} />
@@ -105,29 +105,20 @@ function DevicesSection() {
                               <span className="absolute top-0.5 right-0 w-2 h-2 bg-rose-500 rounded-full" />
                             )}
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => toggleLock(index)}
-                            title={locked ? 'Sblocca riga' : 'Blocca riga'}
-                            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-                          >
-                            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-                              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-                            </span>
-                          </button>
+                          <LockToggle locked={locked} onToggle={() => toggleLock(index)} />
                           {!locked && <ConfirmDeleteButton onConfirm={() => remove(index)} size={15} />}
                         </div>
                       </td>
                     </tr>
                     {isExpanded && (
-                      <tr key={`${field.id}-notes`} className="bg-amber-50 border-b border-slate-200">
-                        <td colSpan={6} className="px-3 pb-2 border-l-4 border-amber-400">
+                      <tr key={`${field.id}-notes`} className="bg-emerald-50 border-b border-slate-200">
+                        <td colSpan={6} className="px-3 pb-2 border-l-4 border-emerald-500">
                           <textarea
                             {...register(`devices.${index}.notes`)}
                             placeholder={locked ? 'Nessuna nota presente per questo presidio.' : 'Note aggiuntive per questo presidio...'}
                             rows={2}
                             disabled={locked}
-                            className="w-full px-3 py-2 border border-amber-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-amber-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                            className="w-full px-3 py-2 border border-emerald-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-none disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
                           />
                         </td>
                       </tr>
@@ -170,16 +161,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
           <span className="font-semibold text-slate-700 text-sm truncate block">{summary}</span>
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <button
-            type="button"
-            onClick={onToggleLock}
-            title={locked ? 'Sblocca scheda' : 'Blocca scheda'}
-            className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none flex-shrink-0 ${locked ? 'bg-amber-400' : 'bg-slate-200'}`}
-          >
-            <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow flex items-center justify-center transition-all duration-200 ${locked ? 'left-4 text-amber-500' : 'left-0.5 text-slate-400'}`}>
-              {locked ? <Lock size={9} /> : <LockOpen size={9} />}
-            </span>
-          </button>
+          <LockToggle locked={locked} onToggle={onToggleLock} title={locked ? 'Sblocca scheda' : 'Blocca scheda'} />
           {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
           <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
             {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
@@ -189,8 +171,8 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
 
       {/* Body */}
       {expanded && (
-        <div className={`border-t border-slate-200 bg-slate-50 p-4 ${locked ? 'opacity-60' : ''}`}>
-          <fieldset disabled={locked} className={`space-y-4 ${locked ? 'pointer-events-none' : ''}`}>
+        <div className="border-t border-slate-200 bg-slate-50 p-4">
+          <fieldset disabled={locked} className={`space-y-4 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
             {/* Row 1: eziologia, sede, dimensioni */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1">
@@ -299,11 +281,11 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Data esecuzione</label>
-                <input {...register(`${prefix}.executionDate`)} type="date" className={INPUT_CLS} style={locked ? { WebkitTextFillColor: 'rgb(30 41 59)' } : undefined} />
+                <Input name={`${prefix}.executionDate`} label="" type="date" className={INPUT_CLS} />
               </div>
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Data rinnovo</label>
-                <input {...register(`${prefix}.renewalDate`)} type="date" className={INPUT_CLS} style={locked ? { WebkitTextFillColor: 'rgb(30 41 59)' } : undefined} />
+                <Input name={`${prefix}.renewalDate`} label="" type="date" className={INPUT_CLS} />
               </div>
             </div>
 
@@ -327,11 +309,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
 function WoundCareSection() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'woundCare' });
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
-
-  const toggleLock = (i: number) => setLockedRows(prev => {
-    const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next;
-  });
+  const { toggleLock, isLocked } = useRowLocks();
 
   const addWound = () => append({
     etiology: '', location: '', dimensions: '', tissueType: [],
@@ -366,7 +344,7 @@ function WoundCareSection() {
               key={field.id}
               index={index}
               onRemove={() => remove(index)}
-              locked={lockedRows.has(index)}
+              locked={isLocked(index)}
               onToggleLock={() => toggleLock(index)}
             />
           ))}
