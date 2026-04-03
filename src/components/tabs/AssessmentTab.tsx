@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ClipboardList, Heart, Utensils, Toilet, Dumbbell, BedDouble, Brain, MirrorRound, Users, VenusAndMars, Anchor, Church } from 'lucide-react';
 import InitialAssessmentSection from './InitialAssessmentSection';
 import Model1 from './models/Model1';
@@ -15,10 +14,14 @@ import Model11 from './models/Model11';
 
 
 
-type SubTabId = 'initial' | 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6' | 'model7' | 'model8' | 'model9' | 'model10' | 'model11';
+export type AssessmentSubTabId = 'initial' | 'model1' | 'model2' | 'model3' | 'model4' | 'model5' | 'model6' | 'model7' | 'model8' | 'model9' | 'model10' | 'model11';
 
-export default function AssessmentTab() {
-  const [activeSubTab, setActiveSubTab] = useState<SubTabId>('initial');
+interface Props {
+  activeSubTab: AssessmentSubTabId;
+  setActiveSubTab: (id: AssessmentSubTabId) => void;
+}
+
+export default function AssessmentTab({ activeSubTab, setActiveSubTab }: Props) {
 
   const tabs = [
     { id: 'initial',  label: 'Dati Iniziali',                        icon: <ClipboardList size={14} /> },

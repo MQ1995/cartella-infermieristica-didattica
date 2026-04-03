@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen, NotebookPen, Pill, Bandage } from 'lucide-react';
+import { Save, FolderOpen, Stethoscope, Activity, ClipboardList, BedDouble, Trash2, HeartPulse, PanelLeftClose, PanelLeftOpen, NotebookPen, Pill, Bandage, Search } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import type { NursingAssessment } from './types/form';
 import { defaultValues } from './types/form';
+import { SearchDialog } from './components/ui/SearchDialog';
+import type { SearchEntry, TabId } from './search-index';
 
 // Import Tabs
 import GeneralInfoTab from './components/tabs/GeneralInfoTab';
 import AssessmentTab from './components/tabs/AssessmentTab';
+import type { AssessmentSubTabId } from './components/tabs/AssessmentTab';
 import ScalesTab from './components/tabs/ScalesTab';
 import CarePlanTab from './components/tabs/CarePlanTab';
 import MonitoringSection from './components/tabs/MonitoringSection';
@@ -17,14 +20,15 @@ import DailyAssessmentTab from './components/tabs/DailyAssessmentTab';
 import MedicationsTab from './components/tabs/MedicationsTab';
 import DevicesTab from './components/tabs/DevicesTab';
 
-type TabId = 'general' | 'assessment' | 'scales' | 'monitoring' | 'diary' | 'medications' | 'devices' | 'careplan';
-
 function App() {
   const [activeTab, setActiveTab] = useState<TabId>('general');
+  const [assessmentSubTab, setAssessmentSubTab] = useState<AssessmentSubTabId>('initial');
   const [isSaved, setIsSaved] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const pendingScrollRef = useRef<string | null>(null);
 
   const methods = useForm<NursingAssessment>({
     defaultValues: defaultValues,
@@ -50,6 +54,35 @@ function App() {
     });
     return () => subscription.unsubscribe();
   }, [methods.watch]);
+
+  // Cmd+K / Ctrl+K to open search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen(o => !o);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Scroll to element after tab switch
+  useEffect(() => {
+    if (!pendingScrollRef.current) return;
+    const id = pendingScrollRef.current;
+    pendingScrollRef.current = null;
+    requestAnimationFrame(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [activeTab, assessmentSubTab]);
+
+  const handleNavigate = useCallback((entry: SearchEntry) => {
+    setActiveTab(entry.tab);
+    if (entry.assessmentSubTab) setAssessmentSubTab(entry.assessmentSubTab);
+    if (entry.elementId) pendingScrollRef.current = entry.elementId;
+    setSearchOpen(false);
+  }, []);
 
   const handleExportJson = () => {
     const data = methods.getValues();
@@ -115,6 +148,19 @@ function App() {
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50"
+                title="Cerca (⌘K)"
+              >
+                <Search size={16} />
+                <span className="hidden sm:inline text-white/80">Cerca</span>
+                <kbd className="hidden lg:inline-flex items-center px-1 py-0.5 text-xs text-white/50 border border-white/20 rounded font-mono ml-1">⌘K</kbd>
+              </button>
+
+              <div className="w-px h-6 bg-white/20" />
+
               <label className="cursor-pointer bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-sm font-medium shadow-sm transition-colors border border-emerald-500/50">
                 <FolderOpen size={16} />
                 <span className="hidden sm:inline">Carica da file</span>
@@ -195,7 +241,7 @@ function App() {
                 <GeneralInfoTab />
               </div>
               <div className={activeTab === 'assessment' ? 'block' : 'hidden print:block print:break-after-page'}>
-                <AssessmentTab />
+                <AssessmentTab activeSubTab={assessmentSubTab} setActiveSubTab={setAssessmentSubTab} />
               </div>
               <div className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <ScalesTab />
@@ -221,6 +267,11 @@ function App() {
           </div>
         </main>
       </div>
+      {/* Search dialog */}
+      {searchOpen && (
+        <SearchDialog onNavigate={handleNavigate} onClose={() => setSearchOpen(false)} />
+      )}
+
       {/* Delete confirmation modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
