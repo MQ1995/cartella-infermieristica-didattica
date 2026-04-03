@@ -358,7 +358,7 @@ export default function Model4() {
                   <label key={v} className={RL}><input type="radio" value={v} {...register('pulseRhythm')} className={RADIO} /> {v}</label>
                 ))}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <span className="text-sm font-medium text-slate-600 w-16">Ampiezza</span>
                 {['Pieno', 'Debole', 'Filiforme'].map(v => (
                   <label key={v} className={RL}><input type="radio" value={v} {...register('pulseAmplitude')} className={RADIO} /> {v}</label>
