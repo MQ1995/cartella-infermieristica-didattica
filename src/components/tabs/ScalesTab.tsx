@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFormContext, useWatch, useFieldArray } from 'react-hook-form';
-import { Plus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, NotebookPen, Pencil, Save } from 'lucide-react';
 import { ConfirmDeleteButton } from '../ui/ConfirmDeleteButton';
 import { LockToggle } from '../ui/LockToggle';
 import { useRowLocks } from '../../hooks/useRowLocks';
@@ -11,6 +11,74 @@ const RL    = 'flex items-center gap-1.5 cursor-pointer text-sm text-slate-700';
 const SUB   = 'text-sm font-semibold text-slate-600 uppercase tracking-wider pb-2 border-b border-slate-200 mb-3';
 const BOX   = 'rounded-lg border border-slate-200 p-3 space-y-2.5';
 const TA    = 'w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default';
+
+// ─────────────────────────────────────────────
+// Shared card wrapper
+// ─────────────────────────────────────────────
+
+function ScaleCard({ locked, onToggleLock, onRemove, header, notes, children }: {
+  locked: boolean;
+  onToggleLock: () => void;
+  onRemove: () => void;
+  header: React.ReactNode;
+  notes?: string;
+  children: React.ReactNode;
+}) {
+  const [expanded, setExpanded] = useState(true);
+  const hasNote = !!notes;
+  return (
+    <div className={`border rounded-xl overflow-hidden transition-all ${
+      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
+    }`}>
+      <div
+        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
+        onClick={() => setExpanded(e => !e)}
+      >
+        {header}
+        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
+          {hasNote && !expanded && (
+            <span className="relative text-emerald-600 p-1">
+              <NotebookPen size={14} />
+              <span className="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full" />
+            </span>
+          )}
+          <LockToggle locked={locked} onToggle={onToggleLock} />
+          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
+          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
+            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </button>
+        </div>
+      </div>
+      {expanded && (
+        <>
+          <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
+            <div className="p-5 space-y-4">
+              {children}
+            </div>
+          </fieldset>
+          <div className="flex justify-end gap-2 px-5 pb-4 pt-2 border-t border-slate-100 print:hidden">
+            <button
+              type="button"
+              onClick={onToggleLock}
+              disabled={!locked}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:hover:bg-transparent"
+            >
+              <Pencil size={14} /> Modifica
+            </button>
+            <button
+              type="button"
+              onClick={onToggleLock}
+              disabled={locked}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed bg-emerald-600 text-white hover:bg-emerald-700 disabled:hover:bg-emerald-600"
+            >
+              <Save size={14} /> Salva
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────
 // Braden items
@@ -111,12 +179,12 @@ function BradenCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `bradenEvaluations.${index}`;
 
   const date   = useWatch({ name: `${prefix}.date` });
   const values = useWatch({ name: BRADEN_ITEMS.map(i => `${prefix}.${i.key}`) }) as (string | undefined)[];
+  const notes  = useWatch({ name: `${prefix}.notes` }) as string;
 
   const allAnswered = values.every(v => v !== undefined && v !== '');
   const score = allAnswered ? values.reduce((sum, v) => sum + parseInt(v!), 0) : null;
@@ -127,100 +195,57 @@ function BradenCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
-        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
-          score !== null ? bradenNumBadge(score) : 'bg-slate-100 text-slate-400'
-        }`}>
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${score !== null ? bradenNumBadge(score) : 'bg-slate-100 text-slate-400'}`}>
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
         </div>
         {risk && score !== null && (
-          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${
-            score <= 12 ? 'bg-rose-100 text-rose-700 border-rose-200' :
-            score <= 14 ? 'bg-amber-100 text-amber-700 border-amber-200' :
-            score <= 18 ? 'bg-amber-50 text-amber-600 border-amber-200' :
-                          'bg-emerald-100 text-emerald-700 border-emerald-200'
-          }`}>
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${score <= 12 ? 'bg-rose-100 text-rose-700 border-rose-200' : score <= 14 ? 'bg-amber-100 text-amber-700 border-amber-200' : score <= 18 ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>
             {risk.label} ({score})
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
-        </div>
+      </>}
+    >
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
+        <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+          className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+        />
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
-              <input
-                type="date"
-                {...register(`${prefix}.date`)}
-                data-empty={!date ? '' : undefined}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-              />
-            </div>
-
-            {/* Items grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {BRADEN_ITEMS.map((item) => (
-                <div key={item.key}>
-                  <p className="text-xs font-semibold text-slate-600 mb-1">{item.label}</p>
-                  <p className="text-xs text-slate-400 mb-2">{item.subtitle}</p>
-                  <div className={BOX}>
-                    {[...(item.options as readonly { value: string; label: string }[])].reverse().map(opt => (
-                      <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                        <span className={RL}>
-                          <input
-                            type="radio"
-                            value={opt.value}
-                            {...register(`${prefix}.${item.key}` as `bradenEvaluations.${number}.${BradenKey}`)}
-                            className={RADIO}
-                          />
-                          {opt.label}
-                        </span>
-                        <span className="text-xs font-semibold text-slate-400">{opt.value} pt</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {BRADEN_ITEMS.map((item) => (
+          <div key={item.key}>
+            <p className="text-xs font-semibold text-slate-600 mb-1">{item.label}</p>
+            <p className="text-xs text-slate-400 mb-2">{item.subtitle}</p>
+            <div className={BOX}>
+              {[...(item.options as readonly { value: string; label: string }[])].reverse().map(opt => (
+                <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                  <span className={RL}>
+                    <input type="radio" value={opt.value} {...register(`${prefix}.${item.key}` as `bradenEvaluations.${number}.${BradenKey}`)} className={RADIO} />
+                    {opt.label}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-400">{opt.value} pt</span>
+                </label>
               ))}
             </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              risk ? risk.border : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio lesioni da pressione</span>
-              <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
-                {score === null
-                  ? 'Compilare tutti i campi'
-                  : `${risk!.label} — Punteggio ${score}`
-                }
-              </span>
-            </div>
-
           </div>
-        </fieldset>
-      )}
-    </div>
+        ))}
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2} placeholder={locked ? '' : 'Osservazioni aggiuntive...'} className={TA} />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${risk ? risk.border : 'border-slate-300'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio lesioni da pressione</span>
+        <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
+          {score === null ? 'Compilare tutti i campi' : `${risk!.label} — Punteggio ${score}`}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -261,12 +286,12 @@ function ConleyCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `conleyEvaluations.${index}`;
 
   const date   = useWatch({ name: `${prefix}.date` });
   const values = useWatch({ name: CONLEY_ITEMS.map(i => `${prefix}.${i.name}`) }) as (string | undefined)[];
+  const notes  = useWatch({ name: `${prefix}.notes` }) as string;
 
   const allAnswered = values.every(v => v === 'true' || v === 'false');
   const score = allAnswered
@@ -279,105 +304,60 @@ function ConleyCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
-        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
-          score === null ? 'bg-slate-100 text-slate-400'
-          : atRisk ? 'bg-rose-100 text-rose-700'
-          : 'bg-emerald-100 text-emerald-700'
-        }`}>
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${score === null ? 'bg-slate-100 text-slate-400' : atRisk ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
         </div>
         {score !== null && (
-          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${
-            atRisk ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'
-          }`}>
+          <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${atRisk ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-emerald-100 text-emerald-700 border-emerald-200'}`}>
             {atRisk ? `A rischio (${score})` : `Non a rischio (${score})`}
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
-        </div>
+      </>}
+    >
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
+        <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+          className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+        />
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-5">
-
-            {/* Data */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
-              <input
-                type="date"
-                {...register(`${prefix}.date`)}
-                data-empty={!date ? '' : undefined}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-              />
+      {(() => {
+        let lastSection: string | null = null;
+        return CONLEY_ITEMS.map((item) => {
+          const showHeader = item.section !== null && item.section !== lastSection;
+          if (item.section !== null) lastSection = item.section;
+          return (
+            <div key={item.name}>
+              {showHeader && <p className={SUB}>{item.section}</p>}
+              <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100 last:border-0">
+                <span className="text-sm text-slate-700 flex-1">
+                  {item.label}
+                  <span className="ml-1.5 text-xs font-semibold text-slate-400">+{item.pts} pt</span>
+                </span>
+                <div className="flex gap-5 flex-shrink-0">
+                  <label className={RL}><input type="radio" value="true"  {...register(`${prefix}.${item.name}`)} className={RADIO} /> Sì</label>
+                  <label className={RL}><input type="radio" value="false" {...register(`${prefix}.${item.name}`)} className={RADIO} /> No</label>
+                </div>
+              </div>
             </div>
-
-            {/* Items */}
-            {(() => {
-              let lastSection: string | null = null;
-              return CONLEY_ITEMS.map((item) => {
-                const showHeader = item.section !== null && item.section !== lastSection;
-                if (item.section !== null) lastSection = item.section;
-                return (
-                  <div key={item.name}>
-                    {showHeader && <p className={SUB}>{item.section}</p>}
-                    <div className="flex items-center justify-between gap-4 py-2 border-b border-slate-100 last:border-0">
-                      <span className="text-sm text-slate-700 flex-1">
-                        {item.label}
-                        <span className="ml-1.5 text-xs font-semibold text-slate-400">+{item.pts} pt</span>
-                      </span>
-                      <div className="flex gap-5 flex-shrink-0">
-                        <label className={RL}><input type="radio" value="true"  {...register(`${prefix}.${item.name}`)} className={RADIO} /> Sì</label>
-                        <label className={RL}><input type="radio" value="false" {...register(`${prefix}.${item.name}`)} className={RADIO} /> No</label>
-                      </div>
-                    </div>
-                  </div>
-                );
-              });
-            })()}
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 shadow-md border-l-4 rounded-r-lg ${
-              score === null ? 'bg-slate-50 border-slate-300'
-              : atRisk ? 'bg-white border-rose-500'
-              : 'bg-white border-emerald-500'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio cadute</span>
-              <span className={`text-sm font-bold ${
-                score === null ? 'text-slate-400'
-                : atRisk ? 'text-rose-700'
-                : 'text-emerald-700'
-              }`}>
-                {score === null
-                  ? 'Compilare tutti i campi'
-                  : atRisk
-                    ? `A rischio — Punteggio ${score}`
-                    : `Non a rischio — Punteggio ${score}`
-                }
-              </span>
-            </div>
-
-          </div>
-        </fieldset>
-      )}
-    </div>
+          );
+        });
+      })()}
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2} placeholder={locked ? '' : 'Osservazioni aggiuntive...'} className={TA} />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 shadow-md border-l-4 rounded-r-lg ${score === null ? 'bg-slate-50 border-slate-300' : atRisk ? 'bg-white border-rose-500' : 'bg-white border-emerald-500'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio cadute</span>
+        <span className={`text-sm font-bold ${score === null ? 'text-slate-400' : atRisk ? 'text-rose-700' : 'text-emerald-700'}`}>
+          {score === null ? 'Compilare tutti i campi' : atRisk ? `A rischio — Punteggio ${score}` : `Non a rischio — Punteggio ${score}`}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -507,12 +487,12 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `barthelEvaluations.${index}`;
 
   const date   = useWatch({ name: `${prefix}.date` });
   const values = useWatch({ name: BARTHEL_ITEMS.map(i => `${prefix}.${i.key}`) }) as (string | undefined)[];
+  const notes  = useWatch({ name: `${prefix}.notes` }) as string;
 
   const allAnswered = values.every(v => v !== undefined && v !== '');
   const score = allAnswered ? values.reduce((sum, v) => sum + parseInt(v!), 0) : null;
@@ -523,17 +503,9 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
-        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
-          score !== null ? barthelNumBadge(score) : 'bg-slate-100 text-slate-400'
-        }`}>
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${score !== null ? barthelNumBadge(score) : 'bg-slate-100 text-slate-400'}`}>
           {index + 1}
         </div>
         <div className="flex-1 min-w-0">
@@ -544,73 +516,43 @@ function BarthelCard({ index, onRemove, locked, onToggleLock }: {
             {risk.label} ({score})
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
-        </div>
+      </>}
+    >
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
+        <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+          className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+        />
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
-              <input
-                type="date"
-                {...register(`${prefix}.date`)}
-                data-empty={!date ? '' : undefined}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-              />
-            </div>
-
-            {/* Items grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {BARTHEL_ITEMS.map((item) => (
-                <div key={item.key}>
-                  <p className="text-xs font-semibold text-slate-600 mb-2">{item.label}</p>
-                  <div className={BOX}>
-                    {(item.options as readonly { value: string; label: string }[]).map(opt => (
-                      <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                        <span className={RL}>
-                          <input
-                            type="radio"
-                            value={opt.value}
-                            {...register(`${prefix}.${item.key}` as `barthelEvaluations.${number}.${BarthelKey}`)}
-                            className={RADIO}
-                          />
-                          {opt.label}
-                        </span>
-                        <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value} pt</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {BARTHEL_ITEMS.map((item) => (
+          <div key={item.key}>
+            <p className="text-xs font-semibold text-slate-600 mb-2">{item.label}</p>
+            <div className={BOX}>
+              {(item.options as readonly { value: string; label: string }[]).map(opt => (
+                <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                  <span className={RL}>
+                    <input type="radio" value={opt.value} {...register(`${prefix}.${item.key}` as `barthelEvaluations.${number}.${BarthelKey}`)} className={RADIO} />
+                    {opt.label}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value} pt</span>
+                </label>
               ))}
             </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              risk ? risk.border : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Indice di Barthel</span>
-              <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
-                {score === null
-                  ? 'Compilare tutti i campi'
-                  : `${risk!.label} — Punteggio ${score}/100`
-                }
-              </span>
-            </div>
-
           </div>
-        </fieldset>
-      )}
-    </div>
+        ))}
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2} placeholder={locked ? '' : 'Osservazioni aggiuntive...'} className={TA} />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${risk ? risk.border : 'border-slate-300'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Indice di Barthel</span>
+        <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
+          {score === null ? 'Compilare tutti i campi' : `${risk!.label} — Punteggio ${score}/100`}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -792,14 +734,13 @@ function BristolCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register, setValue: setVal } = useFormContext();
   const prefix = `bristolEvaluations.${index}`;
 
-  const date     = useWatch({ name: `${prefix}.date` });
-  const time     = useWatch({ name: `${prefix}.time` }) as string | undefined;
-  const typeVal  = useWatch({ name: `${prefix}.type` }) as string;
-  const notes    = useWatch({ name: `${prefix}.notes` }) as string | undefined;
+  const date    = useWatch({ name: `${prefix}.date` });
+  const time    = useWatch({ name: `${prefix}.time` }) as string | undefined;
+  const typeVal = useWatch({ name: `${prefix}.type` }) as string;
+  const notes   = useWatch({ name: `${prefix}.notes` }) as string;
 
   const dateLabel = date
     ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
@@ -808,14 +749,8 @@ function BristolCard({ index, onRemove, locked, onToggleLock }: {
   const selected = BRISTOL_TYPES.find(t => t.type === typeVal);
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
         <div className="flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border bg-slate-100 text-slate-600 border-slate-200">
           {typeVal ? typeVal : index + 1}
         </div>
@@ -823,88 +758,53 @@ function BristolCard({ index, onRemove, locked, onToggleLock }: {
           <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
           {selected && <p className="text-xs text-slate-400 truncate">{selected.desc}</p>}
         </div>
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+      <div className="flex gap-3">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+          <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+          <input type="time" {...register(`${prefix}.time`)} data-empty={!time ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data e ora */}
-            <div className="flex gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
-                <input type="date" {...register(`${prefix}.date`)}
-                  data-empty={!date ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
-                <input type="time" {...register(`${prefix}.time`)}
-                  data-empty={!time ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-            </div>
-
-            {/* Visual picker */}
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Tipo di feci (Scala di Bristol)</p>
-              <input type="hidden" {...register(`${prefix}.type`)} />
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-                {BRISTOL_TYPES.map(({ type, label, desc }) => (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => setVal(`${prefix}.type`, type, { shouldDirty: true })}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all text-center ${
-                      typeVal === type
-                        ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                        : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                  >
-                    <img
-                      src={`/bristol/${type}.svg`}
-                      alt={label}
-                      className="w-full h-14 object-contain"
-                    />
-                    <span className={`text-xs font-bold ${typeVal === type ? 'text-emerald-700' : 'text-slate-600'}`}>
-                      {label}
-                    </span>
-                    <span className="text-[10px] text-slate-400 leading-tight hidden lg:block">{desc}</span>
-                  </button>
-                ))}
-              </div>
-              {selected && (
-                <p className="mt-2 text-sm text-slate-600 bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
-                  <span className="font-semibold">{selected.label}:</span> {selected.desc}
-                </p>
-              )}
-            </div>
-
-            {/* Note */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
-              <textarea
-                {...register(`${prefix}.notes`)}
-                rows={2}
-                data-empty={!notes ? '' : undefined}
-                placeholder="Osservazioni aggiuntive..."
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
-              />
-            </div>
-          </div>
-        </fieldset>
-      )}
-    </div>
+      <div>
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Tipo di feci (Scala di Bristol)</p>
+        <input type="hidden" {...register(`${prefix}.type`)} />
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+          {BRISTOL_TYPES.map(({ type, label, desc }) => (
+            <button key={type} type="button"
+              onClick={() => setVal(`${prefix}.type`, type, { shouldDirty: true })}
+              className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all text-center ${
+                typeVal === type ? 'border-emerald-500 bg-emerald-50 shadow-sm' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <img src={`/bristol/${type}.svg`} alt={label} className="w-full h-14 object-contain" />
+              <span className={`text-xs font-bold ${typeVal === type ? 'text-emerald-700' : 'text-slate-600'}`}>{label}</span>
+              <span className="text-[10px] text-slate-400 leading-tight hidden lg:block">{desc}</span>
+            </button>
+          ))}
+        </div>
+        {selected && (
+          <p className="mt-2 text-sm text-slate-600 bg-slate-50 rounded-lg px-3 py-2 border border-slate-200">
+            <span className="font-semibold">{selected.label}:</span> {selected.desc}
+          </p>
+        )}
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2}
+          placeholder={locked ? '' : 'Osservazioni aggiuntive...'}
+          className={TA}
+        />
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -914,13 +814,13 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `painEvaluations.${index}`;
 
   const date  = useWatch({ name: `${prefix}.date` });
   const time  = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const score = useWatch({ name: `${prefix}.score` }) as string;
+  const notes = useWatch({ name: `${prefix}.notes` }) as string;
   const n     = parseInt(score);
 
   const dateLabel = date
@@ -928,14 +828,8 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
         <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${nrsColor(score)}`}>
           {score !== '' ? score : index + 1}
         </div>
@@ -947,120 +841,79 @@ function PainCard({ index, onRemove, locked, onToggleLock }: {
             {nrsLabel(score)} ({score}/10)
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+
+      <div className="flex gap-3">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+          <input type="date" {...register(`${prefix}.date`)}
+            data-empty={!date ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+          <input type="time" {...register(`${prefix}.time`)}
+            data-empty={!time ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data e ora */}
-            <div className="flex gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
-                <input type="date" {...register(`${prefix}.date`)}
-                  data-empty={!date ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
-                <input type="time" {...register(`${prefix}.time`)}
-                  data-empty={!time ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-            </div>
-
-            {/* NRS Slider */}
-            <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Intensità del dolore (NRS 0–10)</p>
-
-              {/* Score display */}
-              <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 mb-4 transition-all ${nrsColor(score)}`}>
-                <span className="text-3xl font-black tabular-nums w-8 text-center leading-none">
-                  {score !== '' ? score : '–'}
-                </span>
-                <div className="h-8 w-px bg-current opacity-20" />
-                <span className="font-semibold text-sm">
-                  {score !== '' ? nrsLabel(score) : 'Muovi lo slider per selezionare'}
-                </span>
-              </div>
-
-              {/* Slider: colored segments ARE the track */}
-              <div className="relative h-8 flex items-center">
-                {/* Segments — inset by half-thumb (12px) so they align with thumb travel range */}
-                <div className="absolute inset-x-3 top-1/2 -translate-y-1/2 flex gap-0.5 h-4 rounded-full overflow-hidden pointer-events-none">
-                  {NRS_BG.map((bg, i) => (
-                    <div
-                      key={i}
-                      className={`flex-1 transition-all duration-150 ${score !== '' && n > i ? bg : 'bg-slate-200'}`}
-                    />
-                  ))}
-                </div>
-
-                {/* Range input — transparent track, styled thumb only */}
-                <input
-                  type="range"
-                  min="0"
-                  max="10"
-                  step="1"
-                  {...register(`${prefix}.score`)}
-                  style={{ '--thumb-border': score !== '' ? NRS_ACCENT[n] : '#94a3b8' } as React.CSSProperties}
-                  className="relative w-full h-8 appearance-none bg-transparent cursor-pointer disabled:cursor-not-allowed
-                    [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-8
-                    [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6
-                    [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
-                    [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-[3px]
-                    [&::-webkit-slider-thumb]:border-[color:var(--thumb-border)]
-                    [&::-webkit-slider-thumb]:mt-1
-                    [&::-moz-range-track]:bg-transparent
-                    [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full
-                    [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md
-                    [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-[color:var(--thumb-border)]"
-                />
-              </div>
-
-              {/* Endpoint labels */}
-              <div className="flex justify-between text-xs text-slate-400 mt-0.5 px-0.5">
-                <span>0 — Nessun dolore</span>
-                <span>10 — Insopportabile</span>
-              </div>
-            </div>
-
-            {/* Sede */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Sede del dolore</label>
-              <input
-                type="text"
-                {...register(`${prefix}.location`)}
-                placeholder={locked ? '—' : 'es. addome, torace, capo, arto inferiore dx...'}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
-              />
-            </div>
-
-            {/* Note */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
-              <textarea
-                {...register(`${prefix}.notes`)}
-                rows={2}
-                placeholder={locked ? '—' : 'Carattere, irradiazione, fattori aggravanti/allevianti, terapia somministrata...'}
-                className={TA}
-              />
-            </div>
-
+      <div>
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Intensità del dolore (NRS 0–10)</p>
+        <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 mb-4 transition-all ${nrsColor(score)}`}>
+          <span className="text-3xl font-black tabular-nums w-8 text-center leading-none">
+            {score !== '' ? score : '–'}
+          </span>
+          <div className="h-8 w-px bg-current opacity-20" />
+          <span className="font-semibold text-sm">
+            {score !== '' ? nrsLabel(score) : 'Muovi lo slider per selezionare'}
+          </span>
+        </div>
+        <div className="relative h-8 flex items-center">
+          <div className="absolute inset-x-3 top-1/2 -translate-y-1/2 flex gap-0.5 h-4 rounded-full overflow-hidden pointer-events-none">
+            {NRS_BG.map((bg, i) => (
+              <div key={i} className={`flex-1 transition-all duration-150 ${score !== '' && n > i ? bg : 'bg-slate-200'}`} />
+            ))}
           </div>
-        </fieldset>
-      )}
-    </div>
+          <input
+            type="range" min="0" max="10" step="1"
+            {...register(`${prefix}.score`)}
+            style={{ '--thumb-border': score !== '' ? NRS_ACCENT[n] : '#94a3b8' } as React.CSSProperties}
+            className="relative w-full h-8 appearance-none bg-transparent cursor-pointer disabled:cursor-not-allowed
+              [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-runnable-track]:h-8
+              [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6
+              [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white
+              [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-[3px]
+              [&::-webkit-slider-thumb]:border-[color:var(--thumb-border)]
+              [&::-webkit-slider-thumb]:mt-1
+              [&::-moz-range-track]:bg-transparent
+              [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full
+              [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md
+              [&::-moz-range-thumb]:border-[3px] [&::-moz-range-thumb]:border-[color:var(--thumb-border)]"
+          />
+        </div>
+        <div className="flex justify-between text-xs text-slate-400 mt-0.5 px-0.5">
+          <span>0 — Nessun dolore</span>
+          <span>10 — Insopportabile</span>
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Sede del dolore</label>
+        <input type="text" {...register(`${prefix}.location`)}
+          placeholder={locked ? '—' : 'es. addome, torace, capo, arto inferiore dx...'}
+          className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+        />
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2}
+          placeholder={locked ? '' : 'Carattere, irradiazione, fattori aggravanti/allevianti, terapia somministrata...'}
+          className={TA}
+        />
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -1070,7 +923,6 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `gcsEvaluations.${index}`;
 
@@ -1079,6 +931,7 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
   const eyes    = useWatch({ name: `${prefix}.eyes` })   as string | undefined;
   const verbal  = useWatch({ name: `${prefix}.verbal` }) as string | undefined;
   const motor   = useWatch({ name: `${prefix}.motor` })  as string | undefined;
+  const notes   = useWatch({ name: `${prefix}.notes` }) as string;
 
   const allAnswered = [eyes, verbal, motor].every(v => v !== undefined && v !== '');
   const score = allAnswered ? parseInt(eyes!) + parseInt(verbal!) + parseInt(motor!) : null;
@@ -1089,14 +942,8 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
         <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
           risk ? risk.num : 'bg-slate-100 text-slate-400'
         }`}>
@@ -1113,126 +960,88 @@ function GcsCard({ index, onRemove, locked, onToggleLock }: {
             {risk.label} ({score})
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+      <div className="flex gap-3">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+          <input type="date" {...register(`${prefix}.date`)}
+            data-empty={!date ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+          <input type="time" {...register(`${prefix}.time`)}
+            data-empty={!time ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data e ora */}
-            <div className="flex gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
-                <input type="date" {...register(`${prefix}.date`)}
-                  data-empty={!date ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
-                <input type="time" {...register(`${prefix}.time`)}
-                  data-empty={!time ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-            </div>
-
-            {/* 3 subscales */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* E — Eye */}
-              <div>
-                <p className="text-xs font-semibold text-slate-600 mb-2">
-                  E — Apertura occhi
-                  {eyes && <span className="ml-1.5 font-mono text-emerald-600">({eyes})</span>}
-                </p>
-                <div className={BOX}>
-                  {GCS_EYES.map(opt => (
-                    <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                      <span className={RL}>
-                        <input type="radio" value={opt.value} {...register(`${prefix}.eyes`)} className={RADIO} />
-                        {opt.label}
-                      </span>
-                      <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* V — Verbal */}
-              <div>
-                <p className="text-xs font-semibold text-slate-600 mb-2">
-                  V — Risposta verbale
-                  {verbal && <span className="ml-1.5 font-mono text-emerald-600">({verbal})</span>}
-                </p>
-                <div className={BOX}>
-                  {GCS_VERBAL.map(opt => (
-                    <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                      <span className={RL}>
-                        <input type="radio" value={opt.value} {...register(`${prefix}.verbal`)} className={RADIO} />
-                        {opt.label}
-                      </span>
-                      <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* M — Motor */}
-              <div>
-                <p className="text-xs font-semibold text-slate-600 mb-2">
-                  M — Risposta motoria
-                  {motor && <span className="ml-1.5 font-mono text-emerald-600">({motor})</span>}
-                </p>
-                <div className={BOX}>
-                  {GCS_MOTOR.map(opt => (
-                    <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                      <span className={RL}>
-                        <input type="radio" value={opt.value} {...register(`${prefix}.motor`)} className={RADIO} />
-                        {opt.label}
-                      </span>
-                      <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Note */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
-              <textarea
-                {...register(`${prefix}.notes`)}
-                rows={2}
-                placeholder={locked ? '—' : 'Osservazioni aggiuntive...'}
-                className={TA}
-              />
-            </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              risk ? risk.border : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Glasgow Coma Scale</span>
-              <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
-                {score === null
-                  ? 'Compilare tutti i campi'
-                  : `${risk!.label} — GCS ${score}/15`
-                }
-              </span>
-            </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <p className="text-xs font-semibold text-slate-600 mb-2">
+            E — Apertura occhi
+            {eyes && <span className="ml-1.5 font-mono text-emerald-600">({eyes})</span>}
+          </p>
+          <div className={BOX}>
+            {GCS_EYES.map(opt => (
+              <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                <span className={RL}>
+                  <input type="radio" value={opt.value} {...register(`${prefix}.eyes`)} className={RADIO} />
+                  {opt.label}
+                </span>
+                <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
+              </label>
+            ))}
           </div>
-        </fieldset>
-      )}
-    </div>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-slate-600 mb-2">
+            V — Risposta verbale
+            {verbal && <span className="ml-1.5 font-mono text-emerald-600">({verbal})</span>}
+          </p>
+          <div className={BOX}>
+            {GCS_VERBAL.map(opt => (
+              <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                <span className={RL}>
+                  <input type="radio" value={opt.value} {...register(`${prefix}.verbal`)} className={RADIO} />
+                  {opt.label}
+                </span>
+                <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-slate-600 mb-2">
+            M — Risposta motoria
+            {motor && <span className="ml-1.5 font-mono text-emerald-600">({motor})</span>}
+          </p>
+          <div className={BOX}>
+            {GCS_MOTOR.map(opt => (
+              <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                <span className={RL}>
+                  <input type="radio" value={opt.value} {...register(`${prefix}.motor`)} className={RADIO} />
+                  {opt.label}
+                </span>
+                <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2} placeholder={locked ? '' : 'Osservazioni aggiuntive...'} className={TA} />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${risk ? risk.border : 'border-slate-300'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Glasgow Coma Scale</span>
+        <span className={`text-sm font-bold ${risk ? risk.text : 'text-slate-400'}`}>
+          {score === null ? 'Compilare tutti i campi' : `${risk!.label} — GCS ${score}/15`}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -1242,13 +1051,13 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `avpuEvaluations.${index}`;
 
   const date  = useWatch({ name: `${prefix}.date` });
   const time  = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const score = useWatch({ name: `${prefix}.score` }) as string | undefined;
+  const notes = useWatch({ name: `${prefix}.notes` }) as string;
 
   const level = score ? avpuLevel(score) : null;
 
@@ -1257,14 +1066,8 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
         <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${
           level ? level.color : 'bg-slate-100 text-slate-400 border-slate-200'
         }`}>
@@ -1278,91 +1081,59 @@ function AvpuCard({ index, onRemove, locked, onToggleLock }: {
             {level.title}
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+      <div className="flex gap-3">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+          <input type="date" {...register(`${prefix}.date`)}
+            data-empty={!date ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+          <input type="time" {...register(`${prefix}.time`)}
+            data-empty={!time ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data e ora */}
-            <div className="flex gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
-                <input type="date" {...register(`${prefix}.date`)}
-                  data-empty={!date ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
-                <input type="time" {...register(`${prefix}.time`)}
-                  data-empty={!time ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-            </div>
-
-            {/* AVPU options */}
-            <div>
-              <p className="text-xs font-semibold text-slate-600 mb-2">Livello di coscienza</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {AVPU_LEVELS.map(lvl => {
-                  const isSelected = score === lvl.value;
-                  return (
-                    <label key={lvl.value} className="cursor-pointer">
-                      <input type="radio" value={lvl.value} {...register(`${prefix}.score`)} className="sr-only" />
-                      <span className={`flex items-start gap-3 px-4 py-3 rounded-lg border text-sm transition-all ${
-                        isSelected
-                          ? `${lvl.color} font-semibold shadow-sm`
-                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                      }`}>
-                        <span className="font-mono font-bold text-base leading-none mt-0.5 w-4 flex-shrink-0">
-                          {lvl.value}
-                        </span>
-                        <span className="flex flex-col gap-0.5">
-                          <span className="font-semibold">{lvl.title.split(' — ')[1]}</span>
-                          <span className="text-xs font-normal opacity-75">{lvl.desc}</span>
-                        </span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Note */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
-              <textarea
-                {...register(`${prefix}.notes`)}
-                rows={2}
-                placeholder={locked ? '—' : 'Osservazioni aggiuntive...'}
-                className={TA}
-              />
-            </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              level ? level.border : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Scala AVPU</span>
-              <span className={`text-sm font-bold ${level ? level.text : 'text-slate-400'}`}>
-                {level ? level.title : 'Selezionare un livello'}
-              </span>
-            </div>
-
-          </div>
-        </fieldset>
-      )}
-    </div>
+      <div>
+        <p className="text-xs font-semibold text-slate-600 mb-2">Livello di coscienza</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {AVPU_LEVELS.map(lvl => {
+            const isSelected = score === lvl.value;
+            return (
+              <label key={lvl.value} className="cursor-pointer">
+                <input type="radio" value={lvl.value} {...register(`${prefix}.score`)} className="sr-only" />
+                <span className={`flex items-start gap-3 px-4 py-3 rounded-lg border text-sm transition-all ${
+                  isSelected
+                    ? `${lvl.color} font-semibold shadow-sm`
+                    : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                }`}>
+                  <span className="font-mono font-bold text-base leading-none mt-0.5 w-4 flex-shrink-0">{lvl.value}</span>
+                  <span className="flex flex-col gap-0.5">
+                    <span className="font-semibold">{lvl.title.split(' — ')[1]}</span>
+                    <span className="text-xs font-normal opacity-75">{lvl.desc}</span>
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2} placeholder={locked ? '' : 'Osservazioni aggiuntive...'} className={TA} />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${level ? level.border : 'border-slate-300'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Scala AVPU</span>
+        <span className={`text-sm font-bold ${level ? level.text : 'text-slate-400'}`}>
+          {level ? level.title : 'Selezionare un livello'}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -1376,13 +1147,13 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `borgEvaluations.${index}`;
 
   const date  = useWatch({ name: `${prefix}.date` });
   const time  = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const score = useWatch({ name: `${prefix}.score` }) as string | undefined;
+  const notes = useWatch({ name: `${prefix}.notes` }) as string;
   const hasScore = score !== undefined && score !== '';
 
   const dateLabel = date
@@ -1390,14 +1161,8 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
         <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none border ${
           hasScore ? borgColor(score!) : 'bg-slate-100 text-slate-400 border-slate-200'
         }`}>
@@ -1411,98 +1176,55 @@ function BorgCard({ index, onRemove, locked, onToggleLock }: {
             {borgLabel(score!)} ({score})
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+      <div className="flex gap-3">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+          <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+          <input type="time" {...register(`${prefix}.time`)} data-empty={!time ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data e ora */}
-            <div className="flex gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
-                <input
-                  type="date"
-                  {...register(`${prefix}.date`)}
-                  data-empty={!date ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
-                <input
-                  type="time"
-                  {...register(`${prefix}.time`)}
-                  data-empty={!time ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-            </div>
-
-            {/* Borg grid */}
-            <div>
-              <p className="text-xs font-semibold text-slate-600 mb-2">Intensità percepita della dispnea / sforzo</p>
-              <div className="grid grid-cols-2 gap-1.5">
-                {BORG_LEVELS.map(level => {
-                  const isSelected = score === level.value;
-                  return (
-                    <label key={level.value} className="cursor-pointer">
-                      <input
-                        type="radio"
-                        value={level.value}
-                        {...register(`${prefix}.score`)}
-                        className="sr-only"
-                      />
-                      <span className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all ${
-                        isSelected
-                          ? `${level.color} font-semibold shadow-sm`
-                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                      }`}>
-                        <span className="font-mono font-bold w-6 flex-shrink-0 text-right">{level.value}</span>
-                        <span className="text-xs leading-tight">{level.label}</span>
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Note */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
-              <textarea
-                {...register(`${prefix}.notes`)}
-                rows={2}
-                placeholder={locked ? '—' : 'Osservazioni (es. a riposo, durante deambulazione, dopo fisioterapia...)'}
-                className={TA}
-              />
-            </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              hasScore ? borgBorderColor(score!) : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Scala di Borg</span>
-              <span className={`text-sm font-bold ${hasScore ? borgTextColor(score!) : 'text-slate-400'}`}>
-                {hasScore
-                  ? `${borgLabel(score!)} — Punteggio ${score}/10`
-                  : 'Selezionare un livello'
-                }
-              </span>
-            </div>
-
-          </div>
-        </fieldset>
-      )}
-    </div>
+      <div>
+        <p className="text-xs font-semibold text-slate-600 mb-2">Intensità percepita della dispnea / sforzo</p>
+        <div className="grid grid-cols-2 gap-1.5">
+          {BORG_LEVELS.map(level => {
+            const isSelected = score === level.value;
+            return (
+              <label key={level.value} className="cursor-pointer">
+                <input type="radio" value={level.value} {...register(`${prefix}.score`)} className="sr-only" />
+                <span className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-all ${
+                  isSelected ? `${level.color} font-semibold shadow-sm` : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                }`}>
+                  <span className="font-mono font-bold w-6 flex-shrink-0 text-right">{level.value}</span>
+                  <span className="text-xs leading-tight">{level.label}</span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2}
+          placeholder={locked ? '' : 'Osservazioni (es. a riposo, durante deambulazione, dopo fisioterapia...)'}
+          className={TA}
+        />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${hasScore ? borgBorderColor(score!) : 'border-slate-300'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Scala di Borg</span>
+        <span className={`text-sm font-bold ${hasScore ? borgTextColor(score!) : 'text-slate-400'}`}>
+          {hasScore ? `${borgLabel(score!)} — Punteggio ${score}/10` : 'Selezionare un livello'}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -1629,13 +1351,13 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `throatEvaluations.${index}`;
 
   const date   = useWatch({ name: `${prefix}.date` });
   const time   = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const values = useWatch({ name: THROAT_ITEMS.map(i => `${prefix}.${i.key}`) }) as (string | undefined)[];
+  const notes  = useWatch({ name: `${prefix}.notes` }) as string;
 
   const allAnswered = values.every(v => v !== undefined && v !== '');
   const score = allAnswered ? values.reduce((sum, v) => sum + parseInt(v!), 0) : null;
@@ -1646,14 +1368,8 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
         <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
           score !== null ? throatNumBadge(score) : 'bg-slate-100 text-slate-400'
         }`}>
@@ -1667,90 +1383,63 @@ function ThroatCard({ index, onRemove, locked, onToggleLock }: {
             {risk.label} ({score})
           </span>
         )}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+      <div className="flex gap-3">
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
+          <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
+          <input type="time" {...register(`${prefix}.time`)} data-empty={!time ? '' : undefined}
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+          />
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-4">
-
-            {/* Data e ora */}
-            <div className="flex gap-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data</label>
-                <input
-                  type="date"
-                  {...register(`${prefix}.date`)}
-                  data-empty={!date ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Ora</label>
-                <input
-                  type="time"
-                  {...register(`${prefix}.time`)}
-                  data-empty={!time ? '' : undefined}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-                />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {THROAT_ITEMS.map((item, itemIdx) => {
+          const itemVal = values[itemIdx];
+          const isSevere = itemVal === '3';
+          return (
+            <div key={item.key}>
+              <p className={`text-xs font-semibold mb-2 flex items-center gap-1.5 ${isSevere ? 'text-rose-600' : 'text-slate-600'}`}>
+                {item.label}
+              </p>
+              <div className={BOX}>
+                {(item.options as readonly { value: string; label: string }[]).map(opt => (
+                  <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+                    <span className={RL}>
+                      <input type="radio" value={opt.value}
+                        {...register(`${prefix}.${item.key}` as `throatEvaluations.${number}.${ThroatKey}`)}
+                        className={RADIO}
+                      />
+                      {opt.label}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value} pt</span>
+                  </label>
+                ))}
               </div>
             </div>
-
-            {/* Items grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {THROAT_ITEMS.map((item, itemIdx) => {
-                const itemVal = values[itemIdx];
-                const isSevere = itemVal === '3';
-                return (
-                  <div key={item.key}>
-                    <p className={`text-xs font-semibold mb-2 flex items-center gap-1.5 ${isSevere ? 'text-rose-600' : 'text-slate-600'}`}>
-                      {item.label}
-                    </p>
-                    <div className={BOX}>
-                      {(item.options as readonly { value: string; label: string }[]).map(opt => (
-                        <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                          <span className={RL}>
-                            <input
-                              type="radio"
-                              value={opt.value}
-                              {...register(`${prefix}.${item.key}` as `throatEvaluations.${number}.${ThroatKey}`)}
-                              className={RADIO}
-                            />
-                            {opt.label}
-                          </span>
-                          <span className="text-xs font-semibold text-slate-400 ml-2 flex-shrink-0">{opt.value} pt</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${
-              risk ? risk.border : 'border-slate-300'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Stato cavo orale</span>
-              <span className={`text-sm font-bold text-right ${risk ? risk.text : 'text-slate-400'}`}>
-                {score === null
-                  ? 'Compilare tutti i campi'
-                  : `${risk!.label} — Punteggio ${score}`
-                }
-              </span>
-            </div>
-
-          </div>
-        </fieldset>
-      )}
-    </div>
+          );
+        })}
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2}
+          placeholder={locked ? '' : 'Osservazioni aggiuntive...'}
+          className={TA}
+        />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 bg-white shadow-md border-l-4 rounded-r-lg ${risk ? risk.border : 'border-slate-300'}`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Stato cavo orale</span>
+        <span className={`text-sm font-bold text-right ${risk ? risk.text : 'text-slate-400'}`}>
+          {score === null ? 'Compilare tutti i campi' : `${risk!.label} — Punteggio ${score}`}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -1764,7 +1453,6 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
   locked: boolean;
   onToggleLock: () => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
   const { register } = useFormContext();
   const prefix = `mustEvaluations.${index}`;
 
@@ -1772,6 +1460,7 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
   const step1 = useWatch({ name: `${prefix}.step1Bmi` })          as string | undefined;
   const step2 = useWatch({ name: `${prefix}.step2WeightLoss` })   as string | undefined;
   const step3 = useWatch({ name: `${prefix}.step3AcuteDisease` }) as string | undefined;
+  const notes = useWatch({ name: `${prefix}.notes` }) as string;
 
   const allAnswered = [step1, step2, step3].every(v => v !== undefined && v !== '');
   const score = allAnswered
@@ -1784,152 +1473,97 @@ function MustCard({ index, onRemove, locked, onToggleLock }: {
     : `Valutazione ${index + 1}`;
 
   return (
-    <div className={`border rounded-xl overflow-hidden transition-all ${
-      locked ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-200 bg-white'
-    }`}>
-      {/* Header */}
-      <div
-        className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50/80 transition-colors"
-        onClick={() => setExpanded(e => !e)}
-      >
-        {/* Number badge */}
-        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${
-          risk ? risk.num : 'bg-slate-100 text-slate-400'
-        }`}>
+    <ScaleCard locked={locked} onToggleLock={onToggleLock} onRemove={onRemove} notes={notes}
+      header={<>
+        <div className={`flex-shrink-0 w-7 h-7 rounded-full font-bold text-sm flex items-center justify-center select-none ${risk ? risk.num : 'bg-slate-100 text-slate-400'}`}>
           {index + 1}
         </div>
-
-        {/* Date */}
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-slate-700 truncate">{dateLabel}</p>
         </div>
-
-        {/* Score + risk badge */}
         {risk && (
           <span className={`flex-shrink-0 text-xs px-2 py-0.5 rounded-full border font-semibold ${risk.badge}`}>
             {risk.label} ({score})
           </span>
         )}
-
-        {/* Actions */}
-        <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
-          <LockToggle locked={locked} onToggle={onToggleLock} />
-          {!locked && <ConfirmDeleteButton onConfirm={onRemove} size={15} />}
-          <button type="button" className="text-slate-400 hover:text-slate-600 p-1" onClick={() => setExpanded(e => !e)}>
-            {expanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-          </button>
+      </>}
+    >
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
+        <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined}
+          className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
+        />
+      </div>
+      <div>
+        <p className={SUB}>Step 1 — BMI (kg/m²)</p>
+        <div className={BOX}>
+          {[
+            { value: '0', label: '> 20 (> 30 obeso)',  pts: '+0 pt' },
+            { value: '1', label: '18,5 – 20',          pts: '+1 pt' },
+            { value: '2', label: '< 18,5',             pts: '+2 pt' },
+          ].map(opt => (
+            <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+              <span className={RL}>
+                <input type="radio" value={opt.value} {...register(`${prefix}.step1Bmi`)} className={RADIO} />
+                {opt.label}
+              </span>
+              <span className="text-xs font-semibold text-slate-400">{opt.pts}</span>
+            </label>
+          ))}
         </div>
       </div>
-
-      {/* Body */}
-      {expanded && (
-        <fieldset disabled={locked} className={`border-t border-slate-200 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
-          <div className="p-5 space-y-5">
-
-            {/* Data */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
-              <input
-                type="date"
-                {...register(`${prefix}.date`)}
-                data-empty={!date ? '' : undefined}
-                className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-not-allowed"
-              />
-            </div>
-
-            {/* Step 1 — BMI */}
-            <div>
-              <p className={SUB}>Step 1 — BMI (kg/m²)</p>
-              <div className={BOX}>
-                {[
-                  { value: '0', label: '> 20 (> 30 obeso)',  pts: '+0 pt' },
-                  { value: '1', label: '18,5 – 20',          pts: '+1 pt' },
-                  { value: '2', label: '< 18,5',             pts: '+2 pt' },
-                ].map(opt => (
-                  <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                    <span className={RL}>
-                      <input type="radio" value={opt.value} {...register(`${prefix}.step1Bmi`)} className={RADIO} />
-                      {opt.label}
-                    </span>
-                    <span className="text-xs font-semibold text-slate-400">{opt.pts}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Step 2 — Decremento ponderale */}
-            <div>
-              <p className={SUB}>Step 2 — Decremento ponderale non volontario (ultimi 3–6 mesi)</p>
-              <div className={BOX}>
-                {[
-                  { value: '0', label: '< 5%',   pts: '+0 pt' },
-                  { value: '1', label: '5 – 10%', pts: '+1 pt' },
-                  { value: '2', label: '> 10%',   pts: '+2 pt' },
-                ].map(opt => (
-                  <label key={opt.value} className="flex items-center justify-between cursor-pointer">
-                    <span className={RL}>
-                      <input type="radio" value={opt.value} {...register(`${prefix}.step2WeightLoss`)} className={RADIO} />
-                      {opt.label}
-                    </span>
-                    <span className="text-xs font-semibold text-slate-400">{opt.pts}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Step 3 — Malattia acuta */}
-            <div>
-              <p className={SUB}>Step 3 — Effetti di malattia acuta</p>
-              <div className={BOX}>
-                <p className="text-sm text-slate-600">
-                  Il paziente è affetto da malattia acuta e non vi è stato, o è probabile che non vi sia, alcun apporto nutrizionale per &gt; 5 giorni?
-                </p>
-                <div className="flex gap-6 pt-1">
-                  <label className={RL}>
-                    <input type="radio" value="true"  {...register(`${prefix}.step3AcuteDisease`)} className={RADIO} />
-                    Sì <span className="text-xs font-semibold text-slate-400 ml-1">+2 pt</span>
-                  </label>
-                  <label className={RL}>
-                    <input type="radio" value="false" {...register(`${prefix}.step3AcuteDisease`)} className={RADIO} />
-                    No
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Note */}
-            <div>
-              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
-              <textarea
-                {...register(`${prefix}.notes`)}
-                rows={2}
-                placeholder={locked ? '—' : 'Osservazioni aggiuntive...'}
-                className={TA}
-              />
-            </div>
-
-            {/* Score bar */}
-            <div className={`flex items-center justify-between gap-4 px-4 py-3 shadow-md border-l-4 rounded-r-lg ${
-              score === null
-                ? 'bg-slate-50 border-slate-300'
-                : score === 0
-                  ? 'bg-white border-emerald-500'
-                  : score === 1
-                    ? 'bg-white border-amber-400'
-                    : 'bg-white border-rose-500'
-            }`}>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio malnutrizione</span>
-              <span className={`text-sm font-bold ${
-                score === null ? 'text-slate-400' : risk!.badge.split(' ')[1]
-              }`}>
-                {score === null ? 'Compilare tutti gli step' : `${risk!.label} — Punteggio ${score}`}
+      <div>
+        <p className={SUB}>Step 2 — Decremento ponderale non volontario (ultimi 3–6 mesi)</p>
+        <div className={BOX}>
+          {[
+            { value: '0', label: '< 5%',   pts: '+0 pt' },
+            { value: '1', label: '5 – 10%', pts: '+1 pt' },
+            { value: '2', label: '> 10%',   pts: '+2 pt' },
+          ].map(opt => (
+            <label key={opt.value} className="flex items-center justify-between cursor-pointer">
+              <span className={RL}>
+                <input type="radio" value={opt.value} {...register(`${prefix}.step2WeightLoss`)} className={RADIO} />
+                {opt.label}
               </span>
-            </div>
-
+              <span className="text-xs font-semibold text-slate-400">{opt.pts}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p className={SUB}>Step 3 — Effetti di malattia acuta</p>
+        <div className={BOX}>
+          <p className="text-sm text-slate-600">
+            Il paziente è affetto da malattia acuta e non vi è stato, o è probabile che non vi sia, alcun apporto nutrizionale per &gt; 5 giorni?
+          </p>
+          <div className="flex gap-6 pt-1">
+            <label className={RL}>
+              <input type="radio" value="true" {...register(`${prefix}.step3AcuteDisease`)} className={RADIO} />
+              Sì <span className="text-xs font-semibold text-slate-400 ml-1">+2 pt</span>
+            </label>
+            <label className={RL}>
+              <input type="radio" value="false" {...register(`${prefix}.step3AcuteDisease`)} className={RADIO} />
+              No
+            </label>
           </div>
-        </fieldset>
-      )}
-    </div>
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Note</label>
+        <textarea {...register(`${prefix}.notes`)} rows={2}
+          placeholder={locked ? '' : 'Osservazioni aggiuntive...'}
+          className={TA}
+        />
+      </div>
+      <div className={`flex items-center justify-between gap-4 px-4 py-3 shadow-md border-l-4 rounded-r-lg ${
+        score === null ? 'bg-slate-50 border-slate-300' : score === 0 ? 'bg-white border-emerald-500' : score === 1 ? 'bg-white border-amber-400' : 'bg-white border-rose-500'
+      }`}>
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio malnutrizione</span>
+        <span className={`text-sm font-bold ${score === null ? 'text-slate-400' : risk!.badge.split(' ')[1]}`}>
+          {score === null ? 'Compilare tutti gli step' : `${risk!.label} — Punteggio ${score}`}
+        </span>
+      </div>
+    </ScaleCard>
   );
 }
 
@@ -1945,7 +1579,7 @@ export default function ScalesTab() {
   const { toggleLock: toggleLockBraden, isLocked: isLockedBraden } = useRowLocks();
   const addBradenEval = () => appendBraden({
     date: new Date().toISOString().slice(0, 10),
-    sensory: '', moisture: '', activity: '', mobility: '', nutrition: '', friction: '',
+    sensory: '', moisture: '', activity: '', mobility: '', nutrition: '', friction: '', notes: '',
   });
 
   // Auto-update bradenScore / pressureUlcerRisk (used in Model2) from last completed evaluation
@@ -1970,7 +1604,7 @@ export default function ScalesTab() {
   const addBarthelEval = () => appendBarthel({
     date: new Date().toISOString().slice(0, 10),
     feeding: '', bathing: '', grooming: '', dressing: '', bowel: '',
-    bladder: '', toilet: '', transfer: '', mobility: '', stairs: '',
+    bladder: '', toilet: '', transfer: '', mobility: '', stairs: '', notes: '',
   });
 
   // Auto-update barthelScore (used in Model4) from last completed evaluation
@@ -2067,7 +1701,7 @@ export default function ScalesTab() {
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
     lips: '', teeth: '', gums: '', mucosa: '', tongue: '',
-    saliva: '', pharynx: '', voice: '', swallowing: '',
+    saliva: '', pharynx: '', voice: '', swallowing: '', notes: '',
   });
 
   // Auto-update throatScaleScore (used in Model2) from last completed evaluation
@@ -2099,7 +1733,7 @@ export default function ScalesTab() {
   const { toggleLock: toggleLockConley, isLocked: isLockedConley } = useRowLocks();
   const addConleyEval = () => appendConley({
     date: new Date().toISOString().slice(0, 10),
-    conley1: '', conley2: '', conley3: '', conley4: '', conley5: '', conley6: '',
+    conley1: '', conley2: '', conley3: '', conley4: '', conley5: '', conley6: '', notes: '',
   });
 
   // ── MUST ────────────────────────────────────
