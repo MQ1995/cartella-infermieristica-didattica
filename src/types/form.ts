@@ -30,7 +30,7 @@ export interface NursingAssessment {
   arrivalMode: string;
   medicalDiagnosis: string;
   admissionReason: string;
-  pastMedicalHistory: Array<{ date: string; pathology: string }>;
+  pastMedicalHistory: Array<{ date: string; pathology: string; notes: string }>;
   dataSource: string;
   dataSourceOther: string;
   
