@@ -59,6 +59,7 @@ export interface NursingAssessment {
     conley4: string;
     conley5: string;
     conley6: string;
+    notes: string;
   }>;
 
   // MODEL 2
@@ -137,6 +138,7 @@ export interface NursingAssessment {
     mobility: string;
     nutrition: string;
     friction: string;
+    notes: string;
   }>;
   pressureUlcerRiskFactors: string;
   pressureUlcerRiskFactorsDetails: string;
@@ -177,6 +179,7 @@ export interface NursingAssessment {
     transfer: string;
     mobility: string;
     stairs: string;
+    notes: string;
   }>;
 
   throatEvaluations: Array<{
@@ -191,6 +194,7 @@ export interface NursingAssessment {
     pharynx: string;
     voice: string;
     swallowing: string;
+    notes: string;
   }>;
   model2Notes: string;
   model2Status: string;
@@ -465,6 +469,7 @@ export interface NursingAssessment {
     time: string;
     examType: string;
     result: string;
+    notes: string;
   }>;
 
   // Bilancio idrico giornaliero
@@ -481,6 +486,7 @@ export interface NursingAssessment {
     outputDrains: string;
     outputOther: string;
     outputOtherNote: string;
+    notes: string;
   }>;
 
   // Gestione presidi
