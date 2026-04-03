@@ -48,9 +48,13 @@ export default function GeneralInfoTab() {
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium text-slate-700">Periodo di tirocinio</span>
             <div className="flex items-center gap-2">
-              <Input name="internshipPeriodFrom" label="" type="date" className={`flex-1 ${INPUT_BASE_CLS}`} />
-              <span className="text-sm text-slate-400 flex-shrink-0 mt-1">→</span>
-              <Input name="internshipPeriodTo"   label="" type="date" className={`flex-1 ${INPUT_BASE_CLS}`} />
+              <div className="flex-1 min-w-0">
+                <Input name="internshipPeriodFrom" label="" type="date" className={INPUT_BASE_CLS} />
+              </div>
+              <span className="text-sm text-slate-400 flex-shrink-0">→</span>
+              <div className="flex-1 min-w-0">
+                <Input name="internshipPeriodTo" label="" type="date" className={INPUT_BASE_CLS} />
+              </div>
             </div>
           </div>
           <Input name="internshipLocation" label="Sede di tirocinio" />

@@ -25,7 +25,7 @@ export const Input: React.FC<InputProps> = ({ name, label, type = 'text', classN
   const bare = label === '';
 
   const inputEl = (
-    <div className="relative">
+    <div className="relative min-w-0">
       <input
         id={name}
         type={type}
@@ -45,7 +45,7 @@ export const Input: React.FC<InputProps> = ({ name, label, type = 'text', classN
   if (bare) return inputEl;
 
   return (
-    <div className={`flex flex-col space-y-1 ${className}`}>
+    <div className={`flex flex-col space-y-1 min-w-0 ${className}`}>
       <label className="text-sm font-medium text-slate-700" htmlFor={name}>
         {displayLabel}{isRequired && <span className="text-rose-500 ml-0.5">*</span>}
       </label>
