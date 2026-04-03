@@ -58,40 +58,40 @@ export default function AssessmentTab({ activeSubTab, setActiveSubTab }: Props) 
       </div>
 
       <div className="print:block">
-        <div className={activeSubTab === 'initial' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-initial" className={activeSubTab === 'initial' ? 'block' : 'hidden print:block print:break-after-page'}>
           <InitialAssessmentSection />
         </div>
-        <div className={activeSubTab === 'model1' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model1" className={activeSubTab === 'model1' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model1 />
         </div>
-        <div className={activeSubTab === 'model2' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model2" className={activeSubTab === 'model2' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model2 />
         </div>
-        <div className={activeSubTab === 'model3' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model3" className={activeSubTab === 'model3' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model3 />
         </div>
-        <div className={activeSubTab === 'model4' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model4" className={activeSubTab === 'model4' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model4 />
         </div>
-        <div className={activeSubTab === 'model5' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model5" className={activeSubTab === 'model5' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model5 />
         </div>
-        <div className={activeSubTab === 'model6' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model6" className={activeSubTab === 'model6' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model6 />
         </div>
-        <div className={activeSubTab === 'model7' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model7" className={activeSubTab === 'model7' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model7 />
         </div>
-        <div className={activeSubTab === 'model8' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model8" className={activeSubTab === 'model8' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model8 />
         </div>
-        <div className={activeSubTab === 'model9' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model9" className={activeSubTab === 'model9' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model9 />
         </div>
-        <div className={activeSubTab === 'model10' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model10" className={activeSubTab === 'model10' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model10 />
         </div>
-        <div className={activeSubTab === 'model11' ? 'block' : 'hidden print:block print:break-after-page'}>
+        <div id="tc-sub-model11" className={activeSubTab === 'model11' ? 'block' : 'hidden print:block print:break-after-page'}>
           <Model11 />
 
 

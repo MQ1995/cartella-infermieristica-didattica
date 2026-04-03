@@ -21,6 +21,12 @@
   }
 }
 
+/* CSS Custom Highlight API — search result highlight */
+::highlight(search-result) {
+  background-color: #fef08a;
+  color: #1e293b;
+}
+
 @media print {
   @page {
     size: A4;

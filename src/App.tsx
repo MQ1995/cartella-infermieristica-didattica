@@ -28,7 +28,9 @@ function App() {
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [pendingHighlight, setPendingHighlight] = useState<string | null>(null);
   const pendingScrollRef = useRef<string | null>(null);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const methods = useForm<NursingAssessment>({
     defaultValues: defaultValues,
@@ -77,10 +79,68 @@ function App() {
     });
   }, [activeTab, assessmentSubTab]);
 
-  const handleNavigate = useCallback((entry: SearchEntry) => {
+  // Apply CSS Custom Highlight after navigation
+  useEffect(() => {
+    if (!pendingHighlight) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cssHL = (CSS as any).highlights as Map<string, unknown> | undefined;
+    if (!cssHL || typeof (window as any).Highlight === 'undefined') return;
+
+    requestAnimationFrame(() => {
+      cssHL.clear();
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+
+      // Determine the active container
+      const containerId = activeTab === 'assessment'
+        ? `tc-sub-${assessmentSubTab}`
+        : `tc-${activeTab}`;
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const words = pendingHighlight.toLowerCase().split(/\s+/).filter(Boolean);
+      const ranges: Range[] = [];
+
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      let node: Node | null;
+      while ((node = walker.nextNode())) {
+        const text = node.textContent?.toLowerCase() ?? '';
+        for (const word of words) {
+          let pos = 0;
+          while (true) {
+            const idx = text.indexOf(word, pos);
+            if (idx === -1) break;
+            const range = new Range();
+            range.setStart(node, idx);
+            range.setEnd(node, idx + word.length);
+            ranges.push(range);
+            pos = idx + 1;
+          }
+        }
+      }
+
+      if (ranges.length === 0) { setPendingHighlight(null); return; }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cssHL.set('search-result', new (window as any).Highlight(...ranges));
+
+      // Scroll to first match
+      const firstEl = (ranges[0].startContainer as Text).parentElement;
+      firstEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Auto-clear after 3 s
+      highlightTimerRef.current = setTimeout(() => {
+        cssHL.clear();
+        setPendingHighlight(null);
+      }, 3000);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingHighlight, activeTab, assessmentSubTab]);
+
+  const handleNavigate = useCallback((entry: SearchEntry, query: string) => {
     setActiveTab(entry.tab);
     if (entry.assessmentSubTab) setAssessmentSubTab(entry.assessmentSubTab);
     if (entry.elementId) pendingScrollRef.current = entry.elementId;
+    if (query.trim()) setPendingHighlight(query.trim());
     setSearchOpen(false);
   }, []);
 
@@ -237,30 +297,30 @@ function App() {
                 <h1 className="text-2xl font-bold text-emerald-800">Cartella Infermieristica Didattica</h1>
                 <p className="text-slate-500 text-sm mt-1">Piano di assistenza infermieristica a uso didattico</p>
               </div>
-              <div className={activeTab === 'general' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-general" className={activeTab === 'general' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <GeneralInfoTab />
               </div>
-              <div className={activeTab === 'assessment' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-assessment" className={activeTab === 'assessment' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <AssessmentTab activeSubTab={assessmentSubTab} setActiveSubTab={setAssessmentSubTab} />
               </div>
-              <div className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-scales" className={activeTab === 'scales' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <ScalesTab />
               </div>
-              <div className={activeTab === 'monitoring' ? 'block space-y-8' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-monitoring" className={activeTab === 'monitoring' ? 'block space-y-8' : 'hidden print:block print:break-after-page'}>
                 <MonitoringSection />
                 <FluidBalanceSection />
                 <DiagnosticExamsSection />
               </div>
-              <div className={activeTab === 'diary' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-diary" className={activeTab === 'diary' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <DailyAssessmentTab />
               </div>
-              <div className={activeTab === 'medications' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-medications" className={activeTab === 'medications' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <MedicationsTab />
               </div>
-              <div className={activeTab === 'devices' ? 'block' : 'hidden print:block print:break-after-page'}>
+              <div id="tc-devices" className={activeTab === 'devices' ? 'block' : 'hidden print:block print:break-after-page'}>
                 <DevicesTab />
               </div>
-              <div className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
+              <div id="tc-careplan" className={activeTab === 'careplan' ? 'block' : 'hidden print:block'}>
                 <CarePlanTab />
               </div>
             </form>

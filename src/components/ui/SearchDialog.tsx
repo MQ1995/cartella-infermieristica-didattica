@@ -15,7 +15,7 @@ const TAB_COLORS: Record<string, string> = {
 };
 
 interface Props {
-  onNavigate: (entry: SearchEntry) => void;
+  onNavigate: (entry: SearchEntry, query: string) => void;
   onClose: () => void;
 }
 
@@ -46,7 +46,7 @@ export function SearchDialog({ onNavigate, onClose }: Props) {
         setSelected(s => Math.max(s - 1, 0));
       }
       if (e.key === 'Enter' && results[selected]) {
-        onNavigate(results[selected]);
+        onNavigate(results[selected], query);
       }
     };
     window.addEventListener('keydown', handler);
@@ -94,7 +94,7 @@ export function SearchDialog({ onNavigate, onClose }: Props) {
                 data-index={i}
                 type="button"
                 onMouseEnter={() => setSelected(i)}
-                onClick={() => onNavigate(entry)}
+                onClick={() => onNavigate(entry, query)}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                   i === selected ? 'bg-emerald-50' : 'hover:bg-slate-50'
                 }`}
