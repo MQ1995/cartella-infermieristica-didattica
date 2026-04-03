@@ -37,9 +37,8 @@ function ScaleCard({ locked, onToggleLock, onRemove, header, notes, children }: 
         {header}
         <div className="flex items-center gap-1.5 flex-shrink-0 print:hidden" onClick={e => e.stopPropagation()}>
           {hasNote && !expanded && (
-            <span className="relative text-emerald-600 p-1">
+            <span className="text-emerald-600 p-1">
               <NotebookPen size={14} />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full" />
             </span>
           )}
           <LockToggle locked={locked} onToggle={onToggleLock} />
