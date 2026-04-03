@@ -799,6 +799,7 @@ function BristolCard({ index, onRemove, locked, onToggleLock }: {
   const date     = useWatch({ name: `${prefix}.date` });
   const time     = useWatch({ name: `${prefix}.time` }) as string | undefined;
   const typeVal  = useWatch({ name: `${prefix}.type` }) as string;
+  const notes    = useWatch({ name: `${prefix}.notes` }) as string | undefined;
 
   const dateLabel = date
     ? `${new Date(date + 'T00:00:00').toLocaleDateString('it-IT')}${time ? ` ${time}` : ''}`
@@ -895,8 +896,9 @@ function BristolCard({ index, onRemove, locked, onToggleLock }: {
               <textarea
                 {...register(`${prefix}.notes`)}
                 rows={2}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
+                data-empty={!notes ? '' : undefined}
                 placeholder="Osservazioni aggiuntive..."
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white resize-y disabled:bg-transparent disabled:border-transparent disabled:cursor-default"
               />
             </div>
           </div>
