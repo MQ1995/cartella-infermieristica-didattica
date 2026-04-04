@@ -5,6 +5,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   type?: string;
   className?: string;
+  /** In bare mode, applies to the wrapper div instead of the input element. */
+  wrapperClassName?: string;
 }
 
 // Shared input class used by table-cell bare inputs across the app
@@ -15,7 +17,7 @@ export const INPUT_BASE_CLS =
   'disabled:text-slate-800 disabled:[-webkit-text-fill-color:theme(colors.slate.800)] disabled:cursor-not-allowed ' +
   'print:border-b print:border-t-0 print:border-x-0 print:rounded-none print:shadow-none print:px-0 print:bg-transparent';
 
-export const Input: React.FC<InputProps> = ({ name, label, type = 'text', className = '', ...props }) => {
+export const Input: React.FC<InputProps> = ({ name, label, type = 'text', className = '', wrapperClassName = '', ...props }) => {
   const { register } = useFormContext();
   const value = useWatch({ name });
   const isEmpty = value === '' || value === null || value === undefined;
@@ -25,7 +27,7 @@ export const Input: React.FC<InputProps> = ({ name, label, type = 'text', classN
   const bare = label === '';
 
   const inputEl = (
-    <div className="relative min-w-0">
+    <div className={`relative min-w-0${wrapperClassName ? ` ${wrapperClassName}` : ''}`}>
       <input
         id={name}
         type={type}
