@@ -19,7 +19,7 @@ const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm fo
 function AnamnesisTable() {
   const { register, watch, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'pastMedicalHistory' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_pastMedicalHistory');
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
 
   const toggleNotes = (i: number) => setToggledNotes(prev => {

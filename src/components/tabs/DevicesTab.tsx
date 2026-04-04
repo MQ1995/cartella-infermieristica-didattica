@@ -20,7 +20,7 @@ const TISSUE_TYPES = [
 function DevicesSection() {
   const { register, watch, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'devices' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_devices');
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
 
   const toggleNotes = (i: number) => setToggledNotes(prev => {
@@ -309,7 +309,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
 function WoundCareSection() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'woundCare' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_woundCare');
 
   const addWound = () => append({
     etiology: '', location: '', dimensions: '', tissueType: [],

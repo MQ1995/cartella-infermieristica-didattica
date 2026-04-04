@@ -11,7 +11,7 @@ const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm fo
 export default function DiagnosticExamsSection() {
   const { register, watch, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'diagnosticExams' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_diagnosticExams');
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
 
   const toggleNotes = (i: number) => setToggledNotes(prev => {

@@ -60,7 +60,7 @@ function ProcedureMonitoringTable({
   const { register, watch } = useFormContext();
   const { fields, append, remove } = useFieldArray({ name: fieldName });
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_' + fieldName);
 
   const toggleNotes = (i: number) => setToggledNotes(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
 

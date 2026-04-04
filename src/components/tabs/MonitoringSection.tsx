@@ -32,7 +32,7 @@ export default function MonitoringSection() {
   const { fields, append, remove } = useFieldArray({ control, name: 'vitalSigns' });
   // tracks rows toggled away from their default state
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
-  const { toggleLock, isLocked: isLockedRow } = useRowLocks();
+  const { toggleLock, isLocked: isLockedRow } = useRowLocks('rowlocks_vitalSigns');
 
   const toggleNotes = (index: number) => {
     setToggledNotes(prev => {

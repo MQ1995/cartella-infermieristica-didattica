@@ -259,7 +259,7 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
 export default function CarePlanTab() {
   const { control } = useFormContext();
   const { fields, append, remove, move } = useFieldArray({ control, name: 'carePlans' });
-  const { toggleLock, isLocked, remapLocks } = useRowLocks();
+  const { toggleLock, isLocked, remapLocks } = useRowLocks('rowlocks_carePlan');
   const dragIndex = useRef<number | null>(null);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);

@@ -98,7 +98,7 @@ function DayEntry({ index, onRemove, locked, onToggleLock }: {
 export default function DailyAssessmentTab() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'dailyAssessments' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_dailyAssessment');
 
   const addDay = () => {
     append({ date: new Date().toISOString().slice(0, 10), notes: '', newProblems: '' });

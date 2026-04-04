@@ -73,7 +73,7 @@ export default function ScalesTab() {
 
   // ── Braden ──────────────────────────────────
   const { fields: bradenFields, append: appendBraden, remove: removeBraden } = useFieldArray({ control, name: 'bradenEvaluations' });
-  const { toggleLock: toggleLockBraden, isLocked: isLockedBraden } = useRowLocks();
+  const { toggleLock: toggleLockBraden, isLocked: isLockedBraden } = useRowLocks('rowlocks_braden');
   const addBradenEval = () => appendBraden({
     date: new Date().toISOString().slice(0, 10),
     sensory: '', moisture: '', activity: '', mobility: '', nutrition: '', friction: '', notes: '',
@@ -96,7 +96,7 @@ export default function ScalesTab() {
 
   // ── Conley ──────────────────────────────────
   const { fields: conleyFields, append: appendConley, remove: removeConley } = useFieldArray({ control, name: 'conleyEvaluations' });
-  const { toggleLock: toggleLockConley, isLocked: isLockedConley } = useRowLocks();
+  const { toggleLock: toggleLockConley, isLocked: isLockedConley } = useRowLocks('rowlocks_conley');
   const addConleyEval = () => appendConley({
     date: new Date().toISOString().slice(0, 10),
     conley1: '', conley2: '', conley3: '', conley4: '', conley5: '', conley6: '', notes: '',
@@ -104,7 +104,7 @@ export default function ScalesTab() {
 
   // ── Barthel ─────────────────────────────────
   const { fields: barthelFields, append: appendBarthel, remove: removeBarthel } = useFieldArray({ control, name: 'barthelEvaluations' });
-  const { toggleLock: toggleLockBarthel, isLocked: isLockedBarthel } = useRowLocks();
+  const { toggleLock: toggleLockBarthel, isLocked: isLockedBarthel } = useRowLocks('rowlocks_barthel');
   const addBarthelEval = () => appendBarthel({
     date: new Date().toISOString().slice(0, 10),
     feeding: '', bathing: '', grooming: '', dressing: '', bowel: '',
@@ -127,7 +127,7 @@ export default function ScalesTab() {
 
   // ── GCS ─────────────────────────────────────
   const { fields: gcsFields, append: appendGcs, remove: removeGcs } = useFieldArray({ control, name: 'gcsEvaluations' });
-  const { toggleLock: toggleLockGcs, isLocked: isLockedGcs } = useRowLocks();
+  const { toggleLock: toggleLockGcs, isLocked: isLockedGcs } = useRowLocks('rowlocks_gcs');
   const addGcsEval = () => appendGcs({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -148,7 +148,7 @@ export default function ScalesTab() {
 
   // ── AVPU ────────────────────────────────────
   const { fields: avpuFields, append: appendAvpu, remove: removeAvpu } = useFieldArray({ control, name: 'avpuEvaluations' });
-  const { toggleLock: toggleLockAvpu, isLocked: isLockedAvpu } = useRowLocks();
+  const { toggleLock: toggleLockAvpu, isLocked: isLockedAvpu } = useRowLocks('rowlocks_avpu');
   const addAvpuEval = () => appendAvpu({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -168,7 +168,7 @@ export default function ScalesTab() {
 
   // ── Pain ────────────────────────────────────
   const { fields: painFields, append: appendPain, remove: removePain } = useFieldArray({ control, name: 'painEvaluations' });
-  const { toggleLock: toggleLockPain, isLocked: isLockedPain } = useRowLocks();
+  const { toggleLock: toggleLockPain, isLocked: isLockedPain } = useRowLocks('rowlocks_pain');
   const addPainEval = () => appendPain({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -188,7 +188,7 @@ export default function ScalesTab() {
 
   // ── Borg ────────────────────────────────────
   const { fields: borgFields, append: appendBorg, remove: removeBorg } = useFieldArray({ control, name: 'borgEvaluations' });
-  const { toggleLock: toggleLockBorg, isLocked: isLockedBorg } = useRowLocks();
+  const { toggleLock: toggleLockBorg, isLocked: isLockedBorg } = useRowLocks('rowlocks_borg');
   const addBorgEval = () => appendBorg({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -197,7 +197,7 @@ export default function ScalesTab() {
 
   // ── Bristol ─────────────────────────────────
   const { fields: bristolFields, append: appendBristol, remove: removeBristol } = useFieldArray({ control, name: 'bristolEvaluations' });
-  const { toggleLock: toggleLockBristol, isLocked: isLockedBristol } = useRowLocks();
+  const { toggleLock: toggleLockBristol, isLocked: isLockedBristol } = useRowLocks('rowlocks_bristol');
   const addBristolEval = () => appendBristol({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -206,7 +206,7 @@ export default function ScalesTab() {
 
   // ── THROAT ──────────────────────────────────
   const { fields: throatFields, append: appendThroat, remove: removeThroat } = useFieldArray({ control, name: 'throatEvaluations' });
-  const { toggleLock: toggleLockThroat, isLocked: isLockedThroat } = useRowLocks();
+  const { toggleLock: toggleLockThroat, isLocked: isLockedThroat } = useRowLocks('rowlocks_throat');
   const addThroatEval = () => appendThroat({
     date: new Date().toISOString().slice(0, 10),
     time: new Date().toTimeString().slice(0, 5),
@@ -230,7 +230,7 @@ export default function ScalesTab() {
 
   // ── MUST ────────────────────────────────────
   const { fields: mustFields, append: appendMust, remove: removeMust } = useFieldArray({ control, name: 'mustEvaluations' });
-  const { toggleLock: toggleLockMust, isLocked: isLockedMust } = useRowLocks();
+  const { toggleLock: toggleLockMust, isLocked: isLockedMust } = useRowLocks('rowlocks_must');
   const addMustEval = () => appendMust({
     date: new Date().toISOString().slice(0, 10),
     step1Bmi: '', step2WeightLoss: '', step3AcuteDisease: '', notes: '',

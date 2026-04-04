@@ -1,7 +1,22 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
-export function useRowLocks() {
-  const [lockedRows, setLockedRows] = useState<Set<number>>(new Set());
+function loadFromStorage(key: string): Set<number> {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw) return new Set(JSON.parse(raw) as number[]);
+  } catch {}
+  return new Set();
+}
+
+export function useRowLocks(storageKey?: string) {
+  const [lockedRows, setLockedRows] = useState<Set<number>>(
+    () => storageKey ? loadFromStorage(storageKey) : new Set()
+  );
+
+  useEffect(() => {
+    if (!storageKey) return;
+    localStorage.setItem(storageKey, JSON.stringify(Array.from(lockedRows)));
+  }, [lockedRows, storageKey]);
 
   const toggleLock = useCallback((i: number) => {
     setLockedRows(prev => {

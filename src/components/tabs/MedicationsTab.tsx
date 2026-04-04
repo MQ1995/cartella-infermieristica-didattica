@@ -19,7 +19,7 @@ const INPUT_CLS = 'w-full px-2 py-1.5 border border-slate-200 rounded text-sm fo
 export default function MedicationsTab() {
   const { register, watch, control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'medications' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_medications');
   const [toggledNotes, setToggledNotes] = useState<Set<number>>(new Set());
 
   const toggleNotes = (i: number) => setToggledNotes(prev => {

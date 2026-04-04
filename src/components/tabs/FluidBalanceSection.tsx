@@ -209,7 +209,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
 export default function FluidBalanceSection() {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name: 'fluidBalanceDays' });
-  const { toggleLock, isLocked } = useRowLocks();
+  const { toggleLock, isLocked } = useRowLocks('rowlocks_fluidBalance');
 
   const addDay = () => {
     const today = new Date().toISOString().slice(0, 10);
