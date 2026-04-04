@@ -52,14 +52,21 @@ function App() {
     }
   }, [methods]);
 
-  // Auto-save to local storage on change
+  // Auto-save to local storage on change (debounced 500ms)
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     const subscription = methods.watch((value) => {
-      localStorage.setItem('nursing-assessment-draft', JSON.stringify(value));
       setIsSaved(false);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        localStorage.setItem('nursing-assessment-draft', JSON.stringify(value));
+      }, 500);
     });
-    return () => subscription.unsubscribe();
-  }, [methods.watch]);
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timer);
+    };
+  }, [methods]);
 
   // Cmd+K / Ctrl+K to open search
   useEffect(() => {
