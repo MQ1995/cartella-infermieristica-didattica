@@ -23,6 +23,15 @@ dist-ssr
 *.sln
 *.sw?
 
+# Local-only directories and files
+nursing-app-v2/
+nursing-assessment-app/
+ANALISI_TECNICA_PROGETTO.md
+session-*.md
+doc.txt
+bristol-stool-scale/
+Modello\ Cartella.docx
+
 # wrangler files
 .wrangler
 .dev.vars*
