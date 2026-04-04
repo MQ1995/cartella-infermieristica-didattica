@@ -25,7 +25,7 @@ export default function Model8() {
 
         {/* ── Dati anagrafici e sociali ── */}
         <p className={SUB}>Dati sociali</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <Select
             name="educationLevel"
             label="Livello di scolarità"
@@ -45,7 +45,7 @@ export default function Model8() {
         {/* ── Ruolo professionale ── */}
         <p className={SUB}>Ruolo professionale</p>
         <div className={BOX}>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-y-2 gap-x-4">
+          <div className="grid grid-cols-2 @md:grid-cols-3 gap-y-2 gap-x-4">
             {['Occupato/a', 'Pensionato/a', 'Casalingo/a', 'Disoccupato/a', 'Studente'].map(v => (
               <label key={v} className={RL}>
                 <input type="radio" value={v} {...register('occupationalRole')} className={RADIO} /> {v}

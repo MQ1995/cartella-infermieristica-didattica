@@ -38,7 +38,7 @@ export default function Model6() {
             ))}
           </div>
           <div className="border-t border-slate-100" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-3 gap-3">
             <Input name="avpuScore" label="Scala AVPU" placeholder="es. A, V, P, U" />
             <Input name="gcsScore"  label="GCS (se applicabile)" placeholder="es. 15" type="number" />
             <Input name="rassScore" label="RASS (se applicabile)" placeholder="es. 0" />
@@ -60,7 +60,7 @@ export default function Model6() {
 
         {/* ── Orientamento e collaborazione ── */}
         <p className={SUB}>Orientamento e collaborazione</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
 
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Orientato nel tempo / spazio / sul sé</p>
@@ -114,7 +114,7 @@ export default function Model6() {
 
         {/* ── Linguaggio ── */}
         <p className={SUB}>Linguaggio</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
 
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Eloquio</p>
@@ -166,7 +166,7 @@ export default function Model6() {
 
         {/* ── Abilità cognitive ── */}
         <p className={SUB}>Abilità cognitive</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
 
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Memoria</p>
@@ -201,7 +201,7 @@ export default function Model6() {
 
         {/* ── Sensi ── */}
         <p className={SUB}>Sensi</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
 
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Vista</p>
@@ -252,7 +252,7 @@ export default function Model6() {
           {pain === 'true' && (
             <>
               <div className="border-t border-slate-100" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
                 <Input name="painLocation" label="Sede" />
                 <Input name="painTime"     label="Comparsa e durata" />
                 <Input name="painQuality"  label="Qualità / carattere" placeholder="es. urente, costrittivo" />

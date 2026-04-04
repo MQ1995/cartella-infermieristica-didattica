@@ -54,7 +54,7 @@ export default function Model3() {
         {/* ══ ELIMINAZIONE URINARIA ══ */}
         <p className={SUB}>Eliminazione urinaria</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="urinationType"
@@ -85,7 +85,7 @@ export default function Model3() {
         {/* Alterazioni urinarie */}
         {urinationType === 'Alterazioni' && (
           <div className="rounded-lg border border-slate-200 p-4 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 @md:grid-cols-3 gap-6">
               {/* Incontinenza */}
               <div className="space-y-1.5">
                 <span className="text-sm font-semibold text-slate-600 block">Incontinenza urinaria</span>
@@ -157,7 +157,7 @@ export default function Model3() {
               ))}
             </div>
             {urinaryCatheter && urinaryCatheter !== 'No' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+              <div className="grid grid-cols-1 @md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
                 <Input name="urinaryCatheterDate"    label="Data posizionamento" type="date" />
                 <Input name="urinaryCatheterDetails" label="Tipo, calibro, materiale" />
                 <div className="space-y-2">
@@ -173,7 +173,7 @@ export default function Model3() {
           <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <YesNoRow label="Stomia urinaria" name="urinaryStoma" register={register} />
             {urinaryStoma === 'true' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+              <div className="grid grid-cols-1 @md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
                 <Input name="urinaryStomaDetails" label="Tipo e sede" />
                 <Select name="urinaryStomaManagement" label="Autogestione"
                   options={[{ label: 'Sì', value: 'Si' }, { label: 'No', value: 'No' }]} />
@@ -189,7 +189,7 @@ export default function Model3() {
         <p className={SUB}>Eliminazione intestinale</p>
 
         <div className="rounded-lg border border-slate-200 p-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
             <Input name="bowelFrequency"    label="Frequenza abituale" placeholder="es. 1 volta/die" />
             <Input name="lastBowelMovement" label="Data ultima evacuazione" type="date" />
           </div>
@@ -226,7 +226,7 @@ export default function Model3() {
 
         {/* Caratteristiche feci */}
         <div className="rounded-lg border border-slate-200 p-3 space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
             <div className="space-y-3">
               <Select
                 name="stoolCharacteristics"
@@ -250,7 +250,7 @@ export default function Model3() {
         {/* Esame addome */}
         <div className="rounded-lg border border-slate-200 p-3 space-y-3">
           <span className="text-sm font-semibold text-slate-600 block">Esame fisico addome</span>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
             <Select
               name="abdomenExam"
               label="Addome"
@@ -294,7 +294,7 @@ export default function Model3() {
           <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <YesNoRow label="Stomia intestinale" name="bowelStoma" register={register} />
             {bowelStoma === 'true' && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+              <div className="grid grid-cols-1 @md:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
                 <Input name="bowelStomaDetails" label="Tipo e sede" />
                 <Select name="bowelStomaManagement" label="Autogestione"
                   options={[{ label: 'Sì', value: 'Si' }, { label: 'No', value: 'No' }]} />

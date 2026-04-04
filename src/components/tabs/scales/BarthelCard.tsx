@@ -154,7 +154,7 @@ export function BarthelCard({ index, onRemove, locked, onToggleLock }: {
         <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1 block">Data valutazione</label>
         <input type="date" {...register(`${prefix}.date`)} data-empty={!date ? '' : undefined} className={DATE_INPUT} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
         {BARTHEL_ITEMS.map((item) => (
           <div key={item.key}>
             <p className="text-xs font-semibold text-slate-600 mb-2">{item.label}</p>

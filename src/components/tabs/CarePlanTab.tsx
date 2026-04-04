@@ -206,7 +206,7 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
             </div>
 
             {/* 3 — Interventi pianificati / attuati */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 @md:grid-cols-2 gap-5">
               <div>
                 <label className={LABEL}>Interventi pianificati</label>
                 <ETextarea
@@ -226,8 +226,8 @@ function PlanCard({ index, onRemove, locked, onToggleLock, onDragStart, onDragOv
             </div>
 
             {/* 4 — Valutazione + stato */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-              <div className="md:col-span-2">
+            <div className="grid grid-cols-1 @md:grid-cols-3 gap-5 items-start">
+              <div className="@md:col-span-2">
                 <label className={LABEL}>Valutazione e rivalutazione</label>
                 <ETextarea
                   name={`${prefix}.evaluation`}
@@ -338,7 +338,7 @@ export default function CarePlanTab() {
       {/* ── Fine presa in carico ── */}
       <LockableSection title="Fine presa in carico">
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-6">
             <Select
               name="dischargeReason"
               label="Motivo di chiusura"
@@ -352,7 +352,7 @@ export default function CarePlanTab() {
             <Input name="dischargeDate" label="Data fine presa in carico" type="date" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-6">
             <Textarea
               name="dischargeUnresolvedProblems"
               label="Problemi non risolti / rischi residui"

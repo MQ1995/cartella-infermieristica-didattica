@@ -324,7 +324,7 @@ function App() {
           </aside>
 
           {/* Form Content */}
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 min-h-[700px]">
+          <div className="@container flex-1 bg-white rounded-xl shadow-sm border border-slate-200 min-h-[700px]">
             <form className="p-6 h-full" onSubmit={(e) => e.preventDefault()}>
               <div className="hidden print:block mb-6 pb-4 border-b-2 border-emerald-700">
                 <h1 className="text-2xl font-bold text-emerald-800">Cartella Infermieristica Didattica</h1>

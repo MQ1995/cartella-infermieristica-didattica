@@ -54,7 +54,7 @@ export default function Model7() {
 
         {/* ── Esame fisico / osservazione ── */}
         <p className={SUB}>Esame fisico e osservazione</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
 
           <Select
             name="eyeContact"

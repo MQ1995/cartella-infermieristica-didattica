@@ -91,7 +91,7 @@ export function AvpuCard({ index, onRemove, locked, onToggleLock }: {
       </div>
       <div>
         <p className="text-xs font-semibold text-slate-600 mb-2">Livello di coscienza</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 @sm:grid-cols-2 gap-2">
           {AVPU_LEVELS.map(lvl => {
             const isSelected = score === lvl.value;
             return (

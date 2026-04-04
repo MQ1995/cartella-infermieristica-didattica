@@ -174,7 +174,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
         <div className="border-t border-slate-200 bg-slate-50 p-4">
           <fieldset disabled={locked} className={`space-y-4 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
             {/* Row 1: eziologia, sede, dimensioni */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Eziologia</label>
                 <select {...register(`${prefix}.etiology`)} className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default">
@@ -215,7 +215,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
             </div>
 
             {/* Row 3: essudato */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Essudato</label>
                 <select {...register(`${prefix}.exudatePresent`)} className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-emerald-400 bg-white disabled:bg-transparent disabled:border-transparent disabled:cursor-default">
@@ -246,7 +246,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
             </div>
 
             {/* Row 4: margini, cute perilesionale */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Margini</label>
                 <input {...register(`${prefix}.margins`)} placeholder={locked ? '—' : 'es. regolari, irregolari, sottominati'} className={INPUT_CLS} />
@@ -258,7 +258,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
             </div>
 
             {/* Row 5: medicazione, detersione, prodotti, fissaggio */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Medicazione utilizzata</label>
                 <input {...register(`${prefix}.dressingUsed`)} placeholder={locked ? '—' : 'es. idrocolloide, schiuma di poliuretano'} className={INPUT_CLS} />
@@ -278,7 +278,7 @@ function WoundEntry({ index, onRemove, locked, onToggleLock }: {
             </div>
 
             {/* Row 6: date */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-600">Data esecuzione</label>
                 <Input name={`${prefix}.executionDate`} label="" type="date" className={INPUT_CLS} />

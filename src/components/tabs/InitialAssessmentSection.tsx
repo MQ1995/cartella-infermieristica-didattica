@@ -136,7 +136,7 @@ export default function InitialAssessmentSection() {
 
       {/* ── Presa in carico ── */}
       <p className={SUB}>Presa in carico</p>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 @lg:grid-cols-2 @xl:grid-cols-3 gap-4">
         <Input name="careStartDate"       label="Inizio presa in carico"         type="date" />
         <Input name="careEndDate"         label="Fine presa in carico"           type="date" />
         <Input name="assessmentStartDate" label="Data e ora inizio accertamento" type="datetime-local" />
@@ -146,7 +146,7 @@ export default function InitialAssessmentSection() {
 
       {/* ── Dati anagrafici ── */}
       <p className={SUB}>Dati anagrafici</p>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 @md:grid-cols-3 gap-4">
         <Select
           name="patientGender"
           label="Genere"
@@ -176,7 +176,7 @@ export default function InitialAssessmentSection() {
 
       {/* ── Dati di ricovero ── */}
       <p className={SUB}>Dati di ricovero</p>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 @lg:grid-cols-2 @xl:grid-cols-3 gap-4">
         <Input name="admissionDate" label="Data e ora di ricovero" type="datetime-local" />
 
         <div className={BOX}>

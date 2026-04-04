@@ -55,7 +55,7 @@ export default function Model11() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
 
             <div className={BOX}>
               <div className="flex items-center gap-4">

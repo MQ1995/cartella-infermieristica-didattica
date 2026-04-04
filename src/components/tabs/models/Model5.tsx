@@ -69,7 +69,7 @@ export default function Model5() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
             <Input name="sleepHours"    label="Ore di sonno per notte (abituale)" type="number" placeholder="es. 7" />
             <Input name="sleepBedtime"  label="Orario abituale di addormentamento" placeholder="es. 23:00" />
           </div>

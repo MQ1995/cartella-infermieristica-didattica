@@ -33,7 +33,7 @@ export default function Model4() {
 
         {/* ── Dati soggettivi ── */}
         <p className={SUB}>Dati soggettivi</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <Select
             name="energyLevel"
             label="Grado di energia percepito per le attività"
@@ -56,7 +56,7 @@ export default function Model4() {
           0 = Completamente autonomo · 1 = Ausili · 2 = Assistenza / supervisione · 3 = Assistenza + ausili · 4 = Dipendente, non partecipa
         </p>
         <div className={`${BOX} !space-y-0`}>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 p-1">
+          <div className="grid grid-cols-2 @md:grid-cols-5 gap-3 p-1">
             {[
               { id: 'funcAlimentazione',  label: 'Alimentazione' },
               { id: 'funcCuraAspetto',    label: "Cura dell'aspetto" },
@@ -79,7 +79,7 @@ export default function Model4() {
         {/* ── Esame fisico — mobilità ── */}
         <p className={SUB}>Esame fisico — mobilità</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           {/* Colonna sinistra */}
           <div className="space-y-3">
             <div className={BOX}>
@@ -176,7 +176,7 @@ export default function Model4() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <div className={BOX}>
             <div className="flex items-center gap-4 flex-wrap">
               <span className="text-sm font-medium text-slate-700 min-w-[160px]">Protesi e / o ausili</span>
@@ -200,7 +200,7 @@ export default function Model4() {
         {/* ── Funzione respiratoria ── */}
         <p className={SUB}>Funzione respiratoria</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           {/* Colonna sinistra */}
           <div className="space-y-3">
 
@@ -339,7 +339,7 @@ export default function Model4() {
         {/* ── Funzione cardiaca e vascolare ── */}
         <p className={SUB}>Funzione cardiaca e vascolare</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           {/* Polso */}
           <div className={BOX}>
             <div className="grid grid-cols-2 gap-3">

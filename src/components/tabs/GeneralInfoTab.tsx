@@ -31,12 +31,12 @@ export default function GeneralInfoTab() {
       <LockableSection title="Dati studente e tirocinio">
 
         <p className={SUB}>Studente</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
           <Input name="studentFirstName" label="Nome *"      placeholder="es. Mario" />
           <Input name="studentLastName"  label="Cognome *"   placeholder="es. Rossi" />
           <Input name="studentId"        label="Matricola *" placeholder="es. 123456" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-4 mt-4">
           <Select name="academicYear" label="Anno accademico *" options={ACADEMIC_YEARS} />
           <Select name="courseYear"   label="Anno di corso *"   options={COURSE_YEARS} />
         </div>
@@ -44,7 +44,7 @@ export default function GeneralInfoTab() {
         <div className={DIVIDER} />
 
         <p className={SUB}>Tirocinio</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium text-slate-700">Periodo di tirocinio</span>
             <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function GeneralInfoTab() {
         <div className={DIVIDER} />
 
         <p className={SUB}>Riferimenti</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
           <Input name="clinicalGuide" label="Guida di tirocinio" />
           <Input name="coordinator"   label="Coordinatore" />
           <Input name="tutor"         label="Tutor didattico di riferimento" />

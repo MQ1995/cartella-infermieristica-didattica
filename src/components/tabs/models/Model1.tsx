@@ -58,7 +58,7 @@ export default function Model1() {
 
         {/* ── Fattori di rischio ── */}
         <p className={SUB}>Fattori di rischio</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-3 gap-3">
           <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="alcoholConsumption" label="Consumo di alcool" />
             {alcoholConsumption && (
@@ -133,7 +133,7 @@ export default function Model1() {
         {/* ── Rischio caduta ── */}
         <p className={SUB}>Valutazione rischio caduta</p>
         <div className="rounded-lg border border-slate-200 p-3">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+          <div className="grid grid-cols-1 @md:grid-cols-3 gap-4 items-start">
             <div className="space-y-1">
               <span className="text-sm font-medium text-slate-700">Paziente a rischio caduta</span>
               <div className="flex items-center gap-4 pt-1">

@@ -161,7 +161,7 @@ export function ThroatCard({ index, onRemove, locked, onToggleLock }: {
           <input type="time" {...register(`${prefix}.time`)} data-empty={!time ? '' : undefined} className={DATE_INPUT} />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
         {THROAT_ITEMS.map((item, itemIdx) => {
           const itemVal = values[itemIdx];
           const isSevere = itemVal === '3';

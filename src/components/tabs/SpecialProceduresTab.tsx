@@ -218,7 +218,7 @@ function EndoscopiaSection() {
         {/* Intestazione */}
         <p className={SUB}>Dati procedura</p>
         <div className={BOX}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 @sm:grid-cols-3 gap-4">
             <Input name="endoscopia.date" label="Data" type="date" />
             <Input name="endoscopia.time" label="Ora"  type="time" />
             <Input name="endoscopia.ward" label="Degenza di provenienza" />
@@ -251,21 +251,21 @@ function EndoscopiaSection() {
         <div className="space-y-3">
           <div className={BOX}>
             <RadioGroup name="endoscopia.intraAntibiotic" label="Profilassi antibiotica somministrata negli ultimi 60 minuti" options={TRI} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <RadioGroup name="endoscopia.intraFasting" label="Digiuno da liquidi/alimenti nelle ultime 6 h" options={BI} />
               <Input name="endoscopia.intraFastingNotes" label="Note digiuno" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <RadioGroup name="endoscopia.intraBowelPrep"     label="Preparazione intestinale" options={['sì', 'no', 'incompleta'] as const} />
               <RadioGroup name="endoscopia.intraMedSuspension" label="Sospensione terapia farmacologica" options={BI} />
             </div>
           </div>
           <div className={BOX}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <RadioGroup name="endoscopia.intraVascularAccess" label="Accesso venoso" options={['no', 'sì'] as const} />
               <Input name="endoscopia.intraVascularAccessDetails" label="Descrizione accesso venoso" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <Input name="endoscopia.intraStartTime" label="Ora inizio procedura" type="time" />
               <div className="space-y-2">
                 <RadioGroup name="endoscopia.intraProcedureScheduled" label="Procedura effettuata" options={['programmata', 'altra'] as const} />
@@ -331,7 +331,7 @@ function EndoscopiaSection() {
             <Input name="endoscopia.postOther" label="Altro" />
           </div>
           <div className={BOX}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <RadioGroup name="endoscopia.postFasting" label="Mantenimento del digiuno" options={['no', 'sì'] as const} />
               <Input name="endoscopia.postFastingDetails" label="Dettagli digiuno" />
             </div>
@@ -358,7 +358,7 @@ function DialisiSection() {
 
         <p className={SUB}>Dati seduta</p>
         <div className={BOX}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 @sm:grid-cols-3 gap-4">
             <Input name="dialisi.date"      label="Data"                         type="date" />
             <Input name="dialisi.startTime" label="Ora inizio seduta"            type="time" />
             <Input name="dialisi.ward"      label="Paziente ricoverato in degenza" />
@@ -369,7 +369,7 @@ function DialisiSection() {
 
         <p className={SUB}>Parametri peso</p>
         <div className={BOX}>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 @sm:grid-cols-5 gap-3">
             <Input name="dialisi.initialWeight"   label="Peso iniziale (kg)" />
             <Input name="dialisi.lastWeight"      label="Ultimo peso (kg)" />
             <Input name="dialisi.deltaWeight"     label="Δ Peso (kg)" />
@@ -381,7 +381,7 @@ function DialisiSection() {
         <div className={DIVIDER} />
 
         <p className={SUB}>Tipo e accesso</p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 @sm:grid-cols-3 gap-3">
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Tipo di dialisi</p>
             <Checkbox name="dialisi.typePeritoneal"     label="Dialisi peritoneale" />
@@ -416,7 +416,7 @@ function DialisiSection() {
 
         <p className={SUB}>Chiusura seduta</p>
         <div className={BOX}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
             <Input name="dialisi.finalWeight" label="Peso finale (kg)" />
             <Input name="dialisi.endTime"     label="Ora fine seduta" type="time" />
           </div>
@@ -439,7 +439,7 @@ function BloccoOperatorioSection() {
 
         <p className={SUB}>Dati intervento</p>
         <div className={BOX}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 @sm:grid-cols-3 gap-4">
             <Input name="bloccoOperatorio.date" label="Data" type="date" />
             <Input name="bloccoOperatorio.time" label="Ora"  type="time" />
             <Input name="bloccoOperatorio.ward" label="Degenza di provenienza" />
@@ -491,7 +491,7 @@ function BloccoOperatorioSection() {
           </div>
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Presidi</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 @sm:grid-cols-3 gap-3">
               <Input name="bloccoOperatorio.intraSNG"             label="SNG" />
               <Input name="bloccoOperatorio.intraUrinaryCatheter" label="Catetere vescicale" />
               <Input name="bloccoOperatorio.intraCVP"             label="CVP" />
@@ -520,11 +520,11 @@ function BloccoOperatorioSection() {
             </div>
           </div>
           <div className={BOX}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <Input name="bloccoOperatorio.intraStartTime" label="Ora inizio intervento" type="time" />
               <Input name="bloccoOperatorio.intraIncision"  label="Incisione chirurgica" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 @sm:grid-cols-3 gap-3">
               <Input name="bloccoOperatorio.intraBloodTransfusion"  label="Emotrasfusione" />
               <Input name="bloccoOperatorio.intraPlasmaTransfusion" label="Plasmatrasfusione" />
               <Input name="bloccoOperatorio.intraBloodRecovery"     label="Emorecupero" />
@@ -532,7 +532,7 @@ function BloccoOperatorioSection() {
           </div>
           <div className={BOX}>
             <p className="text-sm font-medium text-slate-700">Conteggi e sicurezza</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 @sm:grid-cols-3 gap-4">
               <RadioGroup name="bloccoOperatorio.intraHistoImmediate"  label="Esame istologico estemporaneo" options={['no', 'sì'] as const} />
               <RadioGroup name="bloccoOperatorio.intraHistoDefinitive" label="Esame istologico definitivo"   options={['no', 'sì'] as const} />
               <RadioGroup name="bloccoOperatorio.intraGauzeCount"      label="Conteggio garze"               options={['no', 'sì'] as const} />
@@ -540,7 +540,7 @@ function BloccoOperatorioSection() {
               <RadioGroup name="bloccoOperatorio.intraInstrumentCount" label="Conteggio strumenti"           options={['no', 'sì'] as const} />
               <RadioGroup name="bloccoOperatorio.intraInstrumentMatch" label="Conteggio strumenti corrispondente" options={['no', 'sì'] as const} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 @sm:grid-cols-2 gap-4">
               <RadioGroup name="bloccoOperatorio.intraDressing" label="Medicazione" options={['compressiva', 'a piatto'] as const} />
               <Input name="bloccoOperatorio.intraEndTime" label="Ora fine intervento" type="time" />
             </div>

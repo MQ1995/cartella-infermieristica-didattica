@@ -102,7 +102,7 @@ function DayRow({ index, onRemove, locked, onToggleLock }: {
         <>
           <fieldset disabled={locked} className={`border-t border-slate-200 bg-slate-50 ${locked ? 'cursor-not-allowed select-none' : ''}`}>
             <div className="p-4 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 @md:grid-cols-2 gap-6">
                 <div>
                   <h5 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
                     Entrate <span className="font-normal normal-case">(ml)</span>

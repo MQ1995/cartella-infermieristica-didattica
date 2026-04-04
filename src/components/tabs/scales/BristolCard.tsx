@@ -57,7 +57,7 @@ export function BristolCard({ index, onRemove, locked, onToggleLock }: {
       <div>
         <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Tipo di feci (Scala di Bristol)</p>
         <input type="hidden" {...register(`${prefix}.type`)} />
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+        <div className="grid grid-cols-2 @sm:grid-cols-4 @lg:grid-cols-7 gap-2">
           {BRISTOL_TYPES.map(({ type, label, desc }) => (
             <button key={type} type="button"
               onClick={() => setVal(`${prefix}.type`, type, { shouldDirty: true })}

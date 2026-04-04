@@ -86,7 +86,7 @@ export function GcsCard({ index, onRemove, locked, onToggleLock }: {
           <input type="time" {...register(`${prefix}.time`)} data-empty={!time ? '' : undefined} className={DATE_INPUT} />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
         <div>
           <p className="text-xs font-semibold text-slate-600 mb-2">
             E — Apertura occhi

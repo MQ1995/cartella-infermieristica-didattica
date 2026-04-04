@@ -35,7 +35,7 @@ export default function Model2() {
 
         {/* ── 1. Dati soggettivi ── */}
         <p className={SUB}>Dati soggettivi</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
           <Textarea
             name="eatingHabits"
             label="Abitudini alimentari (pasti, spuntini, idratazione)"
@@ -47,7 +47,7 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="weightChange"
@@ -92,7 +92,7 @@ export default function Model2() {
 
         {/* ── 2. Esame fisico — antropometria ── */}
         <p className={SUB}>Esame fisico — antropometria</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 @md:grid-cols-4 gap-4">
           <Input name="currentWeight" label="Peso attuale (kg)" />
           <Input name="height"        label="Altezza (cm)" />
           <Input name="temperature"   label="Temp. corporea (°C)" />
@@ -103,7 +103,7 @@ export default function Model2() {
           label="Se il peso è riferito e non misurato, specificare il motivo"
         />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-1">
+        <div className="grid grid-cols-2 @md:grid-cols-4 gap-4 mt-1">
           <Input name="idealWeight"      label="Peso ideale — Lorenz (kg)" />
           <Input name="bmi"              label="IMC (kg/m²)" />
           <div className="space-y-3">
@@ -131,7 +131,7 @@ export default function Model2() {
 
         {/* ── 3. Dentatura, deglutizione e nutrizione ── */}
         <p className={SUB}>Dentatura, deglutizione e nutrizione artificiale</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="dentition"
@@ -170,7 +170,7 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
           <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="enteralNutrition"
@@ -207,7 +207,7 @@ export default function Model2() {
 
         {/* ── 4. Stato dei tessuti e cute ── */}
         <p className={SUB}>Stato dei tessuti e cute</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 @md:grid-cols-3 gap-3">
           <div className="rounded-lg border border-slate-200 p-3 space-y-3">
             <Select
               name="skinTemperature"
@@ -256,7 +256,7 @@ export default function Model2() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+        <div className="grid grid-cols-1 @md:grid-cols-3 gap-3 pt-1">
           <div className="rounded-lg border border-slate-200 p-3 space-y-2">
             <Checkbox name="itching" label="Prurito" />
             {itching && <Input name="itchingLocation" label="Sede" />}
@@ -277,7 +277,7 @@ export default function Model2() {
         </div>
 
         <div className="rounded-lg border border-slate-200 p-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
             <Input name="tc"                       label="TC — sede e misurazione" />
             <Input name="skinAppendagesAlterations" label="Alterazioni annessi cutanei (unghie, capelli)" />
           </div>
@@ -296,16 +296,16 @@ export default function Model2() {
                 <label className={RADIO_LABEL}><input type="radio" value="venoso"    {...register('vascularAccessType')} className={RADIO} /> Venoso</label>
                 <label className={RADIO_LABEL}><input type="radio" value="arterioso" {...register('vascularAccessType')} className={RADIO} /> Arterioso</label>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 @md:grid-cols-3 gap-4">
                 <Input name="vascularAccessDetailsType" label="Tipo" placeholder="es. CVP, CVC, PICC" />
                 <Input name="vascularAccessLocation"    label="Sede" placeholder="es. avambraccio sx" />
                 <Input name="vascularAccessDate"        label="Data inserzione" type="date" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
                 <Input name="vascularAccessDressing"     label="Tipo di medicazione" />
                 <Input name="vascularAccessDressingDate" label="Data ultima medicazione" type="date" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
                 <Input name="exitSiteScale" label='Scala "exit site" utilizzata' />
                 <Input name="exitSiteScore" label="Punteggio" />
               </div>
@@ -337,7 +337,7 @@ export default function Model2() {
         {/* Malnutrizione */}
         <div className="rounded-lg border border-slate-200 p-4 space-y-3">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio malnutrizione</span>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+          <div className="grid grid-cols-1 @md:grid-cols-3 gap-4 items-start">
             <Input name="malnutritionTool" label="Strumento utilizzato" placeholder="es. MUST, NRS-2002" />
             <div className="space-y-1">
               <span className="text-sm font-medium text-slate-700 block">Paziente a rischio</span>
@@ -355,7 +355,7 @@ export default function Model2() {
         {/* Lesioni da pressione */}
         <div className="rounded-lg border border-slate-200 p-4 space-y-3">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rischio lesioni da pressione — Scala Braden</span>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
             <Input name="bradenScore"       label="Punteggio Braden (calcolato in Scale Valutazione)" readOnly />
             <Input name="pressureUlcerRisk" label="Livello di rischio"                                readOnly />
           </div>
@@ -372,7 +372,7 @@ export default function Model2() {
         </div>
 
         {/* Cavo orale */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
           <Input name="throatScaleScore" label="Valutazione cavo orale — punteggio scala Throat" />
         </div>
 

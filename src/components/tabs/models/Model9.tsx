@@ -30,7 +30,7 @@ export default function Model9() {
         <p className={SUB}>Sesso femminile</p>
         <div className={`space-y-3 transition-opacity ${!isFemale ? 'opacity-40 pointer-events-none' : ''}`}>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
             <Input name="menarche"          label="Menarca (età)"          placeholder="es. 12" />
             <Input name="lastMenstruation"  label="Data ultima mestruazione" type="date" />
           </div>
@@ -67,7 +67,7 @@ export default function Model9() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 @md:grid-cols-2 gap-3">
             <div className={BOX}>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium text-slate-700 min-w-[160px]">Autopalpazione del seno</span>
